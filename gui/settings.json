@@ -56,6 +56,11 @@
       "name": "iptv",
       "type": "file",
       "url": "cache\\playlists\\iptv_1781775013.m3u"
+    },
+    {
+      "name": "Ip",
+      "type": "file",
+      "url": "cache\\playlists\\ip_1782206580.m3u"
     }
   ],
   "items_per_page": 500
