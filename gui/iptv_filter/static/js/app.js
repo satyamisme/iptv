@@ -2469,9 +2469,7 @@ function selectAllChannels(event) {
 
 function deselectAllChannels(event) {
     if (event) event.preventDefault();
-    channels.forEach(ch => {
-        selectedChannelIds.delete(ch.id);
-    });
+    selectedChannelIds.clear();
     
     document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
         cb.checked = false;
@@ -2481,7 +2479,7 @@ function deselectAllChannels(event) {
     if (headerCheck) headerCheck.checked = false;
     
     updateCheckSelectedButtonState();
-    toggleSelectionDropdown();
+    if (event) toggleSelectionDropdown();
 }
 
 function toggleSelectAllChannels(headerCheckbox) {
