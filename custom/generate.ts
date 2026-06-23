@@ -1,11 +1,55 @@
 import { Storage } from '@freearhey/storage-js'
-import { PlaylistParser, StreamTester } from '../scripts/core'
+import { PlaylistParser } from '../scripts/core'
 import { Stream, Playlist } from '../scripts/models'
 import { loadData } from '../scripts/api'
 import { STREAMS_DIR } from '../scripts/constants'
 import fs from 'node:fs'
 import path from 'node:path'
 import { eachLimit } from 'async'
+import axios from 'axios'
+
+async function checkStreamFast(url: string, timeoutMs: number = 5000, userAgent?: string, referrer?: string): Promise<{ ok: boolean, code: string }> {
+  try {
+    const headers: any = {
+      'User-Agent': userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+    if (referrer) {
+      headers['Referer'] = referrer
+    }
+
+    // responseType: 'stream' is critical to avoid loading infinite live media data in memory
+    const response = await axios.get(url, {
+      headers,
+      timeout: timeoutMs,
+      responseType: 'stream',
+      validateStatus: () => true // Allow any HTTP code
+    })
+
+    const status = response.status
+
+    // Close the stream connection immediately to prevent background buffering
+    if (response.data && typeof response.data.destroy === 'function') {
+      response.data.destroy()
+    }
+
+    if (status === 403) {
+      return { ok: false, code: 'HTTP_403_FORBIDDEN' }
+    }
+    if (status >= 400) {
+      return { ok: false, code: `HTTP_${status}` }
+    }
+
+    return { ok: true, code: 'OK' }
+  } catch (err: any) {
+    let code = 'ERROR'
+    if (err.code) {
+      code = err.code
+    } else if (err.message && err.message.includes('timeout')) {
+      code = 'TIMEOUT'
+    }
+    return { ok: false, code }
+  }
+}
 
 async function main() {
   console.log('Loading API data...')
@@ -40,41 +84,52 @@ async function main() {
 
   console.log(`Loaded ${lines.length} rules/selections from config.`)
 
-  // Filter the streams collection
+  // Optimize rule lookup by splitting exact and regex rules
+  const exactRules = new Set<string>()
+  const regexRules: RegExp[] = []
+
+  for (const rule of lines) {
+    if (rule.startsWith('/') && rule.endsWith('/')) {
+      try {
+        const pattern = rule.slice(1, -1)
+        regexRules.push(new RegExp(pattern, 'i'))
+      } catch (e) {
+        console.error(`Invalid regex rule: ${rule}`, e)
+      }
+    } else {
+      exactRules.add(rule)
+      if (rule.includes('@')) {
+        exactRules.add(rule.split('@')[0])
+      }
+    }
+  }
+
+  // Filter the streams collection (O(1) lookups for exact matches)
   const filteredStreams = streams.filter((stream: Stream) => {
     const tvgId = stream.getTvgId()
     const title = stream.title
     const fullTitle = stream.getFullTitle()
     const id = stream.getId()
 
-    return lines.some(rule => {
-      // 1. Check for regex format (e.g. /regex/)
-      if (rule.startsWith('/') && rule.endsWith('/')) {
-        try {
-          const pattern = rule.slice(1, -1)
-          const regex = new RegExp(pattern, 'i')
-          return (
-            (tvgId && regex.test(tvgId)) ||
-            (title && regex.test(title)) ||
-            (fullTitle && regex.test(fullTitle)) ||
-            (id && regex.test(id))
-          )
-        } catch (e) {
-          console.error(`Invalid regex rule: ${rule}`, e)
-          return false
-        }
-      }
+    // 1. Fast Set lookups
+    if (
+      (tvgId && exactRules.has(tvgId)) ||
+      (id && exactRules.has(id)) ||
+      (title && exactRules.has(title)) ||
+      (fullTitle && exactRules.has(fullTitle)) ||
+      (tvgId && exactRules.has(tvgId.split('@')[0])) ||
+      (id && exactRules.has(id.split('@')[0]))
+    ) {
+      return true
+    }
 
-      // 2. Exact match check (including base-id matching by splitting at @)
-      return (
-        tvgId === rule ||
-        id === rule ||
-        title === rule ||
-        fullTitle === rule ||
-        (tvgId && tvgId.split('@')[0] === rule) ||
-        (id && id.split('@')[0] === rule)
-      )
-    })
+    // 2. Fallback to Regex list search
+    return regexRules.some(regex => 
+      (tvgId && regex.test(tvgId)) ||
+      (title && regex.test(title)) ||
+      (fullTitle && regex.test(fullTitle)) ||
+      (id && regex.test(id))
+    )
   })
 
   console.log(`Filtered down to ${filteredStreams.count()} matching streams.`)
@@ -111,30 +166,23 @@ async function main() {
   console.log(`Successfully generated custom playlist with ${processedStreams.count()} streams at: ${outputPath}`)
 
   console.log('Testing streams status...')
-  const tester = new StreamTester({
-    options: {
-      timeout: 5000, // 5 seconds timeout
-      proxy: undefined
-    }
-  })
-
   const streamsArray = Array.isArray(processedStreams) ? processedStreams : (processedStreams as any).all()
   const results: any[] = []
 
   await new Promise<void>((resolve) => {
     eachLimit(
       streamsArray,
-      10, // Test 10 streams concurrently
+      15, // Test 15 streams concurrently
       async (stream: Stream) => {
         try {
-          const res = await tester.test(stream)
+          const res = await checkStreamFast(stream.url, 5000, stream.user_agent, stream.referrer)
           results.push({
             name: stream.title,
             id: stream.getId(),
             tvg_id: stream.getTvgId(),
             url: stream.url,
-            status: res.status.code,
-            working: res.status.ok,
+            status: res.code,
+            working: res.ok,
             checked_at: new Date().toISOString()
           })
         } catch (e) {
@@ -169,9 +217,12 @@ async function main() {
   mdContent += `Last checked: \`${new Date().toISOString()}\`\n\n`
   mdContent += `| Status | Channel Name | tvg-id | Stream URL | Code |\n`
   mdContent += `| --- | --- | --- | --- | --- |\n`
+  
+  const escapeMarkdown = (text: string) => text ? text.replace(/\|/g, '\\|') : '';
+
   for (const r of results) {
     const statusIcon = r.working ? '✅' : '❌'
-    mdContent += `| ${statusIcon} | ${r.name} | ${r.tvg_id || 'N/A'} | \`${r.url}\` | ${r.status} |\n`
+    mdContent += `| ${statusIcon} | ${escapeMarkdown(r.name)} | ${escapeMarkdown(r.tvg_id || 'N/A')} | \`${escapeMarkdown(r.url)}\` | ${escapeMarkdown(r.status)} |\n`
   }
   fs.writeFileSync(statusMdPath, mdContent)
   console.log(`Saved stream status Markdown at: ${statusMdPath}`)

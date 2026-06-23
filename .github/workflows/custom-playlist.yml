@@ -34,7 +34,7 @@ jobs:
           
           # Merge changes from upstream master into local master
           # Using --allow-unrelated-histories just in case, and auto-merging changes
-          git merge upstream/master -m "Merge upstream changes [skip ci]" --allow-unrelated-histories || echo "No changes to sync or merge conflict handled"
+          git merge upstream/master -m "Merge upstream changes [skip ci]" --allow-unrelated-histories || (git merge --abort && echo "Merge conflicted, aborting merge to keep local clean")
           
           # Push synced master branch back to fork
           git push origin master || echo "Nothing to push or push failed"

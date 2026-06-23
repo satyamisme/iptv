@@ -180,6 +180,11 @@ function checkServerStatus() {
                 // Export page summary update
                 const exportTotal = document.getElementById('export-total-streams');
                 if (exportTotal) exportTotal.textContent = data.statistics.filtered || data.total_channels;
+                
+                // Auto-load filters and settings if we are in channels/languages view and not yet loaded
+                if ((currentView === 'channels' || currentView === 'languages') && !filtersLoaded) {
+                    loadFiltersAndLists();
+                }
             } else {
                 loaderStatus.textContent = 'Database empty. Select a quick load option below.';
             }
@@ -286,6 +291,7 @@ function clearLocalCache() {
 
 // Filters data loading
 let filtersLoaded = false;
+let selectionsLoaded = false;
 function loadFiltersAndLists() {
     if (filtersLoaded) return;
     
@@ -324,7 +330,10 @@ function loadFiltersAndLists() {
             renderBulkLanguagesGrid();
 
             // Load selected channels configuration on startup
-            loadSelectedFromConfig();
+            if (!selectionsLoaded) {
+                loadSelectedFromConfig();
+                selectionsLoaded = true;
+            }
         })
         .catch(err => {
             // Probably not loaded yet, dashboard will handle it
@@ -426,6 +435,10 @@ function renderLanguagesTree() {
                 </label>
             `;
             itemEl.onclick = (e) => {
+                if (e.target.tagName.toLowerCase() === 'input') {
+                    toggleFilterItem('languages', lang.name, itemEl);
+                    return;
+                }
                 e.preventDefault();
                 const checkbox = itemEl.querySelector('input[type="checkbox"]');
                 checkbox.checked = !checkbox.checked;
@@ -488,6 +501,10 @@ function renderCategoriesBox() {
         `;
         
         item.onclick = (e) => {
+            if (e.target.tagName.toLowerCase() === 'input') {
+                toggleFilterItem('categories', cat, item);
+                return;
+            }
             e.preventDefault();
             const checkbox = item.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
@@ -541,6 +558,10 @@ function renderCountriesBox() {
         `;
         
         item.onclick = (e) => {
+            if (e.target.tagName.toLowerCase() === 'input') {
+                toggleFilterItem('countries', code, item);
+                return;
+            }
             e.preventDefault();
             const checkbox = item.querySelector('input[type="checkbox"]');
             checkbox.checked = !checkbox.checked;
@@ -1010,9 +1031,9 @@ function renderChannelsList() {
                 } else if (col.id === 'country') {
                     cellsHtml += `<td class="col-country">${ch.country || '--'}</td>`;
                 } else if (col.id === 'category') {
-                    cellsHtml += `<td class="col-category">${ch.categories.join(', ') || '--'}</td>`;
+                    cellsHtml += `<td class="col-category">${(ch.categories || []).join(', ') || '--'}</td>`;
                 } else if (col.id === 'language') {
-                    cellsHtml += `<td class="col-language">${ch.languages.join(', ') || '--'}</td>`;
+                    cellsHtml += `<td class="col-language">${(ch.languages || []).join(', ') || '--'}</td>`;
                 } else if (col.id === 'actions') {
                     cellsHtml += `
                         <td class="col-actions">
@@ -1071,8 +1092,8 @@ function renderChannelsList() {
                 </div>
                 <div class="channel-card-name">${ch.name}</div>
                 <div class="channel-card-details">
-                    <span><strong>Group:</strong> ${ch.categories[0] || 'Uncategorized'}</span>
-                    <span><strong>Lang:</strong> ${ch.languages[0] || 'Unknown'}</span>
+                    <span><strong>Group:</strong> ${(ch.categories || [])[0] || 'Uncategorized'}</span>
+                    <span><strong>Lang:</strong> ${(ch.languages || [])[0] || 'Unknown'}</span>
                     <span><strong>Country:</strong> ${ch.country || '--'}</span>
                 </div>
             `;
@@ -1889,8 +1910,8 @@ function openEditChannelModal() {
     document.getElementById('modal-ua').value = selectedChannel.user_agent || '';
     document.getElementById('modal-referer').value = selectedChannel.referrer || '';
     document.getElementById('modal-country').value = selectedChannel.country || '';
-    document.getElementById('modal-categories').value = selectedChannel.categories.join(', ');
-    document.getElementById('modal-languages').value = selectedChannel.languages.join(', ');
+    document.getElementById('modal-categories').value = (selectedChannel.categories || []).join(', ');
+    document.getElementById('modal-languages').value = (selectedChannel.languages || []).join(', ');
     document.getElementById('modal-nsfw').checked = selectedChannel.is_nsfw || false;
     
     document.getElementById('channel-modal').style.display = 'flex';
@@ -1948,6 +1969,13 @@ function saveChannelModal() {
         } else {
             closeChannelModal();
             alert(channelId ? 'Channel updated successfully!' : 'Channel added successfully!');
+            
+            // Auto check/select if newly created
+            if (!channelId && data.channel_id) {
+                selectedChannelIds.add(data.channel_id);
+                updateCheckSelectedButtonState();
+            }
+
             // Refresh filters and reload channels
             filtersLoaded = false; // Force reload lists
             loadFiltersAndLists();
@@ -2375,12 +2403,12 @@ function toggleChannelSelection(chId, checked) {
     
     updateCheckSelectedButtonState();
     
-    // Sync header checkbox
+    // Sync header checkbox for currently rendered checkboxes (current page)
     const headerCheck = document.getElementById('header-select-all');
     if (headerCheck) {
-        const visibleIds = channels.map(ch => ch.id);
-        const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedChannelIds.has(id));
-        headerCheck.checked = allVisibleSelected;
+        const checkboxes = document.querySelectorAll('.row-select-checkbox, .grid-select-checkbox');
+        const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        headerCheck.checked = allChecked;
     }
 }
 
@@ -2426,9 +2454,10 @@ function selectAllChannels(event) {
     if (event) event.preventDefault();
     channels.forEach(ch => {
         selectedChannelIds.add(ch.id);
-        document.querySelectorAll(`.row-select-checkbox[data-id="${ch.id}"], .grid-select-checkbox[data-id="${ch.id}"]`).forEach(cb => {
-            cb.checked = true;
-        });
+    });
+    
+    document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
+        cb.checked = true;
     });
     
     const headerCheck = document.getElementById('header-select-all');
@@ -2442,9 +2471,10 @@ function deselectAllChannels(event) {
     if (event) event.preventDefault();
     channels.forEach(ch => {
         selectedChannelIds.delete(ch.id);
-        document.querySelectorAll(`.row-select-checkbox[data-id="${ch.id}"], .grid-select-checkbox[data-id="${ch.id}"]`).forEach(cb => {
-            cb.checked = false;
-        });
+    });
+    
+    document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
+        cb.checked = false;
     });
     
     const headerCheck = document.getElementById('header-select-all');
@@ -2462,10 +2492,12 @@ function toggleSelectAllChannels(headerCheckbox) {
         } else {
             selectedChannelIds.delete(ch.id);
         }
-        document.querySelectorAll(`.row-select-checkbox[data-id="${ch.id}"], .grid-select-checkbox[data-id="${ch.id}"]`).forEach(cb => {
-            cb.checked = checked;
-        });
     });
+    
+    document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
+        cb.checked = checked;
+    });
+    
     updateCheckSelectedButtonState();
 }
 
@@ -2478,16 +2510,17 @@ function invertChannelSelection(event) {
         } else {
             selectedChannelIds.add(ch.id);
         }
-        document.querySelectorAll(`.row-select-checkbox[data-id="${ch.id}"], .grid-select-checkbox[data-id="${ch.id}"]`).forEach(cb => {
-            cb.checked = !isSelected;
-        });
+    });
+    
+    document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
+        cb.checked = !cb.checked;
     });
     
     const headerCheck = document.getElementById('header-select-all');
     if (headerCheck) {
-        const visibleIds = channels.map(ch => ch.id);
-        const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedChannelIds.has(id));
-        headerCheck.checked = allVisibleSelected;
+        const checkboxes = document.querySelectorAll('.row-select-checkbox, .grid-select-checkbox');
+        const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        headerCheck.checked = allChecked;
     }
     
     updateCheckSelectedButtonState();
@@ -3044,11 +3077,13 @@ function removeSelectedFromList(event) {
 
     if (!confirm(`Are you sure you want to remove the ${count} selected channel(s) from the current loaded active channels list?`)) return;
 
+    const deletedIds = Array.from(selectedChannelIds);
+
     fetch('/api/channels/delete-selected', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            channel_ids: Array.from(selectedChannelIds)
+            channel_ids: deletedIds
         })
     })
     .then(res => res.json())
@@ -3057,8 +3092,10 @@ function removeSelectedFromList(event) {
             alert('Error removing channels: ' + data.error);
         } else {
             alert(`Successfully removed ${count} channels from list.`);
+            // Remove from selected set
+            deletedIds.forEach(id => selectedChannelIds.delete(id));
+            updateCheckSelectedButtonState();
             triggerFilter();
-            deselectAllChannels();
             togglePlaylistDropdown();
         }
     })

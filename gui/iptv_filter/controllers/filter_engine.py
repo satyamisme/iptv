@@ -28,9 +28,13 @@ class FilterEngine:
                 self.channels_by_id[ch.id] = ch
             if ch.country:
                 self.channels_by_country.setdefault(ch.country, set()).add(ch.id)
-            for cat in ch.categories:
+            
+            categories = ch.categories if ch.categories is not None else []
+            for cat in categories:
                 self.channels_by_category.setdefault(cat, set()).add(ch.id)
-            for lang in ch.languages:
+                
+            languages = ch.languages if ch.languages is not None else []
+            for lang in languages:
                 self.channels_by_language.setdefault(lang, set()).add(ch.id)
 
     def get_country_counts(self) -> Dict[str, int]:
@@ -258,8 +262,9 @@ class FilterEngine:
                 continue
 
             if search_term:
-                name_match = search_term in ch.name.lower()
-                alt_match = any(search_term in alt.lower() for alt in ch.alt_names)
+                name_match = ch.name and search_term in ch.name.lower()
+                alt_names = ch.alt_names if ch.alt_names is not None else []
+                alt_match = any(search_term in alt.lower() for alt in alt_names if alt)
                 network_match = ch.network and search_term in ch.network.lower()
                 if not (name_match or alt_match or network_match):
                     continue

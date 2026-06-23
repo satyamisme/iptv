@@ -20,6 +20,19 @@ from iptv_filter.utils.language_groups import get_language_group
 from iptv_filter.models.channel import Channel
 from iptv_filter.utils.countries_map import COUNTRIES_MAP
 
+def normalize_country(country_str):
+    if not country_str:
+        return ""
+    country_str = str(country_str).strip()
+    code_lower = country_str.lower()
+    if code_lower in COUNTRIES_MAP:
+        return COUNTRIES_MAP[code_lower]
+    # Try mapping values case-insensitively
+    for val in COUNTRIES_MAP.values():
+        if val.lower() == code_lower:
+            return val
+    return country_str.title()
+
 app = Flask(__name__, 
             static_folder=os.path.join("iptv_filter", "static"),
             template_folder=os.path.join("iptv_filter", "templates"))
@@ -48,15 +61,15 @@ def load_stream_statuses():
 def save_stream_statuses():
     statuses = load_stream_statuses()
     for ch in filter_engine.channels:
-        if ch.status_text != "Unknown":
-            statuses[ch.id] = {
-                "status_text": ch.status_text,
-                "status_icon": ch.status_icon
-            }
+        statuses[ch.id] = {
+            "status_icon": ch.status_icon,
+            "status_text": ch.status_text
+        }
     try:
         os.makedirs(os.path.dirname(STATUS_FILE), exist_ok=True)
         with open(STATUS_FILE, "w", encoding="utf-8") as f:
             json.dump(statuses, f, indent=2, ensure_ascii=False)
+        return True
     except Exception as e:
         print(f"Error saving stream statuses: {e}")
 
@@ -97,8 +110,7 @@ def load_playlist_state():
                 data = json.load(f)
             channels = []
             for item in data:
-                raw_country = item.get("country", "")
-                resolved_country = COUNTRIES_MAP.get(raw_country.lower(), raw_country) if raw_country else ""
+                resolved_country = normalize_country(item.get("country"))
                 ch = Channel(
                     id=item.get("id"),
                     name=item.get("name"),
@@ -133,8 +145,7 @@ def load_custom_channels():
                 data = json.load(f)
             channels = []
             for item in data:
-                raw_country = item.get("country", "")
-                resolved_country = COUNTRIES_MAP.get(raw_country.lower(), raw_country) if raw_country else ""
+                resolved_country = normalize_country(item.get("country"))
                 ch = Channel(
                     id=item.get("id"),
                     name=item.get("name"),
@@ -191,10 +202,18 @@ def save_custom_channels(custom_list):
 
 def merge_custom_channels(channels_list):
     customs = load_custom_channels()
-    existing_ids = {ch.id for ch in channels_list}
-    for c in customs:
-        if c.id not in existing_ids:
-            channels_list.insert(0, c)
+    custom_map = {c.id: c for c in customs}
+    
+    # Replace in place for existing ones
+    for i, ch in enumerate(channels_list):
+        if ch.id in custom_map:
+            channels_list[i] = custom_map[ch.id]
+            del custom_map[ch.id]
+            
+    # Insert new ones at the beginning
+    for c in custom_map.values():
+        channels_list.insert(0, c)
+
 
 # Thread-safe global variables for async tasks
 load_status = {
@@ -749,6 +768,9 @@ def clear_api_cache():
 
 @app.route("/api/custom/selected", methods=["GET"])
 def get_custom_selected():
+    if not load_status["loaded"]:
+        return jsonify({"error": "Data not loaded"}), 400
+        
     rules_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "selected-channels.txt"))
     if not os.path.exists(rules_path):
         return jsonify({"rules": [], "matched_ids": []})
@@ -788,6 +810,9 @@ def get_custom_selected():
 
 @app.route("/api/custom/save-selected", methods=["POST"])
 def save_custom_selected():
+    if not load_status["loaded"]:
+        return jsonify({"error": "Data not loaded"}), 400
+        
     req_data = request.json or {}
     channel_ids = req_data.get("channel_ids", [])
     
@@ -1075,8 +1100,7 @@ def add_channel():
         
     channel_id = "custom_" + re.sub(r'[^a-zA-Z0-9]', '', name).lower() + str(int(time.time()))
     
-    raw_country = req_data.get("country", "")
-    resolved_country = COUNTRIES_MAP.get(raw_country.lower(), raw_country) if raw_country else ""
+    resolved_country = normalize_country(req_data.get("country"))
     ch = Channel(
         id=channel_id,
         name=name,
@@ -1119,7 +1143,7 @@ def update_channel():
     ch.name = req_data.get("name", ch.name)
     raw_country = req_data.get("country")
     if raw_country is not None:
-        ch.country = COUNTRIES_MAP.get(raw_country.lower(), raw_country) if raw_country else ""
+        ch.country = normalize_country(raw_country)
     
     if "categories" in req_data:
         cats = req_data.get("categories")
@@ -1157,7 +1181,7 @@ def update_channel():
             customs[i] = ch
             updated = True
             break
-    if not updated and channel_id.startswith("custom_"):
+    if not updated:
         customs.insert(0, ch)
     save_custom_channels(customs)
     
