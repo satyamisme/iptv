@@ -149,12 +149,23 @@ class DataProcessor:
         return playlist
 
     def enrich_channels(self, channels: List[Channel]):
-        cache_dir = "cache"
-        channels_file = os.path.join(cache_dir, "channels.json")
-        feeds_file = os.path.join(cache_dir, "feeds.json")
-        languages_file = os.path.join(cache_dir, "languages.json")
-
-        if not (os.path.exists(channels_file) and os.path.exists(feeds_file) and os.path.exists(languages_file)):
+        cache_dirs = ["cache", os.path.join("..", "cache")]
+        
+        channels_file = None
+        feeds_file = None
+        languages_file = None
+        
+        for cache_dir in cache_dirs:
+            c_file = os.path.join(cache_dir, "channels.json")
+            f_file = os.path.join(cache_dir, "feeds.json")
+            l_file = os.path.join(cache_dir, "languages.json")
+            if os.path.exists(c_file) and os.path.exists(f_file) and os.path.exists(l_file):
+                channels_file = c_file
+                feeds_file = f_file
+                languages_file = l_file
+                break
+                
+        if not channels_file:
             return
 
         try:
