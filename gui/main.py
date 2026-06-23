@@ -130,6 +130,7 @@ def load_playlist_state():
                     status_text=item.get("status_text", "Unknown")
                 )
                 channels.append(ch)
+            data_processor.enrich_channels(channels)
             filter_engine.load_channels(channels)
             return True
         except Exception as e:
