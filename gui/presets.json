@@ -1,0 +1,30 @@
+{
+  "Indian Languages": {
+    "languages": [
+      "hin",
+      "tel",
+      "tam",
+      "mal",
+      "kan"
+    ]
+  },
+  "Kids Content": {
+    "categories": [
+      "kids",
+      "education"
+    ]
+  },
+  "Family Friendly": {
+    "nsfw": false
+  },
+  "News & Education": {
+    "categories": [
+      "news",
+      "education"
+    ]
+  },
+  "Custom Test Preset": {
+    "search_term": "news",
+    "nsfw": false
+  }
+}

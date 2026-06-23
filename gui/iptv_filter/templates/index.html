@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamControl Pro - IPTV Admin Console</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- HLS.js for Live Stream Preview -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar collapsed">
+            <div class="sidebar-header">
+
+                <div class="brand-logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <div class="brand-text">
+                        <h1>IPTV Admin</h1>
+                        <span>Power User Console</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#dashboard" class="nav-item active" onclick="switchView('dashboard')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#channels" class="nav-item" onclick="switchView('channels')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                            <span>Channel Manager</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#languages" class="nav-item" onclick="switchView('languages')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 12h14M5 16h14"></path><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path></svg>
+                            <span>Languages</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#export" class="nav-item" onclick="switchView('export')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span>Export & Sync</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#playlists" class="nav-item" onclick="switchView('playlists')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                            <span>Playlists</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" class="nav-item" onclick="switchView('settings')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="footer-link">
+                    <svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    <span>Documentation</span>
+                </div>
+                <div class="footer-link">
+                    <svg class="footer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    <span>Support</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Top App Bar -->
+            <header class="top-bar">
+                <div class="bar-left">
+                    <button class="bar-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar" style="margin-right: 10px;">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <h2 class="view-title" id="view-title">StreamControl Pro</h2>
+                    <div class="bar-tab-indicator" id="view-subtitle">Power User Console</div>
+                </div>
+                <div class="bar-right">
+                    <!-- Global Search -->
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="global-search" placeholder="Search streams, codes, names..." oninput="onGlobalSearch(this.value)">
+                    </div>
+                    <!-- Notifications -->
+                    <button class="bar-btn" title="Notifications">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </button>
+                    <!-- Layout Grid View toggle -->
+                    <button class="bar-btn" title="Toggle Layout" onclick="toggleLayout()">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    </button>
+                    <!-- Profile Admin Widget -->
+                    <div class="admin-badge">
+                        <div class="admin-avatar">
+                            <span class="avatar-text">A</span>
+                        </div>
+                        <div class="admin-info">
+                            <span class="admin-name">Admin</span>
+                            <span class="admin-status">Global Control</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Screen Views Container -->
+            <div class="view-container">
+                <!-- VIEW 1: DASHBOARD -->
+                <div id="view-dashboard" class="content-view active">
+                    <div class="dashboard-header">
+                        <h2>System Overview</h2>
+                        <div class="data-loader-status" id="dashboard-loader-status">
+                            Checking database...
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card total-card">
+                            <div class="card-icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-title">TOTAL CHANNELS</span>
+                                <h3 class="card-value" id="stat-total">0</h3>
+                                <span class="card-desc">Loaded from current playlist</span>
+                            </div>
+                        </div>
+                        <div class="stat-card working-card">
+                            <div class="card-icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-title">WORKING CHANNELS</span>
+                                <h3 class="card-value" id="stat-working">0</h3>
+                                <span class="card-desc">Active connections verified</span>
+                            </div>
+                        </div>
+                        <div class="stat-card dead-card">
+                            <div class="card-icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-title">DEAD CHANNELS</span>
+                                <h3 class="card-value" id="stat-dead">0</h3>
+                                <span class="card-desc">Offline or unresponsive streams</span>
+                            </div>
+                        </div>
+                        <div class="stat-card geo-card">
+                            <div class="card-icon-wrapper">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-title">GEO-BLOCKED</span>
+                                <h3 class="card-value" id="stat-geo">0</h3>
+                                <span class="card-desc">Restricted by regional firewalls</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Scanning Engine & Status Console (NEW) -->
+                    <div class="dashboard-row status-engine-row" id="dashboard-scan-panel" style="display: none; margin-bottom: 20px;">
+                        <div class="dashboard-panel panel-scan-engine" style="grid-column: span 2; width: 100%;">
+                            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                                <h3>Live Scanner Diagnostics</h3>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="pulse-ring" style="background-color: var(--primary-color);"></span>
+                                    <span style="font-size: 11px; font-weight: 700; color: var(--primary-color); letter-spacing: 0.5px;">ACTIVE SCAN RUNNING</span>
+                                </div>
+                            </div>
+                            <div class="scan-engine-grid">
+                                <!-- circular progress -->
+                                <div class="scan-progress-box">
+                                    <div class="circular-progress-wrapper">
+                                        <svg class="progress-ring" width="90" height="90">
+                                            <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.04)" stroke-width="5" fill="transparent" r="38" cx="45" cy="45"/>
+                                            <circle id="scan-progress-circle" class="progress-ring__circle" stroke="var(--primary-color)" stroke-width="5" fill="transparent" r="38" cx="45" cy="45" stroke-dasharray="238.76" stroke-dashoffset="238.76"/>
+                                        </svg>
+                                        <div class="circular-progress-text">
+                                            <span id="scan-percent-text">0%</span>
+                                            <span id="scan-count-text">0 / 0</span>
+                                        </div>
+                                    </div>
+                                    <div class="scan-controls" style="margin-top: 12px; display: flex; gap: 8px; width: 100%;">
+                                        <button class="btn btn-danger btn-sm" onclick="cancelScanning()" style="flex: 1; height: 28px; font-size: 10px;">Cancel Scan</button>
+                                        <button class="btn btn-secondary-outline btn-sm" onclick="saveScanProgress()" style="flex: 1; height: 28px; font-size: 10px;">Save State</button>
+                                    </div>
+                                </div>
+                                <!-- System metrics -->
+                                <div class="scan-metrics-box">
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <span>CPU UTILITY</span>
+                                            <span id="metric-cpu-val">0%</span>
+                                        </div>
+                                        <div class="metric-bar-track"><div id="metric-cpu-bar" class="metric-bar-fill" style="width: 0%;"></div></div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <span>RAM ALLOCATION</span>
+                                            <span id="metric-ram-val">0 MB</span>
+                                        </div>
+                                        <div class="metric-bar-track"><div id="metric-ram-bar" class="metric-bar-fill" style="width: 0%; background: #00E5FF;"></div></div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <span>SCANNING THREADS</span>
+                                            <span id="metric-threads-val">0 active</span>
+                                        </div>
+                                        <div class="metric-bar-track"><div id="metric-threads-bar" class="metric-bar-fill" style="width: 0%; background: #00E676;"></div></div>
+                                    </div>
+                                </div>
+                                <!-- Terminal box -->
+                                <div class="scan-log-box">
+                                    <div class="console-title">ROLLING PROBES LOG</div>
+                                    <div class="console-body" id="scan-console-log">
+                                        <div class="console-line"><span style="color: #666;">Waiting for active check sequence...</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Load Panel -->
+                    <div class="dashboard-row">
+                        <div class="dashboard-panel panel-load">
+                            <div class="panel-header">
+                                <h3>Select IPTV Source(s) / Playlist(s)</h3>
+                            </div>
+                            <div class="load-options">
+                                <div class="form-group">
+                                    <label>Select Saved Playlist(s) / Sources</label>
+                                    <div class="playlist-checkbox-list" id="playlist-checkbox-list" style="max-height: 160px; overflow-y: auto; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                        <!-- Populated dynamically with checkboxes -->
+                                    </div>
+                                    <button class="btn btn-primary" onclick="loadSelectedPlaylists()" style="height: 40px; margin-top: 10px; width: 100%; white-space: nowrap;">Load Checked Playlists</button>
+                                </div>
+                                
+                                <div class="or-divider"><span>OR QUICK LOAD M3U</span></div>
+                                
+                                <div class="form-group">
+                                    <label>Load from temporary URL</label>
+                                    <div class="input-btn-group">
+                                        <input type="text" id="load-m3u-url" placeholder="Enter playlist URL (e.g. https://.../playlist.m3u)">
+                                        <button class="btn btn-secondary" onclick="loadFromURL()">Load URL</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="or-divider"><span>OR UPLOAD FILE</span></div>
+                                
+                                <div class="form-group">
+                                    <label>Upload local M3U file</label>
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" id="load-m3u-file" accept=".m3u,.m3u8" onchange="uploadM3UFile(this)">
+                                        <div class="upload-area">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"></path></svg>
+                                            <span>Click to browse or drop file here</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Cache Card -->
+                        <div class="dashboard-panel panel-cache">
+                            <div class="panel-header">
+                                <h3>Cache & Storage Status</h3>
+                            </div>
+                            <div class="cache-info-box">
+                                <div class="cache-indicator">
+                                    <div class="pulse-ring"></div>
+                                    <span>Database local caches active</span>
+                                </div>
+                                <p class="desc">IPTV channel data is stored locally for 24 hours to ensure high speed and prevent network throttling.</p>
+                                <div class="cache-actions">
+                                    <button class="btn btn-danger-outline" onclick="clearLocalCache()">Flush Local Cache</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: CHANNEL MANAGER -->
+                <div id="view-channels" class="content-view">
+                    <div class="channel-workspace inspector-collapsed">
+                        <!-- Left Panel: Advanced Filters -->
+                        <div class="filters-panel">
+                            <div class="panel-section">
+                                <h4>PRESETS</h4>
+                                <select id="presets-select" onchange="applyPreset(this.value)">
+                                    <option value="">-- Select Saved Preset --</option>
+                                </select>
+                                <div class="input-btn-group" style="margin-top: 8px;">
+                                    <input type="text" id="preset-name-input" placeholder="New preset name..." class="form-control" style="height: 30px; font-size: 11px;">
+                                    <button class="btn btn-primary" onclick="saveCurrentPreset()" style="padding: 0 10px; height: 30px;">Save</button>
+                                </div>
+                            </div>
+
+                            <div class="panel-section">
+                                <h4>SEARCH</h4>
+                                <input type="text" id="filter-search" class="form-control" placeholder="Search name/group..." oninput="triggerFilter()">
+                            </div>
+
+                            <div class="panel-section">
+                                <h4>OPTIONS</h4>
+                                <div class="check-options">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="filter-nsfw" onchange="triggerFilter()">
+                                        <span>Show NSFW Content</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="filter-closed" checked onchange="triggerFilter()">
+                                        <span>Exclude Closed Channels</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="filter-exclude-dead" checked onchange="triggerFilter()">
+                                        <span>Exclude Dead Streams</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="filter-exclude-no-url" checked onchange="triggerFilter()">
+                                        <span>Exclude No URL Channels</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="filter-favs" onchange="triggerFilter()">
+                                        <span>Favorites Only</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="filter-selected-only" onchange="triggerFilter()">
+                                        <span>Show Selected Only</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="preserve-selection" checked>
+                                        <span>Preserve Selection on Filter changes</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="panel-section">
+                                <h4>STATUS FILTERS</h4>
+                                <div class="check-options">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="status-working" value="Working" onchange="triggerFilter()">
+                                        <span>Working</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="status-slow" value="Slow" onchange="triggerFilter()">
+                                        <span>Slow</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="status-dead" value="Dead" onchange="triggerFilter()">
+                                        <span>Dead</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="status-geo" value="Geo-blocked" onchange="triggerFilter()">
+                                        <span>Geo-blocked</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="status-unknown" value="Unknown" onchange="triggerFilter()">
+                                        <span>Unknown/Unchecked</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="panel-section">
+                                <h4>STREAM FORMAT</h4>
+                                <select id="filter-format" class="form-control" onchange="triggerFilter()">
+                                    <option value="">All Formats</option>
+                                    <option value="hls">HLS (.m3u8) only</option>
+                                    <option value="non-hls">Non-HLS only</option>
+                                </select>
+                            </div>
+
+                            <div class="panel-section filter-scrollable">
+                                <div class="panel-section-header">
+                                    <h4>LANGUAGES</h4>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <label class="custom-checkbox" style="font-size: 10px; margin: 0; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;">
+                                            <input type="checkbox" id="exclude-languages" onchange="triggerFilter()" style="width: 12px; height: 12px; cursor: pointer;"> Exclude
+                                        </label>
+                                        <button class="sort-toggle-btn" onclick="toggleFilterSort('languages')" title="Toggle Sort Mode">Sort: <span id="sort-label-languages">A-Z</span></button>
+                                    </div>
+                                </div>
+                                <input type="text" id="languages-search-input" class="form-control filter-search-box" placeholder="Search languages..." oninput="onFilterSearch('languages', this.value)">
+                                <div class="tree-container" id="filter-languages-tree">
+                                    <!-- Populated dynamically -->
+                                    Loading...
+                                </div>
+                            </div>
+
+                            <div class="panel-section filter-scrollable">
+                                <div class="panel-section-header">
+                                    <h4>CATEGORIES</h4>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <label class="custom-checkbox" style="font-size: 10px; margin: 0; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;">
+                                            <input type="checkbox" id="exclude-categories" onchange="triggerFilter()" style="width: 12px; height: 12px; cursor: pointer;"> Exclude
+                                        </label>
+                                        <button class="sort-toggle-btn" onclick="toggleFilterSort('categories')" title="Toggle Sort Mode">Sort: <span id="sort-label-categories">A-Z</span></button>
+                                    </div>
+                                </div>
+                                <input type="text" id="categories-search-input" class="form-control filter-search-box" placeholder="Search categories..." oninput="onFilterSearch('categories', this.value)">
+                                <div class="listbox-container scrollable-box" id="filter-categories-box">
+                                    <!-- Populated dynamically -->
+                                    Loading...
+                                </div>
+                            </div>
+
+                            <div class="panel-section filter-scrollable">
+                                <div class="panel-section-header">
+                                    <h4>COUNTRIES</h4>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <label class="custom-checkbox" style="font-size: 10px; margin: 0; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; user-select: none;">
+                                            <input type="checkbox" id="exclude-countries" onchange="triggerFilter()" style="width: 12px; height: 12px; cursor: pointer;"> Exclude
+                                        </label>
+                                        <button class="sort-toggle-btn" onclick="toggleFilterSort('countries')" title="Toggle Sort Mode">Sort: <span id="sort-label-countries">9-1</span></button>
+                                    </div>
+                                </div>
+                                <input type="text" id="countries-search-input" class="form-control filter-search-box" placeholder="Search countries..." oninput="onFilterSearch('countries', this.value)">
+                                <div class="listbox-container scrollable-box" id="filter-countries-box">
+                                    <!-- Populated dynamically -->
+                                    Loading...
+                                </div>
+                            </div>
+
+                            <button class="btn btn-secondary-outline btn-block" onclick="clearFilters()">Clear All Filters</button>
+                        </div>
+
+                        <!-- Left Resize Handle -->
+                        <div class="resize-handle" id="resize-handle-left"></div>
+
+                        <!-- Center Panel: Channels Table Grid -->
+                        <div class="channels-list-container">
+                            <!-- Active Playlist Status Banner -->
+                            <div class="active-playlist-banner glass-panel" id="active-playlist-banner" style="display: none;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="pulse-ring" id="active-playlist-pulse" style="background-color: var(--primary-color);"></span>
+                                    <span style="font-size: 12px; color: var(--text-secondary);">ACTIVE PLAYLIST: <strong id="active-playlist-name" style="color: #fff;">None</strong></span>
+                                    <span class="playlist-badge" id="active-playlist-writable-badge">Read-Only</span>
+                                </div>
+                                <button class="btn btn-primary btn-sm" id="btn-sync-playlist" onclick="syncCurrentPlaylist()" style="height: 26px; font-size: 10px; display: none;">
+                                    <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 10px; height: 10px; margin-right: 4px; display: inline-block; vertical-align: middle;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                    Sync to Source File
+                                </button>
+                            </div>
+                            
+                            <div class="list-actions-bar">
+                                <div class="action-buttons-group">
+                                    <button class="btn btn-secondary" onclick="toggleFiltersPanel()" title="Toggle Filters Panel">
+                                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; margin-right: 5px;"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                                        Filters
+                                    </button>
+                                    <button class="btn btn-primary" onclick="checkAllStreams()">
+                                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        Check All
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="resumeScanning()" title="Check only streams in Unknown state">
+                                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        Resume Scan
+                                    </button>
+                                    <button class="btn btn-secondary" id="btn-check-selected" onclick="checkSelectedStreams()" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        Check Selected
+                                    </button>
+                                    <div class="dropdown" style="position: relative; display: inline-block;">
+                                        <button class="btn btn-secondary-outline" onclick="toggleSelectionDropdown(event)" id="btn-select-options">
+                                            Select Options ▼
+                                        </button>
+                                        <div class="dropdown-content" id="selection-dropdown">
+                                            <a href="#" onclick="selectAllChannels(event)">Select All</a>
+                                            <a href="#" onclick="deselectAllChannels(event)">Deselect All</a>
+                                            <a href="#" onclick="invertChannelSelection(event)">Invert Selection</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="dropdown" style="position: relative; display: inline-block;">
+                                        <button class="btn btn-secondary-outline" onclick="togglePlaylistDropdown(event)" id="btn-playlist-options" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                            Playlist Actions ▼
+                                        </button>
+                                        <div class="dropdown-content" id="playlist-dropdown" style="min-width: 220px; display: none;">
+                                            <a href="#" onclick="createPlaylistFromSelected(event)">Create Playlist from Selected</a>
+                                            <a href="#" onclick="saveSelectedForAutoUpdate(event)" style="font-weight: 600; color: var(--primary-color);">Save Selected for Upstream Sync</a>
+                                            <a href="#" onclick="addSelectedToPlaylistPrompt(event)">Add Selected to Playlist</a>
+                                            <a href="#" onclick="markSelectedAsFavorite(event)">Mark Selected as Favorite</a>
+                                            <a href="#" onclick="removeSelectedFromFavorites(event)">Remove Selected from Favorites</a>
+                                            <a href="#" onclick="removeSelectedFromList(event)" style="color: var(--color-danger);">Remove Selected from List</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="dropdown" style="position: relative; display: inline-block;">
+                                        <button class="btn btn-secondary-outline" onclick="toggleColumnSettingsDropdown(event)" id="btn-column-settings">
+                                            Columns View ▼
+                                        </button>
+                                        <div class="dropdown-content" id="column-settings-dropdown" style="min-width: 250px; padding: 12px; display: none;">
+                                            <h4 style="margin: 0 0 10px 0; font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">CONFIGURE COLUMNS</h4>
+                                            <div id="column-settings-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                                                <!-- Populated dynamically -->
+                                            </div>
+                                            <button class="btn btn-primary btn-block btn-sm" onclick="resetColumnsToDefault()" style="margin-top: 10px; height: 26px; font-size: 10px;">Reset to Defaults</button>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary-outline" onclick="removeDuplicates()">Remove Duplicates</button>
+                                    <button class="btn btn-secondary-outline" onclick="removeDeadStreams()">Remove Dead Streams</button>
+                                    <button class="btn btn-secondary-outline" onclick="removeGeoblockedStreams()">Remove Geo-blocked</button>
+                                    <button class="btn btn-secondary-outline" onclick="saveDatabaseState()">Save Database State</button>
+                                    <button class="btn btn-secondary-outline" onclick="openAddChannelModal()">+ Add Channel</button>
+                                </div>
+
+                                <div class="progress-bar-container" id="stream-check-progress-wrapper" style="display: none;">
+                                    <div class="progress-bar-label" id="stream-check-progress-text">Checking: 0%</div>
+                                    <div class="progress-bar-track">
+                                        <div class="progress-bar-fill" id="stream-check-progress-fill" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div class="channels-count" id="channels-showing-label">Showing 0 of 0 channels</div>
+                            </div>
+
+                            <div class="table-scroll-container">
+                                <table class="channels-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-select"><input type="checkbox" id="header-select-all" onclick="toggleSelectAllChannels(this)"></th>
+                                            <th class="col-fav">⭐</th>
+                                            <th class="col-status">STATUS</th>
+                                            <th class="col-id">ID</th>
+                                            <th class="col-name">CHANNEL NAME</th>
+                                            <th class="col-country">COUNTRY</th>
+                                            <th class="col-category">CATEGORY</th>
+                                            <th class="col-language">LANGUAGE</th>
+                                            <th class="col-actions">ACTIONS</th>
+                                        </tr>
+                                        <tr class="table-filter-row">
+                                            <th></th>
+                                            <th></th>
+                                            <th>
+                                                <select id="col-filter-status" onchange="onColumnFilterChange()" class="table-col-filter">
+                                                    <option value="">All</option>
+                                                    <option value="Working">Working</option>
+                                                    <option value="Slow">Slow</option>
+                                                    <option value="Dead">Dead</option>
+                                                    <option value="Geo-blocked">Geo-blocked</option>
+                                                    <option value="Unknown">Unknown/Unchecked</option>
+                                                </select>
+                                            </th>
+                                            <th><input type="text" id="col-filter-id" oninput="onColumnFilterChange()" class="table-col-filter" placeholder="ID..."></th>
+                                            <th><input type="text" id="col-filter-name" oninput="onColumnFilterChange()" class="table-col-filter" placeholder="Name..."></th>
+                                            <th><input type="text" id="col-filter-country" oninput="onColumnFilterChange()" class="table-col-filter" placeholder="Country..."></th>
+                                            <th><input type="text" id="col-filter-category" oninput="onColumnFilterChange()" class="table-col-filter" placeholder="Category..."></th>
+                                            <th><input type="text" id="col-filter-language" oninput="onColumnFilterChange()" class="table-col-filter" placeholder="Language..."></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="channels-table-body">
+                                        <tr>
+                                            <td colspan="8" class="text-center pad-20">Please load data or file to display channels.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination-bar" id="pagination-bar">
+                                <div class="pagination-info" id="pagination-info">Showing 0-0 of 0 channels</div>
+                                <div class="pagination-buttons">
+                                    <button class="btn btn-secondary-outline btn-sm" id="btn-prev-page" onclick="changePage(-1)">Previous</button>
+                                    <button class="btn btn-secondary-outline btn-sm" id="btn-next-page" onclick="changePage(1)">Next</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Resize Handle -->
+                        <div class="resize-handle" id="resize-handle-right"></div>
+
+                        <!-- Right Panel: Live Inspector -->
+                        <div class="inspector-panel" id="inspector-panel">
+                            <div class="inspector-header">
+                                <h3>Inspector</h3>
+                                <button class="close-inspector-btn" onclick="deselectChannel()">&times;</button>
+                            </div>
+                            <div class="inspector-empty" id="inspector-empty">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                <p>Select a channel from the list to preview stream and review connection metrics.</p>
+                            </div>
+                            <div class="inspector-content" id="inspector-content" style="display: none;">
+                                <!-- Live Stream Player -->
+                                <div class="player-container">
+                                    <video id="live-player" controls autoplay muted playsinline></video>
+                                    <div class="player-overlay" id="player-overlay">
+                                        <div class="spinner"></div>
+                                        <span>Loading stream...</span>
+                                    </div>
+                                    <div class="player-badge">LIVE 4K UHD</div>
+                                </div>
+
+                                <div class="inspector-section">
+                                    <h4>STREAM PROPERTIES</h4>
+                                    <div class="props-list">
+                                        <div class="prop-row">
+                                            <span class="prop-label">Format</span>
+                                            <span class="prop-value" id="prop-format">HLS / m3u8</span>
+                                        </div>
+                                        <div class="prop-row">
+                                            <span class="prop-label">URL</span>
+                                            <span class="prop-value text-ellipsis" id="prop-url" title="">None</span>
+                                        </div>
+                                        <div class="prop-row">
+                                            <span class="prop-label">User-Agent</span>
+                                            <span class="prop-value text-ellipsis" id="prop-ua" title="">None</span>
+                                        </div>
+                                        <div class="prop-row">
+                                            <span class="prop-label">Referer</span>
+                                            <span class="prop-value text-ellipsis" id="prop-referer" title="">None</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="inspector-section">
+                                    <h4>GEO-LOCATION DATA</h4>
+                                    <div class="geo-data-box">
+                                        <div class="geo-map-placeholder">
+                                            <!-- SVG Simulated Map Globe -->
+                                            <svg viewBox="0 0 100 60" class="mini-map">
+                                                <rect width="100%" height="100%" fill="#1a1a1e"/>
+                                                <path d="M15,10 C30,8 45,15 50,25 C55,35 70,40 85,30 C90,26 95,35 80,45 C65,55 40,40 30,50 C20,60 10,45 15,10 Z" fill="#2d2d34" />
+                                                <circle cx="50" cy="25" r="3" fill="#2997FF" class="ping-dot"/>
+                                            </svg>
+                                        </div>
+                                        <div class="geo-details">
+                                            <span class="geo-origin">Originating from <strong id="geo-location-text">New York, USA</strong></span>
+                                            <span class="geo-isp" id="geo-isp-text">ISP: Verizon Business. Data center identified as AWS us-east-1.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="inspector-actions">
+                                    <button class="btn btn-primary btn-block" onclick="copyStreamURL()">Copy Stream URL</button>
+                                    <button class="btn btn-secondary btn-block" id="btn-recheck-stream" onclick="recheckSelectedStream()">
+                                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px; margin-right: 5px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                                        Re-check Stream Status
+                                    </button>
+                                    <button class="btn btn-secondary btn-block" onclick="openEditChannelModal()">
+                                        <svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px; margin-right: 5px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        Edit Channel Details
+                                    </button>
+                                    <button class="btn btn-secondary-outline btn-block" onclick="downloadFragment()">Download Playlist Fragment</button>
+                                    <button class="btn btn-danger-outline btn-block" onclick="flushChannelCache()">Flush Stream Cache</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: LANGUAGES -->
+                <div id="view-languages" class="content-view">
+                    <div class="languages-workspace">
+                        <!-- Left Panel: Regional Filter options -->
+                        <div class="languages-sidebar">
+                            <div class="sidebar-section">
+                                <h4>REGIONAL FILTERS</h4>
+                                <div class="check-options">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="lang-region-global" checked onchange="filterLanguageGrid()">
+                                        <span>Global / All Regions</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="lang-region-indian" onchange="filterLanguageGrid()">
+                                        <span>Indian Subcontinent</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="lang-region-european" onchange="filterLanguageGrid()">
+                                        <span>Europe & Americas</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="lang-region-asian" onchange="filterLanguageGrid()">
+                                        <span>Asia Pacific</span>
+                                    </label>
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="lang-region-african" onchange="filterLanguageGrid()">
+                                        <span>Africa</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <h4>ADVANCED LOGIC</h4>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="lang-primary-only">
+                                    <span>Primary Language Only</span>
+                                </label>
+                                <div class="form-group pad-t-10">
+                                    <label>Proficiency Threshold</label>
+                                    <select class="form-control" id="lang-threshold">
+                                        <option>Native / Primary</option>
+                                        <option>Secondary</option>
+                                        <option>Subtitles Only</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="languages-batch-status" id="languages-batch-status-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                <div>
+                                    <h5>Batch Update</h5>
+                                    <p>Select multiple language cards on the right to perform bulk metadata assignments.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Language Cards Scroll Area -->
+                        <div class="languages-grid-container" id="languages-grid-container">
+                            <!-- Populated dynamically by JS -->
+                            <div class="text-center pad-20">Loading language directories...</div>
+                        </div>
+                    </div>
+
+                    <!-- Sticky Selection Bar -->
+                    <div class="sticky-action-bar" id="languages-selection-bar" style="display: none;">
+                        <div class="selection-info">
+                            <div class="selected-avatars-group" id="selected-langs-avatars">
+                                <!-- Dynamic avatars like: <span class="avatar-sm">HI</span> -->
+                            </div>
+                            <div class="selection-text">
+                                <span class="title" id="selected-langs-count-text">0 Languages Selected</span>
+                                <span class="subtitle" id="selected-langs-streams-text">Affecting 0 channel streams</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary-outline" onclick="clearLanguageSelection()">Discard Selection</button>
+                            <button class="btn btn-secondary" onclick="openLanguageMetadataModal()">Update Language Metadata</button>
+                            <button class="btn btn-primary" onclick="applyLanguageSelectionToPlaylist()">Apply to Playlist</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: EXPORT & SYNC -->
+                <div id="view-export" class="content-view">
+                    <div class="export-container">
+                        <div class="export-card">
+                            <div class="card-header">
+                                <h3>Export Playlist Data</h3>
+                                <p>Save your filtered, verified streams as standard playlists for media players.</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label>EXPORT FORMAT</label>
+                                <div class="format-toggle-group">
+                                    <label class="format-option">
+                                        <input type="radio" name="export-format" value="m3u" checked>
+                                        <div class="option-box">
+                                            <strong>M3U / M3U8</strong>
+                                            <span>Standard IPTV format (VLC, Kodi, GSE)</span>
+                                        </div>
+                                    </label>
+                                    <label class="format-option">
+                                        <input type="radio" name="export-format" value="json">
+                                        <div class="option-box">
+                                            <strong>JSON File</strong>
+                                            <span>Full channel metadata structure</span>
+                                        </div>
+                                    </label>
+                                    <label class="format-option">
+                                        <input type="radio" name="export-format" value="csv">
+                                        <div class="option-box">
+                                            <strong>CSV Spreadsheet</strong>
+                                            <span>Tabular format for Excel analysis</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>LOCAL EXPORT PATH (OPTIONAL)</label>
+                                <input type="text" id="export-filepath" class="form-control" placeholder="C:\Users\...\Desktop\filtered_playlist.m3u">
+                                <span class="input-help">If empty, the playlist will download directly through the web browser.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="export-append">
+                                    <span>Append to existing file (only applicable for M3U playlists)</span>
+                                </label>
+                            </div>
+
+                            <div class="export-summary-box">
+                                <h4>EXPORT TARGET SUMMARY</h4>
+                                <div class="summary-details">
+                                    <div class="detail-col">
+                                        <span>Total Streams</span>
+                                        <strong id="export-total-streams">0</strong>
+                                    </div>
+                                    <div class="detail-col">
+                                        <span>NSFW Filters</span>
+                                        <strong id="export-nsfw-status">Excluded</strong>
+                                    </div>
+                                    <div class="detail-col">
+                                        <span>Offline Streams</span>
+                                        <strong id="export-offline-status">Cleaned</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="export-actions">
+                                <button class="btn btn-primary" onclick="exportPlaylistFile()">Export & Save Playlist</button>
+                                <button class="btn btn-secondary-outline" onclick="downloadPlaylistDirect()">Download Directly in Browser</button>
+                            </div>
+
+                            <div class="export-section" style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                                <h3>GitHub Actions Upstream Sync</h3>
+                                <p class="desc" style="margin-top: 8px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+                                    Save your selected channels to the repository configuration (`custom/selected-channels.txt`) so they are automatically kept up-to-date and tested by the GitHub Actions workflow.
+                                </p>
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <button class="btn btn-primary" onclick="saveSelectedForAutoUpdate(event)">Save Selected to Config</button>
+                                    <button class="btn btn-secondary-outline" onclick="loadSelectedFromConfig(event)">Load Selection from Config</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 5: SETTINGS -->
+                <div id="view-settings" class="content-view">
+                    <div class="settings-container">
+                        <div class="settings-card">
+                            <div class="settings-section">
+                                <h3>Preferences</h3>
+                                <div class="form-group pad-t-15">
+                                    <label>APPLICATION THEME</label>
+                                    <div class="theme-toggles">
+                                        <button class="btn btn-secondary active" id="theme-btn-dark" onclick="setTheme('dark')">Dark Theme</button>
+                                        <button class="btn btn-secondary" id="theme-btn-light" onclick="setTheme('light')">Light Theme</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>API & Cache Management</h3>
+                                <div class="form-group pad-t-15">
+                                    <label>DEFAULT IPTV-ORG API BASE URL</label>
+                                    <div class="input-btn-group" style="display: flex;">
+                                        <input type="text" id="settings-api-url" class="form-control" placeholder="https://iptv-org.github.io/api" style="flex: 1; margin-right: 10px;">
+                                        <button class="btn btn-primary" onclick="saveApiUrlSettings()">Save API URL</button>
+                                    </div>
+                                </div>
+                                <div class="form-group pad-t-15">
+                                    <label>CACHE DURABILITY</label>
+                                    <select id="settings-cache-expiry" class="form-control" onchange="savePerformanceSettings()">
+                                        <option value="24">24 Hours (Recommended)</option>
+                                        <option value="12">12 Hours</option>
+                                        <option value="2">2 Hours</option>
+                                        <option value="0">Disable Cache (Force Refresh)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-danger-outline" onclick="clearLocalCache()">Flush Local Cache</button>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>System Performance & Limits</h3>
+                                <div class="form-group pad-t-15">
+                                    <label>CHANNEL LIMIT FOR VIEW / RENDER</label>
+                                    <select id="settings-channel-limit" class="form-control" onchange="savePerformanceSettings()">
+                                        <option value="5000">5,000 Channels</option>
+                                        <option value="10000">10,000 Channels (Recommended)</option>
+                                        <option value="20000">20,000 Channels</option>
+                                        <option value="50000">50,000 Channels</option>
+                                        <option value="0">Unlimited (Show All)</option>
+                                    </select>
+                                    <span class="input-help">Capping the channels list improves network payload size and client-side rendering speed.</span>
+                                </div>
+                                <div class="form-group pad-t-15">
+                                    <label>ITEMS PER PAGE IN CHANNELS VIEW</label>
+                                    <select id="settings-items-per-page" class="form-control" onchange="savePerformanceSettings()">
+                                        <option value="50">50 Channels</option>
+                                        <option value="100">100 Channels (Default)</option>
+                                        <option value="200">200 Channels</option>
+                                        <option value="500">500 Channels</option>
+                                    </select>
+                                    <span class="input-help">Configure pagination size. Lower values render much faster.</span>
+                                </div>
+                                <div class="form-group pad-t-15">
+                                    <label>STREAM CHECK PARALLEL THREADS</label>
+                                    <select id="settings-check-threads" class="form-control" onchange="savePerformanceSettings()">
+                                        <option value="50">50 Threads</option>
+                                        <option value="100">100 Threads</option>
+                                        <option value="150">150 Threads (Recommended)</option>
+                                        <option value="200">200 Threads</option>
+                                        <option value="300">300 Threads</option>
+                                    </select>
+                                    <span class="input-help">Higher thread count speeds up verification but increases CPU usage and connection timeouts.</span>
+                                </div>
+                                <div class="form-group pad-t-15">
+                                    <label>STREAM CHECK TIMEOUT (SECONDS)</label>
+                                    <select id="settings-check-timeout" class="form-control" onchange="savePerformanceSettings()">
+                                        <option value="2">2 Seconds</option>
+                                        <option value="3">3 Seconds (Recommended)</option>
+                                        <option value="5">5 Seconds</option>
+                                        <option value="10">10 Seconds</option>
+                                    </select>
+                                    <span class="input-help">Timeout for checking if a stream is active. Lower timeout is faster but might flag slow working streams as dead.</span>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>Manage IPTV Playlists & Sources</h3>
+                                <div class="form-group pad-t-15">
+                                    <label>AVAILABLE PLAYLISTS</label>
+                                    <div style="overflow-x: auto; margin-top: 8px;">
+                                        <table class="channels-table" style="min-width: 100%; font-size: 12px; background: rgba(255,255,255,0.02);">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>URL / File Path</th>
+                                                    <th style="width: 80px; text-align: center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="settings-playlists-list">
+                                                <tr>
+                                                    <td colspan="4" class="text-center">Loading playlists...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="form-group pad-t-15" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <label style="margin:0; font-weight:600;">ADD NEW IPTV SOURCE / PLAYLIST</label>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn btn-secondary-outline btn-sm" onclick="exportPlaylistsSettings()" style="height: 25px; padding: 0 8px; font-size: 10.5px;">Export Playlists JSON</button>
+                                            <button class="btn btn-secondary-outline btn-sm" onclick="triggerImportSources()" style="height: 25px; padding: 0 8px; font-size: 10.5px;">Import Playlists JSON</button>
+                                            <input type="file" id="import-sources-file" style="display:none;" accept=".json" onchange="importPlaylistsSettings(this)">
+                                        </div>
+                                    </div>
+                                    <div class="add-playlist-grid" style="display: grid; grid-template-columns: 2fr 1.2fr 3.5fr auto; gap: 10px; margin-top: 8px; align-items: end;">
+                                        <div class="form-group" style="margin:0;">
+                                            <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">Name (Optional for files) *</label>
+                                            <input type="text" id="new-playlist-name" class="form-control" placeholder="e.g. My Custom List">
+                                        </div>
+                                        <div class="form-group" style="margin:0;">
+                                            <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">Type *</label>
+                                            <select id="new-playlist-type" class="form-control" style="background: rgba(0,0,0,0.3); color:#fff; border: 1px solid rgba(255,255,255,0.1); height: 38px; border-radius: 6px;" onchange="onPlaylistTypeChanged(this.value)">
+                                                <option value="url">M3U URL(s)</option>
+                                                <option value="file">Local File(s)</option>
+                                                <option value="api">IPTV-org API</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" style="margin:0;" id="new-playlist-url-container">
+                                            <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">URL(s) *</label>
+                                            <input type="text" id="new-playlist-url" class="form-control" placeholder="https://.../list.m3u (comma/newline separated for multiple)">
+                                        </div>
+                                        <div class="form-group" style="margin:0; display:none;" id="new-playlist-file-container">
+                                            <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">Choose M3U File(s) *</label>
+                                            <input type="file" id="new-playlist-files" class="form-control" accept=".m3u,.m3u8" multiple style="background: transparent; border: none; padding: 4px 0; color: #fff;">
+                                        </div>
+                                        <button class="btn btn-primary" onclick="addCustomPlaylist()" style="height: 38px; white-space: nowrap;">+ Add Source(s)</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>About IPTV Filter Pro</h3>
+                                <div class="about-box">
+                                    <strong>IPTV Filter Pro v1.5.0 (StreamControl Console)</strong>
+                                    <p>A high-performance local console developed to index, clean, filter, and stream-check IPTV links using the iptv-org open directories. Re-engineered with thread pools and HLS rendering engines.</p>
+                                    <span class="copyright">&copy; 2026 Developer Console. All rights reserved.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VIEW 6: PLAYLISTS MANAGER -->
+                <div id="view-playlists" class="content-view">
+                    <div class="playlists-container" style="display: flex; flex-direction: column; gap: 20px; padding: 24px;">
+                        <div class="dashboard-header" style="margin-bottom: 0;">
+                            <h2>Manage IPTV Playlists</h2>
+                            <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Organize, download, export, and load your custom stream directories.</p>
+                        </div>
+                        
+                        <div class="playlists-grid" id="playlists-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                            <!-- Dynamically populated card blocks -->
+                        </div>
+                        
+                        <!-- Quick Create/Import playlist card inside Playlists section -->
+                        <div class="dashboard-panel" style="margin-top: 10px;">
+                            <div class="panel-header">
+                                <h3>Create or Import M3U Playlist</h3>
+                            </div>
+                            <div class="add-playlist-grid" style="display: grid; grid-template-columns: 2fr 1.2fr 3.5fr auto; gap: 12px; align-items: end; padding: 15px; background: rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid var(--border-color);">
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">Playlist Name</label>
+                                    <input type="text" id="playlists-view-new-name" class="form-control" placeholder="e.g. My Favorites List">
+                                </div>
+                                <div class="form-group" style="margin:0;">
+                                    <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">Type</label>
+                                    <select id="playlists-view-new-type" class="form-control" style="background: rgba(0,0,0,0.3); color:#fff; border: 1px solid rgba(255,255,255,0.1); height: 38px; border-radius: 6px;" onchange="onPlaylistsViewTypeChanged(this.value)">
+                                        <option value="url">M3U URL(s)</option>
+                                        <option value="file">Local File(s)</option>
+                                        <option value="api">IPTV-org API</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin:0;" id="playlists-view-url-container">
+                                    <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">URL(s)</label>
+                                    <input type="text" id="playlists-view-new-url" class="form-control" placeholder="https://.../list.m3u">
+                                </div>
+                                <div class="form-group" style="margin:0; display:none;" id="playlists-view-file-container">
+                                    <label style="font-size:10px; opacity:0.8; margin-bottom: 4px;">Choose M3U File(s)</label>
+                                    <input type="file" id="playlists-view-new-files" class="form-control" accept=".m3u,.m3u8" multiple style="background: transparent; border: none; padding: 4px 0; color: #fff;">
+                                </div>
+                                <button class="btn btn-primary" onclick="addPlaylistsViewPlaylist()" style="height: 38px; white-space: nowrap;">+ Add Playlist</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Channel Modal -->
+    <div class="modal-overlay" id="channel-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Add New Channel</h3>
+                <button class="close-modal-btn" onclick="closeChannelModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal-channel-id">
+                <div class="form-group">
+                    <label>Channel Name *</label>
+                    <input type="text" id="modal-name" class="form-control" placeholder="e.g. HBO HD">
+                </div>
+                <div class="form-group pad-t-10">
+                    <label>Stream URL *</label>
+                    <input type="text" id="modal-url" class="form-control" placeholder="e.g. http://.../live.m3u8">
+                </div>
+                <div class="form-group pad-t-10">
+                    <label>User-Agent Header (Optional)</label>
+                    <input type="text" id="modal-ua" class="form-control" placeholder="e.g. VLC/3.0.0">
+                </div>
+                <div class="form-group pad-t-10">
+                    <label>Referer Header (Optional)</label>
+                    <input type="text" id="modal-referer" class="form-control" placeholder="e.g. http://.../">
+                </div>
+                <div class="form-group pad-t-10">
+                    <label>Country Code (Optional)</label>
+                    <input type="text" id="modal-country" class="form-control" placeholder="e.g. US">
+                </div>
+                <div class="form-group pad-t-10">
+                    <label>Categories (Comma separated, optional)</label>
+                    <input type="text" id="modal-categories" class="form-control" placeholder="e.g. entertainment, movies">
+                </div>
+                <div class="form-group pad-t-10">
+                    <label>Languages (Comma separated, optional)</label>
+                    <input type="text" id="modal-languages" class="form-control" placeholder="e.g. English, French">
+                </div>
+                <div class="form-group pad-t-10" style="margin-top: 8px;">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="modal-nsfw">
+                        <span>NSFW Content</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary-outline" onclick="closeChannelModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveChannelModal()">Save Channel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Entry Point -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+requests>=2.28.0
+typing-extensions
+python-dateutil
+flask
+psutil>=5.9.0

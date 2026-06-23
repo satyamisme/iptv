@@ -1,0 +1,62 @@
+{
+  "theme": "dark",
+  "last_loaded_file": "",
+  "api_url": "https://iptv-org.github.io/api",
+  "channel_limit": 0,
+  "stream_check_threads": 300,
+  "stream_check_timeout": 10,
+  "cache_expiry_hours": 24,
+  "custom_playlists": [
+    {
+      "name": "iptv-org (Official API)",
+      "type": "api",
+      "url": "https://iptv-org.github.io/api"
+    },
+    {
+      "name": "iptv-org (Index Playlist)",
+      "type": "url",
+      "url": "https://iptv-org.github.io/iptv/index.m3u"
+    },
+    {
+      "name": "iptv-org (Index NSFW)",
+      "type": "url",
+      "url": "https://iptv-org.github.io/iptv/index.nsfw.m3u"
+    },
+    {
+      "name": "iptv-org (Country-grouped)",
+      "type": "url",
+      "url": "https://iptv-org.github.io/iptv/index.country.m3u"
+    },
+    {
+      "name": "iptv-org (Language-grouped)",
+      "type": "url",
+      "url": "https://iptv-org.github.io/iptv/index.language.m3u"
+    },
+    {
+      "name": "iptv-org (Category-grouped)",
+      "type": "url",
+      "url": "https://iptv-org.github.io/iptv/index.category.m3u"
+    },
+    {
+      "name": "Kids",
+      "type": "file",
+      "url": "cache\\playlists\\kids_1781773013.m3u"
+    },
+    {
+      "name": "kidsss",
+      "type": "file",
+      "url": "cache\\playlists\\kidsss_1781773675.m3u"
+    },
+    {
+      "name": "all",
+      "type": "file",
+      "url": "cache\\playlists\\all_1781774031.m3u"
+    },
+    {
+      "name": "iptv",
+      "type": "file",
+      "url": "cache\\playlists\\iptv_1781775013.m3u"
+    }
+  ],
+  "items_per_page": 500
+}

@@ -1,0 +1,93 @@
+name: Sync and Generate Custom Playlist
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Run hourly to catch upstream updates
+  workflow_dispatch: # Allow manual triggers from the Actions tab
+  push:
+    branches:
+      - master
+    paths:
+      - 'custom/**' # Re-generate if selected channels are updated
+
+permissions:
+  contents: write # Needed to push changes to master and the release branch
+
+jobs:
+  sync-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history and branches
+
+      - name: Sync with Upstream parent
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Add the parent repo as upstream
+          git remote add upstream https://github.com/iptv-org/iptv.git || true
+          git fetch upstream master
+          
+          # Merge changes from upstream master into local master
+          # Using --allow-unrelated-histories just in case, and auto-merging changes
+          git merge upstream/master -m "Merge upstream changes [skip ci]" --allow-unrelated-histories || echo "No changes to sync or merge conflict handled"
+          
+          # Push synced master branch back to fork
+          git push origin master || echo "Nothing to push or push failed"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Custom Playlist & Test Statuses
+        run: npx tsx custom/generate.ts
+
+      - name: Deploy Custom Playlist and Status to Release Branch
+        run: |
+          # Copy generated playlist and status files to temp location
+          cp custom/custom.m3u /tmp/custom.m3u
+          cp custom/status.md /tmp/status.md || echo "No status.md"
+          cp custom/status.json /tmp/status.json || echo "No status.json"
+          
+          # Switch to a fresh orphan release branch
+          git checkout --orphan release
+          
+          # Remove all other repository files from this branch
+          git rm -rf .
+          
+          # Copy the playlist, status, and create a README
+          cp /tmp/custom.m3u custom.m3u
+          cp /tmp/status.md status.md || echo "No status.md to copy"
+          cp /tmp/status.json status.json || echo "No status.json to copy"
+          
+          echo "# Custom IPTV Playlist & Status" > README.md
+          echo "" >> README.md
+          echo "This branch hosts your custom filtered IPTV playlist, auto-updated from upstream." >> README.md
+          echo "" >> README.md
+          echo "## IPTV M3U Link" >> README.md
+          echo "Use this URL in your IPTV player (e.g. VLC, Tivimate, IPTV Smarters):" >> README.md
+          echo "\`\`\`text" >> README.md
+          echo "https://raw.githubusercontent.com/${{ github.repository }}/release/custom.m3u" >> README.md
+          echo "\`\`\`" >> README.md
+          echo "" >> README.md
+          echo "## Live Streams Status Report" >> README.md
+          echo "View the real-time status of your streams here: [status.md](status.md)" >> README.md
+          echo "" >> README.md
+          echo "JSON stats endpoint:" >> README.md
+          echo "\`\`\`text" >> README.md
+          echo "https://raw.githubusercontent.com/${{ github.repository }}/release/status.json" >> README.md
+          echo "\`\`\`" >> README.md
+          
+          # Commit and force-push to origin/release
+          git add custom.m3u status.md status.json README.md
+          git commit -m "Deploy custom playlist and status [skip ci]"
+          git push origin release --force

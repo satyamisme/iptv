@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Ajman TV",
+    "id": "AjmanTV.ae@SD",
+    "tvg_id": "AjmanTV.ae@SD",
+    "url": "https://cdn1.logichost.in/ajmantv/live/playlist.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:11.274Z"
+  },
+  {
+    "name": "Al Arabiya",
+    "id": "Alarabiya.ae@SD",
+    "tvg_id": "Alarabiya.ae@SD",
+    "url": "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.178Z"
+  },
+  {
+    "name": "Al Arabiya",
+    "id": "Alarabiya.ae@SD",
+    "tvg_id": "Alarabiya.ae@SD",
+    "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/al-arabiya/master.m3u8?ads.vf=5D6eIL8_jay",
+    "status": "HTTP_504_GATEWAY_TIME-OUT",
+    "working": false,
+    "checked_at": "2026-06-23T09:02:10.608Z"
+  },
+  {
+    "name": "Alarabiya",
+    "id": "Alarabiya.ae@SD",
+    "tvg_id": "Alarabiya.ae@SD",
+    "url": "http://185.9.2.18/chid_146/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:09.401Z"
+  },
+  {
+    "name": "Alarabiya",
+    "id": "Alarabiya.ae@SD",
+    "tvg_id": "Alarabiya.ae@SD",
+    "url": "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/alarabiapublish/alarabiya_1080p/chunks.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:09.704Z"
+  },
+  {
+    "name": "Alarabiya",
+    "id": "Alarabiya.ae@SD",
+    "tvg_id": "Alarabiya.ae@SD",
+    "url": "https://shd-gcp-live.edgenextcdn.net/live/bitmovin-alarabiya/7f90de73d777d04f3dada92f90d35c44/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:09.776Z"
+  },
+  {
+    "name": "Peace TV Bangla",
+    "id": "PeaceTVBangla.ae@SD",
+    "tvg_id": "PeaceTVBangla.ae@SD",
+    "url": "https://dzkyvlfyge.erbvr.com/PeaceTvBangla/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:11.037Z"
+  },
+  {
+    "name": "Peace TV Chinese",
+    "id": "PeaceTVChinese.ae@SD",
+    "tvg_id": "PeaceTVChinese.ae@SD",
+    "url": "https://dzkyvlfyge.erbvr.com/PeaceTvChinese/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.912Z"
+  },
+  {
+    "name": "Peace TV English",
+    "id": "PeaceTVEnglish.ae@SD",
+    "tvg_id": "PeaceTVEnglish.ae@SD",
+    "url": "https://dzkyvlfyge.erbvr.com/PeaceTvEnglish/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.893Z"
+  },
+  {
+    "name": "Peace TV Urdu",
+    "id": "PeaceTVUrdu.ae@SD",
+    "tvg_id": "PeaceTVUrdu.ae@SD",
+    "url": "https://dzkyvlfyge.erbvr.com/PeaceTvUrdu/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.961Z"
+  },
+  {
+    "name": "Sky News",
+    "id": "SkyNews.ie@SD",
+    "tvg_id": "SkyNews.ie@SD",
+    "url": "https://jmp2.uk/plu-55b285cd2665de274553d66f.m3u8",
+    "status": "HTTP_400_BAD_REQUEST",
+    "working": false,
+    "checked_at": "2026-06-23T09:02:11.509Z"
+  },
+  {
+    "name": "Sky News Arabia",
+    "id": "SkyNewsArabia.ae@SD",
+    "tvg_id": "SkyNewsArabia.ae@SD",
+    "url": "https://stream.skynewsarabia.com/ott/ott.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.376Z"
+  },
+  {
+    "name": "Sky News Arabia",
+    "id": "SkyNewsArabia.ae@SD",
+    "tvg_id": "SkyNewsArabia.ae@SD",
+    "url": "https://stream.skynewsarabia.com/hls/sna.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.394Z"
+  },
+  {
+    "name": "Sky News Arabia",
+    "id": "SkyNewsArabia.ae@HD",
+    "tvg_id": "SkyNewsArabia.ae@HD",
+    "url": "https://live-stream.skynewsarabia.com/c-horizontal-channel/horizontal-stream/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:10.874Z"
+  },
+  {
+    "name": "Sky News Arabia (Portrait)",
+    "id": "SkyNewsArabiaVertical.ae@SD",
+    "tvg_id": "SkyNewsArabiaVertical.ae@SD",
+    "url": "https://stream.skynewsarabia.com/vertical/vertical.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:11.068Z"
+  },
+  {
+    "name": "Sky News Arabia Vertical",
+    "id": "SkyNewsArabiaVertical.ae@HD",
+    "tvg_id": "SkyNewsArabiaVertical.ae@HD",
+    "url": "https://live-stream.skynewsarabia.com/c-vertical-channel/vertical-stream/index.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:11.003Z"
+  },
+  {
+    "name": "Sky News Extra 1",
+    "id": "SkyNewsExtra1.au@SD",
+    "tvg_id": "SkyNewsExtra1.au@SD",
+    "url": "https://skynewsau-live.akamaized.net/hls/live/2002689/skynewsau-extra1/master.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:11.759Z"
+  },
+  {
+    "name": "Sky News Extra 2",
+    "id": "SkyNewsExtra2.au@SD",
+    "tvg_id": "SkyNewsExtra2.au@SD",
+    "url": "https://skynewsau-live.akamaized.net/hls/live/2002690/skynewsau-extra2/master.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:12.102Z"
+  },
+  {
+    "name": "Sky News Extra 3",
+    "id": "SkyNewsExtra3.au@SD",
+    "tvg_id": "SkyNewsExtra3.au@SD",
+    "url": "https://skynewsau-live.akamaized.net/hls/live/2002691/skynewsau-extra3/master.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:12.138Z"
+  },
+  {
+    "name": "Sky News Weather",
+    "id": "SkyNewsWeather.uk@SD",
+    "tvg_id": "SkyNewsWeather.uk@SD",
+    "url": "https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8",
+    "status": "OK",
+    "working": true,
+    "checked_at": "2026-06-23T09:02:11.781Z"
+  }
+]
