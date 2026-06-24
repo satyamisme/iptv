@@ -91,3 +91,67 @@ jobs:
           git add custom.m3u status.md status.json README.md
           git commit -m "Deploy custom playlist and status [skip ci]"
           git push origin release --force
+
+      - name: Generate Release Notes & Details
+        id: release-info
+        run: |
+          # Calculate stats from status.json
+          STATS=$(node -e '
+            const fs = require("fs");
+            const filePath = "status.json";
+            if (!fs.existsSync(filePath)) {
+              console.log("total=0\nworking=0\nbroken=0");
+              process.exit(0);
+            }
+            const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+            const total = data.length;
+            const working = data.filter(s => s.working).length;
+            const broken = total - working;
+            console.log(`total=${total}\nworking=${working}\nbroken=${broken}`);
+          ')
+          echo "$STATS" >> $GITHUB_ENV
+          echo "date=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
+
+      - name: Create Release Notes File
+        run: |
+          cat << 'EOF' > /tmp/release_notes.md
+          # 📺 Custom IPTV Playlist Update
+
+          Your custom IPTV playlist has been successfully generated and tested.
+
+          ## 🔗 Playlist Links
+          *   **M3U Playlist URL (Direct Link):**
+              `https://raw.githubusercontent.com/${{ github.repository }}/release/custom.m3u`
+          *   **M3U Playlist (Release Asset Link):**
+              `https://github.com/${{ github.repository }}/releases/download/latest/custom.m3u`
+
+          ## 📊 Stream Status Info
+          *   **Status Report:** [status.md](https://raw.githubusercontent.com/${{ github.repository }}/release/status.md) (or download asset [status.md](https://github.com/${{ github.repository }}/releases/download/latest/status.md))
+          *   **JSON Stats Endpoint:** `https://raw.githubusercontent.com/${{ github.repository }}/release/status.json` (or download asset [status.json](https://github.com/${{ github.repository }}/releases/download/latest/status.json))
+
+          ### 📈 Stats Summary
+          *   **Total Selected Channels:** ${{ env.total }}
+          *   **Working Streams:** ✅ ${{ env.working }}
+          *   **Broken Streams:** ❌ ${{ env.broken }}
+          *   **Last Updated:** ${{ env.date }}
+          EOF
+
+      - name: Create or Update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Delete the release and the git tag if they exist
+          gh release delete latest --yes --cleanup-tag || true
+          
+          # Wait a moment for deletion to propagate
+          sleep 2
+          
+          # Create new release targeting the release branch and upload the files at the root
+          gh release create latest \
+            --title "Custom IPTV Playlist (Latest)" \
+            --notes-file /tmp/release_notes.md \
+            --target release \
+            custom.m3u \
+            status.md \
+            status.json
+
