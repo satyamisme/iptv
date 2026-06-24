@@ -49,6 +49,8 @@ let selectedLanguages = []; // For the Languages tab bulk updates
 let currentLayout = 'table'; // 'table' or 'grid'
 let presets = {}; // Globally stored filter presets
 let selectedChannelIds = new Set(); // Globally tracked selected channels
+let excludedChannelIds = new Set(); // Globally tracked excluded channels
+
 
 
 // Player State
@@ -1010,14 +1012,22 @@ function renderChannelsList() {
             tr.id = `ch-row-${ch.id}`;
             if (selectedChannel && selectedChannel.id === ch.id) tr.className = 'active-row';
             
+            const isExcluded = excludedChannelIds.has(ch.id);
+            if (isExcluded) tr.classList.add('excluded-row');
+            
             const isFavClass = ch.is_favorite ? 'active' : '';
             const statusClass = getStatusClass(ch.status_text);
             const isChecked = selectedChannelIds.has(ch.id) ? 'checked' : '';
             
             let cellsHtml = `
-                <td class="col-select" onclick="event.stopPropagation()"><input type="checkbox" class="row-select-checkbox" data-id="${ch.id}" ${isChecked} onchange="toggleChannelSelection('${ch.id}', this.checked)"></td>
+
+                <td class="col-select" onclick="event.stopPropagation()">
+                    <input type="checkbox" class="row-select-checkbox" data-id="${ch.id}" ${isChecked} onchange="toggleChannelSelection('${ch.id}', this.checked)">
+                    <button class="exclude-btn-ch ${isExcluded ? 'active' : ''}" data-id="${ch.id}" title="Always Exclude Channel" onclick="toggleChannelExclusion('${ch.id}', event)">🚫</button>
+                </td>
                 <td class="col-fav"><span class="fav-star ${isFavClass}" onclick="toggleFavorite('${ch.id}', event)">★</span></td>
             `;
+
 
             tableColumns.forEach(col => {
                 if (!col.visible) return;
@@ -1075,8 +1085,10 @@ function renderChannelsList() {
         
         pageItems.forEach(ch => {
             const card = document.createElement('div');
-            card.className = `channel-card ${selectedChannel && selectedChannel.id === ch.id ? 'active-card' : ''}`;
+            const isExcluded = excludedChannelIds.has(ch.id);
+            card.className = `channel-card ${selectedChannel && selectedChannel.id === ch.id ? 'active-card' : ''} ${isExcluded ? 'excluded-card' : ''}`;
             card.id = `ch-card-${ch.id}`;
+
             
             const isFavClass = ch.is_favorite ? 'active' : '';
             const statusClass = getStatusClass(ch.status_text);
@@ -1087,9 +1099,11 @@ function renderChannelsList() {
                     <label class="custom-checkbox" style="margin: 0;" onclick="event.stopPropagation()">
                         <input type="checkbox" class="grid-select-checkbox" data-id="${ch.id}" ${isChecked} onchange="toggleChannelSelection('${ch.id}', this.checked)">
                     </label>
+                    <button class="exclude-btn-ch ${isExcluded ? 'active' : ''}" data-id="${ch.id}" title="Always Exclude Channel" onclick="toggleChannelExclusion('${ch.id}', event)">🚫</button>
                     <span class="status-badge ${statusClass}">${ch.status_icon} ${ch.status_text}</span>
                     <span class="fav-star ${isFavClass}" onclick="toggleFavorite('${ch.id}', event)">★</span>
                 </div>
+
                 <div class="channel-card-name">${ch.name}</div>
                 <div class="channel-card-details">
                     <span><strong>Group:</strong> ${(ch.categories || [])[0] || 'Uncategorized'}</span>
@@ -2392,6 +2406,18 @@ document.addEventListener('click', (e) => {
 function toggleChannelSelection(chId, checked) {
     if (checked) {
         selectedChannelIds.add(chId);
+        // If it was excluded, remove it from exclusions
+        if (excludedChannelIds.has(chId)) {
+            excludedChannelIds.delete(chId);
+            // Sync exclude button UI
+            document.querySelectorAll(`.exclude-btn-ch[data-id="${chId}"]`).forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const tr = document.getElementById(`ch-row-${chId}`);
+            if (tr) tr.classList.remove('excluded-row');
+            const card = document.getElementById(`ch-card-${chId}`);
+            if (card) card.classList.remove('excluded-card');
+        }
     } else {
         selectedChannelIds.delete(chId);
     }
@@ -2411,6 +2437,99 @@ function toggleChannelSelection(chId, checked) {
         headerCheck.checked = allChecked;
     }
 }
+
+function toggleChannelExclusion(chId, event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
+    const currentlyExcluded = excludedChannelIds.has(chId);
+    if (!currentlyExcluded) {
+        excludedChannelIds.add(chId);
+        // If it was selected/included, remove it
+        if (selectedChannelIds.has(chId)) {
+            selectedChannelIds.delete(chId);
+            // Sync include checkbox UI
+            document.querySelectorAll(`.row-select-checkbox[data-id="${chId}"], .grid-select-checkbox[data-id="${chId}"]`).forEach(cb => {
+                cb.checked = false;
+            });
+        }
+    } else {
+        excludedChannelIds.delete(chId);
+    }
+    
+    // Sync exclude button UI
+    document.querySelectorAll(`.exclude-btn-ch[data-id="${chId}"]`).forEach(btn => {
+        if (!currentlyExcluded) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Refresh table row and grid card styling
+    const tr = document.getElementById(`ch-row-${chId}`);
+    if (tr) {
+        if (!currentlyExcluded) {
+            tr.classList.add('excluded-row');
+        } else {
+            tr.classList.remove('excluded-row');
+        }
+    }
+    const card = document.getElementById(`ch-card-${chId}`);
+    if (card) {
+        if (!currentlyExcluded) {
+            card.classList.add('excluded-card');
+        } else {
+            card.classList.remove('excluded-card');
+        }
+    }
+    
+    updateCheckSelectedButtonState();
+}
+
+function bulkExcludeSelectedChannels(event) {
+    if (event) event.preventDefault();
+    if (selectedChannelIds.size === 0) {
+        return alert('Please select/check at least one channel in the table/grid first to bulk exclude.');
+    }
+    
+    const list = Array.from(selectedChannelIds);
+    if (!confirm(`Are you sure you want to bulk-exclude the ${list.length} currently selected channels?`)) {
+        return;
+    }
+    
+    list.forEach(chId => {
+        // Exclude the channel and deselect it
+        excludedChannelIds.add(chId);
+        selectedChannelIds.delete(chId);
+        
+        // Sync checkboxes
+        document.querySelectorAll(`.row-select-checkbox[data-id="${chId}"], .grid-select-checkbox[data-id="${chId}"]`).forEach(cb => {
+            cb.checked = false;
+        });
+        
+        // Sync exclude buttons
+        document.querySelectorAll(`.exclude-btn-ch[data-id="${chId}"]`).forEach(btn => {
+            btn.classList.add('active');
+        });
+        
+        // Sync row & card classes
+        const tr = document.getElementById(`ch-row-${chId}`);
+        if (tr) tr.classList.add('excluded-row');
+        const card = document.getElementById(`ch-card-${chId}`);
+        if (card) card.classList.add('excluded-card');
+    });
+    
+    // Reset header checkbox
+    const headerCheck = document.getElementById('header-select-all');
+    if (headerCheck) headerCheck.checked = false;
+    
+    updateCheckSelectedButtonState();
+    alert(`Bulk excluded ${list.length} channels! Remember to click "Save Selected to Config" to persist your changes.`);
+}
+
 
 function updateCheckSelectedButtonState() {
     const btn = document.getElementById('btn-check-selected');
@@ -3594,21 +3713,56 @@ function loadSelectedFromConfig(event) {
     fetch('/api/custom/selected')
         .then(res => res.json())
         .then(data => {
+            selectedChannelIds.clear();
+            excludedChannelIds.clear();
+            
             if (data.matched_ids && data.matched_ids.length > 0) {
-                selectedChannelIds.clear();
                 data.matched_ids.forEach(id => selectedChannelIds.add(id));
-                updateCheckSelectedButtonState();
-                
-                // Ensure preserve-selection is checked so filter doesn't clear them
-                const preserveSel = document.getElementById('preserve-selection');
-                if (preserveSel) preserveSel.checked = true;
-                
-                // Re-trigger filter to render selected channels if appropriate
-                triggerFilter();
-                
-                if (event) alert(`Successfully loaded ${data.matched_ids.length} selected channels from config!`);
-            } else {
-                if (event) alert('No matched channels found in selected-channels.txt config.');
+            }
+            if (data.excluded_ids && data.excluded_ids.length > 0) {
+                data.excluded_ids.forEach(id => excludedChannelIds.add(id));
+            }
+            
+            updateCheckSelectedButtonState();
+            
+            // Populating settings fields from config
+            const config = data.config || {};
+            const excludeGlobalInput = document.getElementById('sync-exclude-global');
+            if (excludeGlobalInput) {
+                excludeGlobalInput.checked = !!config.excludeGlobal;
+            }
+            const langOrderInput = document.getElementById('sync-languages-order');
+            if (langOrderInput) {
+                langOrderInput.value = (config.preferredLanguages || []).join(', ');
+            }
+            const catOrderInput = document.getElementById('sync-categories-order');
+            if (catOrderInput) {
+                catOrderInput.value = (config.categoryOrder || []).join(', ');
+            }
+            const excludeLangsInput = document.getElementById('sync-exclude-languages');
+            if (excludeLangsInput) {
+                excludeLangsInput.value = (config.excludeLanguages || []).join(', ');
+            }
+            const excludeCountriesInput = document.getElementById('sync-exclude-countries');
+            if (excludeCountriesInput) {
+                excludeCountriesInput.value = (config.excludeCountries || []).join(', ');
+            }
+            const excludeChannelsInput = document.getElementById('sync-exclude-channels-input');
+            if (excludeChannelsInput) {
+                excludeChannelsInput.value = (config.excludeChannels || []).join('\n');
+            }
+
+            // Ensure preserve-selection is checked so filter doesn't clear them
+            const preserveSel = document.getElementById('preserve-selection');
+            if (preserveSel) preserveSel.checked = true;
+            
+            // Re-trigger filter to render selected channels if appropriate
+            triggerFilter();
+            
+            if (event) {
+                const totalSelect = selectedChannelIds.size;
+                const totalExclude = excludedChannelIds.size;
+                alert(`Successfully loaded ${totalSelect} selected and ${totalExclude} excluded channels from config!`);
             }
         })
         .catch(err => {
@@ -3619,12 +3773,34 @@ function loadSelectedFromConfig(event) {
 
 function saveSelectedForAutoUpdate(event) {
     if (event) event.preventDefault();
-    if (selectedChannelIds.size === 0) {
-        return alert('Please select/check at least one channel in the Channel Manager table first.');
+    
+    const excludeGlobal = document.getElementById('sync-exclude-global')?.checked || false;
+    const langOrderVal = document.getElementById('sync-languages-order')?.value || '';
+    const catOrderVal = document.getElementById('sync-categories-order')?.value || '';
+    const excludeLangsVal = document.getElementById('sync-exclude-languages')?.value || '';
+    const excludeCountriesVal = document.getElementById('sync-exclude-countries')?.value || '';
+    const excludeChannelsVal = document.getElementById('sync-exclude-channels-input')?.value || '';
+
+    // Split and clean lists
+    const preferredLanguages = langOrderVal.split(',').map(s => s.trim()).filter(Boolean);
+    const categoryOrder = catOrderVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeLanguages = excludeLangsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeCountries = excludeCountriesVal.split(',').map(s => s.trim()).filter(Boolean);
+    
+    // Split textarea by newline or comma
+    const excludeChannels = excludeChannelsVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+
+    if (selectedChannelIds.size === 0 && excludedChannelIds.size === 0 && 
+        preferredLanguages.length === 0 && categoryOrder.length === 0 && 
+        excludeLanguages.length === 0 && excludeCountries.length === 0 && 
+        excludeChannels.length === 0 && !excludeGlobal) {
+        return alert('Please select/exclude channels or set configuration options first.');
     }
     
-    const count = selectedChannelIds.size;
-    if (!confirm(`Are you sure you want to save these ${count} selected channels to your repository config?`)) {
+    const countSelect = selectedChannelIds.size;
+    const countExclude = excludedChannelIds.size;
+    
+    if (!confirm(`Are you sure you want to save your selection (${countSelect} included, ${countExclude} excluded channels) and custom configuration to the repository files?`)) {
         return;
     }
     
@@ -3632,7 +3808,16 @@ function saveSelectedForAutoUpdate(event) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            channel_ids: Array.from(selectedChannelIds)
+            channel_ids: Array.from(selectedChannelIds),
+            excluded_ids: Array.from(excludedChannelIds),
+            config: {
+                excludeGlobal,
+                preferredLanguages,
+                categoryOrder,
+                excludeLanguages,
+                excludeCountries,
+                excludeChannels
+            }
         })
     })
     .then(res => res.json())
@@ -3640,11 +3825,12 @@ function saveSelectedForAutoUpdate(event) {
         if (data.error) {
             alert('Failed to save configuration: ' + data.error);
         } else {
-            alert(`Successfully saved ${data.count} channels to "custom/selected-channels.txt"!\n\nCommit and push your changes to GitHub to trigger the auto-sync and release!`);
+            alert(`Successfully saved rules to repository config files!\n\nCommit and push your changes to GitHub to trigger the auto-sync and release!`);
         }
     })
     .catch(err => {
         alert('Failed to save configuration: ' + err);
     });
 }
+
 

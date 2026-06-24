@@ -1,12 +1,14 @@
 import { Storage } from '@freearhey/storage-js'
 import { PlaylistParser } from '../scripts/core'
 import { Stream, Playlist } from '../scripts/models'
-import { loadData } from '../scripts/api'
+import { data, loadData } from '../scripts/api'
 import { STREAMS_DIR } from '../scripts/constants'
+import { Collection } from '@freearhey/core'
 import fs from 'node:fs'
 import path from 'node:path'
 import { eachLimit } from 'async'
 import axios from 'axios'
+
 
 async function checkStreamFast(url: string, timeoutMs: number = 5000, userAgent?: string, referrer?: string): Promise<{ ok: boolean, code: string }> {
   try {
@@ -70,6 +72,39 @@ async function main() {
   const streams = await parser.parse(files)
   console.log(`Found ${streams.count()} total streams in repository.`)
 
+  // Load custom/config.json if it exists
+  const configJsonPath = path.join(__dirname, 'config.json')
+  let excludeGlobal = false
+  let preferredLanguages: string[] = []
+  let categoryOrder: string[] = []
+  let excludeLanguages: string[] = []
+  let excludeCountries: string[] = []
+  let excludeChannels: string[] = []
+
+  if (fs.existsSync(configJsonPath)) {
+    try {
+      const configData = JSON.parse(fs.readFileSync(configJsonPath, 'utf8'))
+      excludeGlobal = !!configData.excludeGlobal
+      if (Array.isArray(configData.preferredLanguages)) {
+        preferredLanguages = configData.preferredLanguages.map((l: string) => l.trim().toLowerCase())
+      }
+      if (Array.isArray(configData.categoryOrder)) {
+        categoryOrder = configData.categoryOrder.map((c: string) => c.trim().toLowerCase())
+      }
+      if (Array.isArray(configData.excludeLanguages)) {
+        excludeLanguages = configData.excludeLanguages.map((l: string) => l.trim().toLowerCase())
+      }
+      if (Array.isArray(configData.excludeCountries)) {
+        excludeCountries = configData.excludeCountries.map((c: string) => c.trim().toLowerCase())
+      }
+      if (Array.isArray(configData.excludeChannels)) {
+        excludeChannels = configData.excludeChannels.map((ch: string) => ch.trim().toLowerCase())
+      }
+    } catch (e) {
+      console.error('Error reading custom/config.json:', e)
+    }
+  }
+
   // Read selected channels from configuration
   const configPath = path.join(__dirname, 'selected-channels.txt')
   if (!fs.existsSync(configPath)) {
@@ -84,52 +119,135 @@ async function main() {
 
   console.log(`Loaded ${lines.length} rules/selections from config.`)
 
-  // Optimize rule lookup by splitting exact and regex rules
-  const exactRules = new Set<string>()
-  const regexRules: RegExp[] = []
+  // Split inclusions and exclusions
+  const exactInclusions = new Set<string>()
+  const regexInclusions: RegExp[] = []
+  const exactExclusions = new Set<string>()
+  const regexExclusions: RegExp[] = []
 
   for (const rule of lines) {
-    if (rule.startsWith('/') && rule.endsWith('/')) {
+    const isExclude = rule.startsWith('-')
+    const cleanRule = isExclude ? rule.slice(1).trim() : rule
+    if (!cleanRule) continue
+
+    if (cleanRule.startsWith('/') && cleanRule.endsWith('/')) {
       try {
-        const pattern = rule.slice(1, -1)
-        regexRules.push(new RegExp(pattern, 'i'))
+        const pattern = cleanRule.slice(1, -1)
+        const regex = new RegExp(pattern, 'i')
+        if (isExclude) {
+          regexExclusions.push(regex)
+        } else {
+          regexInclusions.push(regex)
+        }
       } catch (e) {
         console.error(`Invalid regex rule: ${rule}`, e)
       }
     } else {
-      exactRules.add(rule)
-      if (rule.includes('@')) {
-        exactRules.add(rule.split('@')[0])
+      if (isExclude) {
+        exactExclusions.add(cleanRule)
+        if (cleanRule.includes('@')) {
+          exactExclusions.add(cleanRule.split('@')[0])
+        }
+      } else {
+        exactInclusions.add(cleanRule)
+        if (cleanRule.includes('@')) {
+          exactInclusions.add(cleanRule.split('@')[0])
+        }
       }
     }
   }
 
-  // Filter the streams collection (O(1) lookups for exact matches)
+  // Filter the streams collection
   const filteredStreams = streams.filter((stream: Stream) => {
     const tvgId = stream.getTvgId()
     const title = stream.title
     const fullTitle = stream.getFullTitle()
     const id = stream.getId()
+    const tvgIdBase = tvgId ? tvgId.split('@')[0] : ''
+    const idBase = id ? id.split('@')[0] : ''
 
-    // 1. Fast Set lookups
+    // A. Check explicit exclusions first (from selected-channels.txt)
     if (
-      (tvgId && exactRules.has(tvgId)) ||
-      (id && exactRules.has(id)) ||
-      (title && exactRules.has(title)) ||
-      (fullTitle && exactRules.has(fullTitle)) ||
-      (tvgId && exactRules.has(tvgId.split('@')[0])) ||
-      (id && exactRules.has(id.split('@')[0]))
+      (tvgId && exactExclusions.has(tvgId)) ||
+      (id && exactExclusions.has(id)) ||
+      (title && exactExclusions.has(title)) ||
+      (fullTitle && exactExclusions.has(fullTitle)) ||
+      (tvgIdBase && exactExclusions.has(tvgIdBase)) ||
+      (idBase && exactExclusions.has(idBase))
     ) {
-      return true
+      return false
     }
 
-    // 2. Fallback to Regex list search
-    return regexRules.some(regex => 
-      (tvgId && regex.test(tvgId)) ||
-      (title && regex.test(title)) ||
-      (fullTitle && regex.test(fullTitle)) ||
-      (id && regex.test(id))
+    if (
+      regexExclusions.some(regex =>
+        (tvgId && regex.test(tvgId)) ||
+        (title && regex.test(title)) ||
+        (fullTitle && regex.test(fullTitle)) ||
+        (id && regex.test(id))
+      )
+    ) {
+      return false
+    }
+
+    // B. Check config.json always-exclude channels list
+    if (excludeChannels.length > 0) {
+      const matchExcludeChannel = excludeChannels.some((pattern: string) => 
+        (tvgId && tvgId.toLowerCase().includes(pattern)) ||
+        (id && id.toLowerCase().includes(pattern)) ||
+        (title && title.toLowerCase().includes(pattern)) ||
+        (fullTitle && fullTitle.toLowerCase().includes(pattern))
+      )
+      if (matchExcludeChannel) {
+        return false
+      }
+    }
+
+    // C. Exclude global channels if requested
+    if (excludeGlobal && stream.isInternational()) {
+      return false
+    }
+
+    // D. Exclude languages if requested
+    if (excludeLanguages.length > 0) {
+      const streamLangs = stream.getLanguages().all().map((l: any) => l.name.toLowerCase())
+      const streamLangCodes = stream.getLanguages().all().map((l: any) => l.code.toLowerCase())
+      const hasExcludedLang = streamLangs.some((name: string) => excludeLanguages.includes(name)) ||
+                            streamLangCodes.some((code: string) => excludeLanguages.includes(code))
+      if (hasExcludedLang) {
+        return false
+      }
+    }
+
+    // E. Exclude countries if requested
+    if (excludeCountries.length > 0) {
+      const channel = stream.getChannel()
+      const countryCode = channel ? channel.country?.toLowerCase() : ''
+      const countryObj = countryCode ? data.countriesKeyByCode.get(countryCode.toUpperCase()) : null
+      const countryName = countryObj ? countryObj.name.toLowerCase() : ''
+      const hasExcludedCountry = (countryCode && excludeCountries.includes(countryCode)) || 
+                                (countryName && excludeCountries.includes(countryName))
+      if (hasExcludedCountry) {
+        return false
+      }
+    }
+
+    // F. Check Inclusions
+    const matchesInclusion = (
+      (tvgId && exactInclusions.has(tvgId)) ||
+      (id && exactInclusions.has(id)) ||
+      (title && exactInclusions.has(title)) ||
+      (fullTitle && exactInclusions.has(fullTitle)) ||
+      (tvgIdBase && exactInclusions.has(tvgIdBase)) ||
+      (idBase && exactInclusions.has(idBase)) ||
+      regexInclusions.some(regex =>
+        (tvgId && regex.test(tvgId)) ||
+        (title && regex.test(title)) ||
+        (fullTitle && regex.test(fullTitle)) ||
+        (id && regex.test(id))
+      )
     )
+
+    return matchesInclusion
   })
 
   console.log(`Filtered down to ${filteredStreams.count()} matching streams.`)
@@ -138,35 +256,101 @@ async function main() {
     console.warn('Warning: No channels matched your selected list!')
   }
 
-  // Map and sort streams, assign group titles based on categories
-  const processedStreams = filteredStreams
-    .sortBy(stream => stream.title)
-    .map((stream: Stream) => {
-      try {
-        const categories = stream.getCategories()
-        if (categories && typeof categories.map === 'function') {
-          const groupTitle = categories
-            .map(category => category.name)
-            .sort()
-            .join(';')
-          if (groupTitle) {
-            stream.groupTitle = groupTitle
-          }
-        }
-      } catch (err) {
-        // Fallback if categories data isn't loaded
-      }
-      return stream
-    })
+  // Helper functions for Language & Category prioritization
+  const getPrimaryLanguageName = (stream: Stream): string => {
+    const langs = stream.getLanguages()
+    return langs.isEmpty() ? 'Undefined' : langs.first().name
+  }
 
-  const playlist = new Playlist(processedStreams, { public: true })
+  const getPrimaryCategory = (stream: Stream): string => {
+    const categories = stream.getCategories()
+    if (!categories || categories.isEmpty()) return 'Undefined'
+    
+    let bestCat = categories.first().name
+    let bestScore = 9999
+    
+    categories.forEach((c: any) => {
+      const idx = categoryOrder.indexOf(c.name.toLowerCase())
+      if (idx !== -1 && idx < bestScore) {
+        bestScore = idx
+        bestCat = c.name
+      }
+    })
+    
+    return bestCat
+  }
+
+  const getLanguageScore = (stream: Stream): number => {
+    const langs = stream.getLanguages()
+    if (langs.isEmpty()) return 9999
+    
+    for (let i = 0; i < preferredLanguages.length; i++) {
+      const prefLang = preferredLanguages[i]
+      const hasLang = langs.all().some((l: any) => l.name.toLowerCase() === prefLang || l.code.toLowerCase() === prefLang)
+      if (hasLang) return i
+    }
+    
+    return 1000
+  }
+
+  const getCategoryScore = (stream: Stream): number => {
+    const categories = stream.getCategories()
+    if (!categories || categories.isEmpty()) return 9999
+    
+    for (let i = 0; i < categoryOrder.length; i++) {
+      const prefCat = categoryOrder[i]
+      const hasCat = categories.all().some((c: any) => c.name.toLowerCase() === prefCat)
+      if (hasCat) return i
+    }
+    
+    return 1000
+  }
+
+
+  // Map and sort streams, assign group titles based on categories
+  const mappedStreams = filteredStreams.map((stream: Stream) => {
+    const langName = getPrimaryLanguageName(stream)
+    const catName = getPrimaryCategory(stream)
+    stream.groupTitle = langName !== 'Undefined' ? `${langName} - ${catName}` : catName
+    return stream
+  })
+
+  // Sort streams array
+  const streamsArray = Array.isArray(mappedStreams) ? mappedStreams : (mappedStreams as any).all()
+  
+  streamsArray.sort((a: Stream, b: Stream) => {
+    // 1. Preferred Languages
+    const scoreLangA = getLanguageScore(a)
+    const scoreLangB = getLanguageScore(b)
+    if (scoreLangA !== scoreLangB) return scoreLangA - scoreLangB
+    
+    // 2. Language Name
+    const langA = getPrimaryLanguageName(a)
+    const langB = getPrimaryLanguageName(b)
+    if (langA !== langB) return langA.localeCompare(langB)
+    
+    // 3. Preferred Categories
+    const scoreCatA = getCategoryScore(a)
+    const scoreCatB = getCategoryScore(b)
+    if (scoreCatA !== scoreCatB) return scoreCatA - scoreCatB
+    
+    // 4. Category Name
+    const catA = getPrimaryCategory(a)
+    const catB = getPrimaryCategory(b)
+    if (catA !== catB) return catA.localeCompare(catB)
+    
+    // 5. Title
+    return a.title.localeCompare(b.title)
+  })
+
+  const sortedCollection = new Collection<Stream>(streamsArray)
+  const playlist = new Playlist(sortedCollection, { public: true })
   
   const outputPath = path.join(__dirname, 'custom.m3u')
   fs.writeFileSync(outputPath, playlist.toString())
-  console.log(`Successfully generated custom playlist with ${processedStreams.count()} streams at: ${outputPath}`)
+  console.log(`Successfully generated custom playlist with ${playlist.streams.count()} streams at: ${outputPath}`)
 
   console.log('Testing streams status...')
-  const streamsArray = Array.isArray(processedStreams) ? processedStreams : (processedStreams as any).all()
   const results: any[] = []
 
   await new Promise<void>((resolve) => {

@@ -826,13 +826,48 @@
                             <div class="export-section" style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
                                 <h3>GitHub Actions Upstream Sync</h3>
                                 <p class="desc" style="margin-top: 8px; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
-                                    Save your selected channels to the repository configuration (`custom/selected-channels.txt`) so they are automatically kept up-to-date and tested by the GitHub Actions workflow.
+                                    Save your selected/excluded channels and custom configuration parameters to the repository configuration files so they are automatically synced and built by the GitHub Actions workflow.
                                 </p>
-                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                
+                                <div class="form-group pad-t-15">
+                                    <label class="custom-checkbox" style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" id="sync-exclude-global">
+                                        <span>Always Exclude Global/International Channels</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="form-group pad-t-10">
+                                    <label style="font-size: 11px; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px;">PREFERRED LANGUAGE ORDER (COMMA-SEPARATED)</label>
+                                    <input type="text" id="sync-languages-order" class="form-control" placeholder="e.g. Telugu, English, Hindi" style="width: 100%; margin-top: 5px;">
+                                </div>
+                                
+                                <div class="form-group pad-t-10">
+                                    <label style="font-size: 11px; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px;">PREFERRED CATEGORY ORDER (COMMA-SEPARATED)</label>
+                                    <input type="text" id="sync-categories-order" class="form-control" placeholder="e.g. News, Music, Movies, Sports, Kids" style="width: 100%; margin-top: 5px;">
+                                </div>
+
+                                <div class="form-group pad-t-10">
+                                    <label style="font-size: 11px; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px;">ALWAYS EXCLUDE LANGUAGES (COMMA-SEPARATED)</label>
+                                    <input type="text" id="sync-exclude-languages" class="form-control" placeholder="e.g. English, Hindi" style="width: 100%; margin-top: 5px;">
+                                </div>
+
+                                <div class="form-group pad-t-10">
+                                    <label style="font-size: 11px; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px;">ALWAYS EXCLUDE COUNTRIES (COMMA-SEPARATED)</label>
+                                    <input type="text" id="sync-exclude-countries" class="form-control" placeholder="e.g. United States, Canada" style="width: 100%; margin-top: 5px;">
+                                </div>
+
+                                <div class="form-group pad-t-10">
+                                    <label style="font-size: 11px; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.5px;">ALWAYS EXCLUDE CHANNELS (ONE TVG-ID PER LINE)</label>
+                                    <textarea id="sync-exclude-channels-input" class="form-control" placeholder="e.g. us.cnn&#10;in.starsports" style="width: 100%; height: 80px; margin-top: 5px; font-family: monospace; resize: vertical; padding: 8px 10px;"></textarea>
+                                </div>
+
+                                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
                                     <button class="btn btn-primary" onclick="saveSelectedForAutoUpdate(event)">Save Selected to Config</button>
                                     <button class="btn btn-secondary-outline" onclick="loadSelectedFromConfig(event)">Load Selection from Config</button>
+                                    <button class="btn btn-danger-outline" onclick="bulkExcludeSelectedChannels(event)" style="border-color: var(--color-danger); color: var(--color-danger);">Bulk Exclude Selected</button>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

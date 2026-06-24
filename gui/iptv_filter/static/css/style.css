@@ -2633,6 +2633,32 @@ select.table-col-filter {
     opacity: 0.8;
 }
 
-
-
-
+/* Custom Playlist Exclusions & Blocking */
+.exclude-btn-ch {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    margin-left: 8px;
+    opacity: 0.3;
+    transition: opacity 0.2s, transform 0.2s;
+    vertical-align: middle;
+}
+.exclude-btn-ch:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+.exclude-btn-ch.active {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px rgba(255, 69, 58, 0.5));
+}
+.excluded-row {
+    opacity: 0.6;
+    background-color: rgba(255, 69, 58, 0.05) !important;
+}
+.excluded-card {
+    opacity: 0.6;
+    border-color: rgba(255, 69, 58, 0.3) !important;
+    background-color: rgba(255, 69, 58, 0.02) !important;
+}

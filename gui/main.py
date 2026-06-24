@@ -487,17 +487,37 @@ def get_channels():
             "referrer": ch.streams[0].get("referrer") if ch.streams else None
         })
         
-    # Calculate counts from filtered list
+    # Calculate counts using faceted search (filtering everything except the target facet itself)
+    # 1. Languages counts: filter everything except languages
+    filters_no_lang = filters.copy()
+    filters_no_lang["languages"] = None
+    filtered_no_lang = filter_engine.apply_filters(**filters_no_lang)
     lang_counts = {}
-    cat_counts = {}
-    country_counts = {}
-    for ch in filtered:
+    for ch in filtered_no_lang:
         for lang in ch.languages:
             lang_counts[lang] = lang_counts.get(lang, 0) + 1
+
+    # 2. Categories counts: filter everything except categories
+    filters_no_cat = filters.copy()
+    filters_no_cat["categories"] = None
+    filtered_no_cat = filter_engine.apply_filters(**filters_no_cat)
+    cat_counts = {}
+    for ch in filtered_no_cat:
         for cat in ch.categories:
             cat_counts[cat] = cat_counts.get(cat, 0) + 1
+
+    # 3. Countries counts: filter everything except countries
+    filters_no_country = filters.copy()
+    filters_no_country["countries"] = None
+    filtered_no_country = filter_engine.apply_filters(**filters_no_country)
+    country_counts = {}
+    for ch in filtered_no_country:
         if ch.country:
             country_counts[ch.country] = country_counts.get(ch.country, 0) + 1
+
+    # Restore main filtered channels list for correctness
+    filter_engine.filtered_channels = filtered
+
 
     return jsonify({
         "total": len(filter_engine.channels),
@@ -773,40 +793,64 @@ def get_custom_selected():
         return jsonify({"error": "Data not loaded"}), 400
         
     rules_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "selected-channels.txt"))
-    if not os.path.exists(rules_path):
-        return jsonify({"rules": [], "matched_ids": []})
-    
-    try:
-        with open(rules_path, "r", encoding="utf-8") as f:
-            rules = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
-    except Exception as e:
-        return jsonify({"error": f"Failed to read file: {str(e)}"}), 500
+    rules = []
+    if os.path.exists(rules_path):
+        try:
+            with open(rules_path, "r", encoding="utf-8") as f:
+                rules = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+        except Exception as e:
+            return jsonify({"error": f"Failed to read rules file: {str(e)}"}), 500
         
     matched_ids = []
-    for ch in filter_engine.channels:
-        matched = False
-        for rule in rules:
-            if rule.startswith("/") and rule.endswith("/"):
+    excluded_ids = []
+    
+    # Process exclusions and inclusions
+    for rule in rules:
+        is_exclude = rule.startswith("-")
+        clean_rule = rule[1:].strip() if is_exclude else rule
+        if not clean_rule:
+            continue
+            
+        for ch in filter_engine.channels:
+            matched = False
+            if clean_rule.startswith("/") and clean_rule.endswith("/"):
                 try:
-                    pattern = rule[1:-1]
+                    pattern = clean_rule[1:-1]
                     regex = re.compile(pattern, re.IGNORECASE)
                     if (ch.id and regex.search(ch.id)) or (ch.name and regex.search(ch.name)):
                         matched = True
-                        break
                 except Exception:
                     pass
             else:
                 ch_id_base = ch.id.split("@")[0] if ch.id else ""
-                rule_base = rule.split("@")[0]
-                if ch.id == rule or ch.name == rule or ch_id_base == rule_base:
+                rule_base = clean_rule.split("@")[0]
+                if ch.id == clean_rule or ch.name == clean_rule or ch_id_base == rule_base:
                     matched = True
-                    break
-        if matched:
-            matched_ids.append(ch.id)
+            
+            if matched:
+                if is_exclude:
+                    excluded_ids.append(ch.id)
+                else:
+                    matched_ids.append(ch.id)
+                    
+    # Remove duplicates but keep order/uniqueness
+    matched_ids = list(set(matched_ids))
+    excluded_ids = list(set(excluded_ids))
+
+    config = {}
+    config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "config.json"))
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+        except Exception as e:
+            print(f"Error loading custom config.json: {e}")
             
     return jsonify({
         "rules": rules,
-        "matched_ids": matched_ids
+        "matched_ids": matched_ids,
+        "excluded_ids": excluded_ids,
+        "config": config
     })
 
 @app.route("/api/custom/save-selected", methods=["POST"])
@@ -816,18 +860,37 @@ def save_custom_selected():
         
     req_data = request.json or {}
     channel_ids = req_data.get("channel_ids", [])
+    excluded_ids = req_data.get("excluded_ids", [])
+    config_data = req_data.get("config", {})
     
     rules_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "selected-channels.txt"))
+    config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "config.json"))
     try:
         os.makedirs(os.path.dirname(rules_path), exist_ok=True)
+        
+        # 1. Write selected-channels.txt
         with open(rules_path, "w", encoding="utf-8") as f:
-            f.write("# Add channel tvg-ids or exact channel names to include in your custom playlist.\n")
+            f.write("# Add channel tvg-ids or exact channel names to include or exclude in your custom playlist.\n")
+            f.write("# Prefix rules with - to always exclude them.\n")
             f.write("# Generated from IPTV Filter GUI\n#\n")
-            for ch_id in sorted(channel_ids):
+            f.write("\n# --- Inclusions ---\n")
+            for ch_id in sorted(list(set(channel_ids))):
                 f.write(f"{ch_id}\n")
-        return jsonify({"success": True, "count": len(channel_ids)})
+            f.write("\n# --- Exclusions ---\n")
+            for ch_id in sorted(list(set(excluded_ids))):
+                f.write(f"-{ch_id}\n")
+                
+        # 2. Write config.json
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(config_data, f, indent=2, ensure_ascii=False)
+            
+        return jsonify({
+            "success": True, 
+            "count": len(channel_ids) + len(excluded_ids)
+        })
     except Exception as e:
-        return jsonify({"error": f"Failed to write file: {str(e)}"}), 500
+        return jsonify({"error": f"Failed to save configuration files: {str(e)}"}), 500
+
 
 @app.route("/api/presets", methods=["POST"])
 def save_preset():
@@ -1374,7 +1437,7 @@ def start_server():
     threading.Thread(target=launch_browser, daemon=True).start()
     
     # Run server
-    app.run(host="localhost", port=5000, debug=False)
+    app.run(host="localhost", port=5000, debug=True)
 
 if __name__ == "__main__":
     start_server()

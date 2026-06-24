@@ -1,10 +1,12 @@
 # IPTV Stream Status Report
 
-Last checked: `2026-06-23T14:17:18.039Z`
+Last checked: `2026-06-24T08:00:40.406Z`
 
 | Status | Channel Name | tvg-id | Stream URL | Code |
 | --- | --- | --- | --- | --- |
+| ❌ | &pictures | Andpictures.in@SD | `https://trs1.aynaott.com/andpictureshd/index.m3u8` | ECONNABORTED |
 | ❌ | &pictures HD | Andpictures.in@HD | `http://103.72.101.252:8080/live/185.m3u8` | ECONNABORTED |
+| ❌ | &TV HD | AndTV.in@HD | `https://trs1.aynaott.com/andtvhd/index.m3u8` | ECONNABORTED |
 | ❌ | &TV International | AndTV.in@International | `https://amg01117-amg01117c1-amgplt0029.playout.now3.amagi.tv/playlist/amg01117-amg01117c1-amgplt0029/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | &TV International | AndTV.in@International | `https://3f56f997.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/U2Ftc3VuZy1nYl9BbmRUVl9ITFM/playlist.m3u8` | OK |
 | ❌ | &xplor HD | AndxplorHD.in@HD | `http://149.71.34.166:8000/play/a001/index.m3u8` | ECONNABORTED |
@@ -18,30 +20,31 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | 7S Music | 7SMusic.in@SD | `https://mumt03.tangotv.in/Dsly5z3H7SMUSIC/index.m3u8` | OK |
 | ✅ | 99TV | 99TV.in@SD | `https://cdn-1.pishow.tv/live/1211/master.m3u8` | OK |
 | ❌ | 9X Jalwa | 9XJalwa.in@SD | `https://b.jsrdn.com/strm/channels/9xjalwa/master.m3u8` | HTTP_403_FORBIDDEN |
-| ❌ | 9X Jalwa | 9XJalwa.in@SD | `https://mumt03.tangotv.in/9XJALWA/index.m3u8` | HTTP_404 |
 | ❌ | 9X Jalwa | 9XJalwa.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/9x-jalwa/master.m3u8?ads.vf=ADK_AMIzrfu` | HTTP_504 |
+| ❌ | 9X Jalwa | 9XJalwa.in@SD | `https://mumt03.tangotv.in/9XJALWA/index.m3u8` | HTTP_404 |
 | ✅ | 9X Jalwa | 9XJalwa.in@SD | `https://mumt03.tangotv.in/Dsly5z3H9XJALWA/index.m3u8` | OK |
 | ❌ | 9X Jhakaas | 9XJhakaas.in@SD | `https://amg01281-9xmediapvtltd-9xjhakaas-samsungin-ci2cs.amagi.tv/playlist/amg01281-9xmediapvtltd-9xjhakaas-samsungin/playlist.m3u8` | HTTP_403_FORBIDDEN |
-| ❌ | 9X Jhakaas | 9XJhakaas.in@SD | `https://9xjio.wiseplayout.com/9X_Jhakaas/master.m3u8` | HTTP_404 |
 | ✅ | 9X Jhakaas | 9XJhakaas.in@SD | `https://cdn-3.pishow.tv/live/6/master.m3u8` | OK |
+| ❌ | 9X Jhakaas | 9XJhakaas.in@SD | `https://9xjio.wiseplayout.com/9X_Jhakaas/master.m3u8` | ECONNABORTED |
 | ✅ | 9X Jhakaas | 9XJhakaas.in@SD | `https://mumt03.tangotv.in/Dsly5z3H9XJHAKAAS/index.m3u8` | OK |
 | ❌ | 9X Tashan | 9XTashan.in@SD | `https://amg01281-9xmediapvtltd-9xtashan-samsungin-xz1sd.amagi.tv/playlist/amg01281-9xmediapvtltd-9xtashan-samsungin/playlist.m3u8` | HTTP_403_FORBIDDEN |
-| ❌ | 9X Tashan | 9XTashan.in@SD | `https://9xjio.wiseplayout.com/9X_Tashan/master.m3u8` | HTTP_404 |
 | ✅ | 9X Tashan | 9XTashan.in@SD | `https://cdn-2.pishow.tv/live/1613/master.m3u8` | OK |
+| ❌ | 9X Tashan | 9XTashan.in@SD | `https://9xjio.wiseplayout.com/9X_Tashan/master.m3u8` | HTTP_404 |
 | ✅ | 9X Tashan | 9XTashan.in@SD | `https://mumt01.tangotv.in/O5aw8Zn39XTASHAN/index.m3u8` | OK |
 | ✅ | 9XM | 9XM.in@SD | `https://9xjio.wiseplayout.com/9XM/master.m3u8` | OK |
 | ✅ | 9XM | 9XM.in@SD | `https://epiconvh.akamaized.net/live/9XM/master.m3u8` | OK |
 | ❌ | 9XM | 9XM.in@SD | `https://b.jsrdn.com/strm/channels/9xm/master.m3u8` | HTTP_403_FORBIDDEN |
-| ❌ | 9XM | 9XM.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/9xm/master.m3u8?ads.vf=JyGLrSjXxAC` | HTTP_504 |
 | ✅ | 9XM | 9XM.in@SD | `https://mumt01.tangotv.in/O5aw8Zn39XM/index.m3u8` | OK |
+| ❌ | 9XM | 9XM.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/9xm/master.m3u8?ads.vf=JyGLrSjXxAC` | HTTP_504 |
 | ❌ | Aadinath TV | AadinathTV.in@SD | `https://mumt01.tangotv.in/AADINATHTV/index.m3u8` | HTTP_404 |
-| ❌ | Aadinath TV | AadinathTV.in@SD | `https://keralive.com/yupp/tv.php?c=aadinath-tv&e=.m3u8` | ECONNABORTED |
-| ✅ | Aaj Tak | AajTak.in@SD | `https://feeds.intoday.in/aajtak/api/master.m3u8` | OK |
+| ✅ | Aadinath TV | AadinathTV.in@SD | `https://keralive.com/yupp/tv.php?c=aadinath-tv&e=.m3u8` | OK |
 | ✅ | Aaj Tak | AajTak.in@SD | `https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-791258/master.m3u8` | OK |
 | ✅ | Aaj Tak | AajTak.in@SD | `https://aajtaklive-amd.akamaized.net/hls/live/2014416/aajtak/aajtaklive/live_404p/chunks.m3u8` | OK |
+| ✅ | Aaj Tak | AajTak.in@SD | `https://feeds.intoday.in/aajtak/api/master.m3u8` | OK |
 | ❌ | Aaj Tak | AajTak.in@SD | `http://103.213.31.109:90/AajtakHD/playlist.m3u8` | ECONNABORTED |
-| ✅ | Aaj Tak HD | AajTak.in@HD | `https://livehub-voidnet.onrender.com/cluster/streamcore/in/AAJTAK_REDIS.m3u8` | OK |
 | ✅ | Aaj Tak HD | AajTak.in@HD | `https://feeds.intoday.in/aajtak/api/aajtakhd/master.m3u8` | OK |
+| ✅ | Aaj Tak HD | AajTak.in@HD | `https://livehub-voidnet.onrender.com/cluster/streamcore/in/AAJTAK_REDIS.m3u8` | OK |
+| ✅ | Aakaash Aath | AakaashAath.in@SD | `https://trs1.aynaott.com/aakaashBangla/index.m3u8` | OK |
 | ✅ | Aakaash Aath | AakaashAath.in@SD | `https://mumt03.tangotv.in/Dsly5z3HAAKASHAATH/index.m3u8` | OK |
 | ❌ | Aamar Bangla | AamarBangla.in@SD | `https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/amarbanglatv.stream/playlist.m3u8` | HTTP_500 |
 | ✅ | Aaryaa TV | AaryaaTV.in@SD | `https://stream.ottlive.co.in/aryatvtamil/index.m3u8` | OK |
@@ -63,29 +66,30 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | ABN Andhra Jyoti | ABNAndhraJyoti.in@SD | `https://d18a8tqmogafg2.cloudfront.net/abnandhrajyothy/playlist.m3u8` | ENOTFOUND |
 | ✅ | ABN Andhra Jyoti | ABNAndhraJyoti.in@SD | `https://mumbai-edge.smartplaytv.in/ABNAJ/index.m3u8` | OK |
 | ✅ | ABN Andhra Jyoti | ABNAndhraJyoti.in@SD | `https://cdn-1.pishow.tv/live/407/master.m3u8` | OK |
-| ❌ | ABP Ananda | ABPAnanda.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-ananda/master.m3u8?ads.vf=aGtzXQpUGiO` | HTTP_504 |
 | ✅ | ABP Ananda | ABPAnanda.in@SD | `https://d2l4ar6y3mrs4k.cloudfront.net/live-streaming/ananda-livetv/master.m3u8` | OK |
+| ❌ | ABP Ananda | ABPAnanda.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-ananda/master.m3u8?ads.vf=aGtzXQpUGiO` | HTTP_504 |
 | ✅ | ABP Asmita | ABPAsmita.in@SD | `https://d2l4ar6y3mrs4k.cloudfront.net/live-streaming/asmita-livetv/master.m3u8` | OK |
 | ❌ | ABP Asmita | ABPAsmita.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-asmita/master.m3u8?ads.vf=OINKVc4hOve` | HTTP_504 |
-| ✅ | ABP Ganga | ABPGanga.in@SD | `https://d2l4ar6y3mrs4k.cloudfront.net/live-streaming/ganga-livetv/master.m3u8` | OK |
 | ❌ | ABP Ganga | ABPGanga.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-ganga/master.m3u8?ads.vf=WDZHXJD8LRS` | HTTP_504 |
+| ✅ | ABP Ganga | ABPGanga.in@SD | `https://d2l4ar6y3mrs4k.cloudfront.net/live-streaming/ganga-livetv/master.m3u8` | OK |
 | ✅ | ABP Majha | ABPMajha.in@SD | `https://yupprestreamliveus.akamaized.net/vglive-sk-355289/majha/master.m3u8` | OK |
 | ❌ | ABP Majha | ABPMajha.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-majha/master.m3u8?ads.vf=GrYsIxoBPri` | HTTP_504 |
+| ✅ | ABP News | ABPNews.in@SD | `https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-472500/abpnews/master.m3u8` | OK |
 | ✅ | ABP News | ABPNews.in@SD | `https://d2l4ar6y3mrs4k.cloudfront.net/live-streaming/abpnews-livetv/master.m3u8` | OK |
 | ❌ | ABP News | ABPNews.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-news/master.m3u8?ads.vf=kz1C_Yz6Uiq` | HTTP_504 |
-| ✅ | ABP News | ABPNews.in@SD | `https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-472500/abpnews/master.m3u8` | OK |
 | ❌ | ABP News | ABPNews.in@SD | `http://103.213.31.109:90/ABPNews/playlist.m3u8` | ECONNABORTED |
 | ✅ | ABP Sanjha | ABPSanjha.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/abp-sanjha/master.m3u8?ads.vf=pLnwLviYDD0` | OK |
 | ✅ | Adhyatm TV | AdhyatmTV.in@SD | `https://mumbai-edge.smartplaytv.in/AdhyatmTV/index.m3u8` | OK |
 | ✅ | Ajman TV | AjmanTV.ae@SD | `https://cdn1.logichost.in/ajmantv/live/playlist.m3u8` | OK |
 | ✅ | AKD Calcutta News | AKDCalcuttaNews.in@SD | `https://cdn-2.pishow.tv/live/237/master.m3u8` | OK |
 | ✅ | AKD Calcutta News | AKDCalcuttaNews.in@SD | `https://live.legitpro.co.in/cnnnews/index.m3u8` | OK |
-| ❌ | Al Arabiya | Alarabiya.ae@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/al-arabiya/master.m3u8?ads.vf=5D6eIL8_jay` | HTTP_504 |
 | ✅ | Al Arabiya | Alarabiya.ae@SD | `https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8` | OK |
+| ❌ | Al Arabiya | Alarabiya.ae@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/al-arabiya/master.m3u8?ads.vf=5D6eIL8_jay` | HTTP_504 |
 | ✅ | Alankar TV | AlankarTV.in@SD | `https://livetv.tarangplus.in/alankar-origin/live/playlist.m3u8` | OK |
-| ✅ | Alarabiya | Alarabiya.ae@SD | `https://live.alarabiya.net/alarabiapublish/alarabiya.smil/alarabiapublish/alarabiya_1080p/chunks.m3u8` | OK |
 | ✅ | Alarabiya | Alarabiya.ae@SD | `http://185.9.2.18/chid_146/index.m3u8` | OK |
+| ✅ | Alarabiya | Alarabiya.ae@SD | `https://live.alarabiya.net/alarabiapublish/alarabiya.smil/alarabiapublish/alarabiya_1080p/chunks.m3u8` | OK |
 | ✅ | Alarabiya | Alarabiya.ae@SD | `https://shd-gcp-live.edgenextcdn.net/live/bitmovin-alarabiya/7f90de73d777d04f3dada92f90d35c44/index.m3u8` | OK |
+| ✅ | All Time Movies | AllTimeMovies.in@SD | `https://trs1.aynaott.com/Dhinchaak/index.m3u8` | OK |
 | ✅ | All Time Movies | AllTimeMovies.in@SD | `https://mumt03.tangotv.in/Dsly5z3HALLTIMEMOVIES/index.m3u8` | OK |
 | ❌ | All Time Movies | AllTimeMovies.in@SD | `https://mumt03.tangotv.in/ALLTIMEMOVIES/index.m3u8` | HTTP_404 |
 | ✅ | Amar Ujala | AmarUjala.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/amar-ujala/index.m3u8?ads.vf=d9C-dTw7fve` | OK |
@@ -95,6 +99,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Anand TV | AnandTV.in@SD | `https://live.legitpro.co.in/anandtv/index.m3u8` | OK |
 | ✅ | Ananda Barta | AnandaBarta.in@SD | `https://account19.livebox.co.in/Anandabarta2hls/live.m3u8` | OK |
 | ✅ | ANB News | ANBNews.in@SD | `https://server.livelegitpro.in:9899/anbnews/anbnews/index.m3u8` | OK |
+| ✅ | ANB News | ANBNews.in@SD | `https://trs1.aynaott.com/ANB_News/index.m3u8` | OK |
 | ✅ | Andy Haryana | AndyHaryana.in@SD | `https://mumt03.tangotv.in/Dsly5z3HANDYHARYANA/index.m3u8` | OK |
 | ✅ | Angel TV | AngelTV.in@India | `https://janya-digimix.akamaized.net/vglive-sk-394914/india/ngrp:angelindia_all/playlist.m3u8` | OK |
 | ✅ | Angel TV Africa | AngelTV.in@Africa | `https://janya-digimix.akamaized.net/vglive-sk-904559/africa/ngrp:angelafrica_all/playlist.m3u8` | OK |
@@ -113,6 +118,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Angel TV Spanish | AngelTV.in@Spanish | `https://janya-digimix.akamaized.net/vglive-sk-351398/spanish/ngrp:angelspanish_all/playlist.m3u8` | OK |
 | ✅ | Anjan TV | AnjanTV.in@SD | `https://cdn-1.pishow.tv/live/993/master.m3u8` | OK |
 | ✅ | Anjan TV | AnjanTV.in@SD | `https://anjan.vstream.online/anjanorg/ngrp:anjan_hdall/playlist.m3u8` | OK |
+| ❌ | Anjan TV | AnjanTV.in@SD | `https://trs1.aynaott.com/AnjanTV/index.m3u8` | ECONNABORTED |
 | ✅ | Anmol Cinema | AnmolCinema.in@SD | `http://103.175.73.12:8080/live/271/271_0.m3u8` | OK |
 | ✅ | Anmol Cinema 2 | AnmolCinema2.in@SD | `http://103.175.73.12:8080/live/257/257_0.m3u8` | OK |
 | ✅ | Anmol TV | AnmolTV.in@SD | `http://103.175.73.12:8080/live/256/256_0.m3u8` | OK |
@@ -120,10 +126,10 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | ANN News | ANNNews.in@HD | `https://cdn.ottlive.co.in/annnews/index.m3u8` | HTTP_404 |
 | ❌ | APN | APN.in@SD | `https://mumt01.tangotv.in/APN/index.m3u8` | HTTP_404 |
 | ✅ | Aradana TV | AradanaTV.in@SD | `https://cdn-1.pishow.tv/live/961/master.m3u8` | OK |
-| ❌ | Argus News | ArgusNews.in@SD | `https://mumt05.tangotv.in/ARGUSNEWS/index.m3u8` | HTTP_404 |
 | ✅ | Argus News | ArgusNews.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/argus-news/index.m3u8?ads.vf=IvskZqDOz5G` | OK |
+| ❌ | Argus News | ArgusNews.in@SD | `https://mumt05.tangotv.in/ARGUSNEWS/index.m3u8` | HTTP_404 |
 | ✅ | Arputhar Yesu TV | ArputharYesuTV.in@SD | `https://arputharyesutv.arputharyesutv.com/live/md/index.m3u8` | OK |
-| ❌ | Arputhar Yesu TV | ArputharYesuTV.in@SD | `https://account33.livebox.co.in/jesushelpshls/live.m3u8` | ECONNABORTED |
+| ✅ | Arputhar Yesu TV | ArputharYesuTV.in@SD | `https://account33.livebox.co.in/jesushelpshls/live.m3u8` | OK |
 | ✅ | Aryan TV National | AryanTVNational.in@SD | `https://mumt04.tangotv.in/m18aqlK4ARYANTVNATIONAL/index.m3u8` | OK |
 | ❌ | Asianet | Asianet.in@SD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/starasianet1_live_https/index.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Asianet Middle East | AsianetMiddleEast.in@SD | `https://mumt03.tangotv.in/ASIANETMIDDLEEAST/index.m3u8` | HTTP_404 |
@@ -131,18 +137,19 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Asianet Movies | AsianetMovies.in@SD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/asianetmovies_live_https/index.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Asianet Movies HD | AsianetMovies.in@HD | `http://149.71.34.166:8000/play/a06e/index.m3u8` | ECONNABORTED |
 | ❌ | Asianet News | AsianetNews.in@SD | `https://amg13737-amg13737c1-amgplt0016.playout.now3.amagi.tv/playlist/amg13737-amg13737c1-amgplt0016/playlist.m3u8` | HTTP_403_FORBIDDEN |
-| ✅ | Asianet News | AsianetNews.in@SD | `https://asianet-samsung.vgcdn.net/ptnr-monitoring/vglive-sk-906908/playlist.m3u8` | OK |
 | ✅ | Asianet News | AsianetNews.in@SD | `https://asianetnews.vgcdn.net/vglive-sk-917600/playlist.m3u8` | OK |
+| ✅ | Asianet News | AsianetNews.in@SD | `https://asianet-samsung.vgcdn.net/ptnr-monitoring/vglive-sk-906908/playlist.m3u8` | OK |
 | ❌ | Asianet Plus | AsianetPlus.in@SD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/asianetplus_live_https/index.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | Asianet Suvarna News | AsianetSuvarnaNews.in@SD | `https://asianetnews.vgcdn.net/vglive-sk-335835/playlist.m3u8` | OK |
 | ✅ | Awaaz India TV | AwaazIndiaTV.in@SD | `https://awaazindia.livebox.co.in/AwaazIndaTVhls/Live.m3u8` | OK |
 | ❌ | Awakening TV | AwakeningTV.in@SD | `https://mumt03.tangotv.in/AWAKENINGTV/index.m3u8` | HTTP_404 |
 | ✅ | Ayush TV | AyushTV.in@SD | `https://cdn-6.pishow.tv/live/221/master.m3u8` | OK |
 | ✅ | Ayush TV | AyushTV.in@SD | `https://95eryw39dwn4-hls-live.wmncdn.net/Ayushu/271ddf829afeece44d8732757fba1a66.sdp/index.m3u8` | OK |
-| ✅ | B4U Bhojpuri | B4UBhojpuri.in@SD | `https://cdnb4u.wiseplayout.com/B4U_Bhojpuri/master.m3u8` | OK |
 | ❌ | B4U Bhojpuri | B4UBhojpuri.in@SD | `https://mumt05.tangotv.in/B4UBHOJPURI/index.m3u8` | HTTP_404 |
+| ✅ | B4U Bhojpuri | B4UBhojpuri.in@SD | `https://cdnb4u.wiseplayout.com/B4U_Bhojpuri/master.m3u8` | OK |
 | ❌ | B4U Bhojpuri | B4UBhojpuri.in@SD | `http://103.213.31.109:90/B4UBhojpuri/playlist.m3u8` | ECONNABORTED |
 | ❌ | B4U Hitz | B4UHitz.in@SD | `http://115.42.65.142:9981/stream/channelid/1099703605` | HTTP_400 |
+| ✅ | B4U Kadak | B4UKadak.in@SD | `https://trs1.aynaott.com/B4U_Kadak/index.m3u8` | OK |
 | ❌ | B4U Kadak | B4UKadak.in@SD | `https://amg00877-b4unew-amg00877c4-lg-in-5452.playouts.now.amagi.tv/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | B4U Kadak | B4UKadak.in@SD | `https://cdnb4u.wiseplayout.com/B4U_Kadak/master.m3u8` | HTTP_404 |
 | ✅ | B4U Kadak | B4UKadak.in@SD | `https://cdn-2.pishow.tv/live/227/master.m3u8` | OK |
@@ -157,16 +164,17 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Balle Balle | BalleBalle.in@SD | `https://mcncdndigital.com/balleballetv/index.m3u8` | OK |
 | ✅ | Balle Balle | BalleBalle.in@SD | `https://cdn-4.pishow.tv/live/987/master.m3u8` | OK |
 | ✅ | Balle Balle | BalleBalle.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/balle-balle/index.m3u8?ads.vf=b8WZfP1_RIy` | OK |
-| ✅ | Bansal News | BansalNews.in@SD | `https://8yzmq2gbdvax-hls-live.wmncdn.net/bansalnewstv1/live1.stream/playlist.m3u8` | OK |
 | ✅ | Bansal News | BansalNews.in@SD | `https://cdn-2.pishow.tv/live/1051/master.m3u8` | OK |
+| ✅ | Bansal News | BansalNews.in@SD | `https://8yzmq2gbdvax-hls-live.wmncdn.net/bansalnewstv1/live1.stream/playlist.m3u8` | OK |
 | ✅ | Bhakthi Siri | BhakthiSiri.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bhakthi-siri/index.m3u8?ads.vf=gdvNYWzRJii` | OK |
 | ✅ | Bhakthi TV | BhakthiTV.in@SD | `https://cdn-1.pishow.tv/live/397/master.m3u8` | OK |
 | ❌ | Bhakti Sagar | BhaktiSagar.in@SD | `https://mumt05.tangotv.in/BHAKTISAGAR/index.m3u8` | HTTP_404 |
 | ✅ | Bharat 24 | Bharat24.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bharat-24/index.m3u8?ads.vf=FQLn2P7KyXm` | OK |
-| ✅ | Bharat Express | BharatExpress.in@SD | `https://cdn-2.pishow.tv/live/1139/master.m3u8` | OK |
 | ✅ | Bharat Express | BharatExpress.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bharat-express/index.m3u8?ads.vf=rc4w_mtwL4W` | OK |
+| ✅ | Bharat Express | BharatExpress.in@SD | `https://cdn-2.pishow.tv/live/1139/master.m3u8` | OK |
 | ✅ | Bharat Express | BharatExpress.in@SD | `https://stream1.livebox.co.in/VCAREhls/live.m3u8` | OK |
 | ✅ | Bharat Samachar | BharatSamachar.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/bharatsamachar/playlist.m3u8` | OK |
+| ❌ | Bharat Samachar | BharatSamachar.in@SD | `https://trs1.aynaott.com/BharatSamachar/index.m3u8` | HTTP_404 |
 | ✅ | Bharat Samachar | BharatSamachar.in@SD | `https://idvd.multitvsolution.com/idvo/bharatsamachar.m3u8` | OK |
 | ✅ | Bharat24 | Bharat24.in@SD | `https://cdn.ottlive.co.in/bharat24/index.fmp4.m3u8` | OK |
 | ✅ | Bhojpuri Cinema | BhojpuriCinema.in@SD | `https://live-bhojpuri.akamaized.net/liveabr/playlist.m3u8` | OK |
@@ -188,6 +196,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | CCV | CCV.in@SD | `https://5a1178b42cc03.streamlock.net/8212/8212/playlist.m3u8` | OK |
 | ✅ | Channel Divya | ChannelDivya.in@SD | `https://vg-pitaaratvlive.akamaized.net/v1/vglive-sk-906482/playlist.m3u8` | OK |
 | ✅ | Channel WIN | ChannelWIN.in@SD | `https://cdn-4.pishow.tv/live/229/master.m3u8` | OK |
+| ❌ | Channel WIN | ChannelWIN.in@SD | `https://trs1.aynaott.com/ChannelWin/index.m3u8` | ECONNABORTED |
 | ✅ | Chardikla Gurbaani TV | ChardiklaGurbaaniTV.in@SD | `https://chardikalatimestv.gigabitcdn.net/in-chardikala/chardikala-gurbani-tv/playlist.m3u8` | OK |
 | ✅ | Chardikla Time TV | ChardiklaTimeTV.in@SD | `https://chardikalagurbanitv.gigabitcdn.net/in-chardikala/chardikala-timetv/playlist.m3u8` | OK |
 | ✅ | Chardikla Time TV | ChardiklaTimeTV.in@SD | `https://cdn-4.pishow.tv/live/1627/master.m3u8` | OK |
@@ -202,6 +211,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Colors | Colors.in@SD | `http://103.72.101.252:8080/live/1368.m3u8` | ECONNABORTED |
 | ❌ | Colors Bangla | ColorsBangla.in@SD | `http://103.72.101.252:8080/live/1369.m3u8` | ECONNABORTED |
 | ❌ | Colors Bangla Cinema | ColorsBanglaCinema.in@SD | `http://103.72.101.252:8080/live/1657.m3u8` | ECONNABORTED |
+| ✅ | Colors Bangla HD | ColorsBangla.in@HD | `https://trs1.aynaott.com/colorsbangla/index.m3u8` | OK |
 | ❌ | Colors Bangla HD | ColorsBangla.in@HD | `http://103.229.254.25:7001/play/a0ds/index.m3u8` | ECONNREFUSED |
 | ❌ | Colors Bangla HD | ColorsBangla.in@HD | `http://103.72.101.252:8080/live/756.m3u8` | ECONNABORTED |
 | ❌ | Colors Cineplex | ColorsCineplex.in@SD | `http://103.122.249.134:8000/play/a058` | ECONNREFUSED |
@@ -211,6 +221,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Colors Cineplex Superhits | ColorsCineplexSuperhits.in@SD | `http://103.72.101.252:8080/live/1450.m3u8` | ECONNABORTED |
 | ❌ | Colors Gujarati | ColorsGujarati.in@SD | `http://103.72.101.252:8080/live/196.m3u8` | ECONNABORTED |
 | ❌ | Colors Gujarati Cinema | ColorsGujaratiCinema.in@SD | `http://103.72.101.252:8080/live/1324.m3u8` | ECONNABORTED |
+| ✅ | Colors HD | Colors.in@HD | `https://trs1.aynaott.com/colorshd/index.m3u8` | OK |
 | ❌ | Colors HD | Colors.in@HD | `http://149.71.34.166:8000/play/a00c/index.m3u8` | ECONNABORTED |
 | ✅ | Colors Infinity | ColorsInfinity.in@SD | `http://103.175.73.12:8080/live/29/29_0.m3u8` | OK |
 | ❌ | Colors Infinity HD | ColorsInfinity.in@HD | `http://149.71.34.166:8002/play/a01d/index.m3u8` | ECONNABORTED |
@@ -232,18 +243,20 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Dabangg | Dabangg.in@SD | `https://mumt01.tangotv.in/DABANGG/index.m3u8` | HTTP_404 |
 | ✅ | Dangal 2 | Dangal2.in@SD | `http://103.175.73.12:8080/live/18/18_0.m3u8` | OK |
 | ✅ | Dangal 2 | Dangal2.in@SD | `https://live-dangal2.akamaized.net/liveabr/playlist.m3u8` | OK |
+| ✅ | Dangal 2 | Dangal2.in@SD | `https://trs1.aynaott.com/Dangal2/index.m3u8` | OK |
 | ❌ | Dangal 2 | Dangal2.in@SD | `http://103.213.31.109:90/Dangal2/playlist.m3u8` | ECONNABORTED |
+| ✅ | Dangal TV | DangalTV.in@SD | `https://trs1.aynaott.com/Dangal/index.m3u8` | OK |
 | ✅ | Dangal TV | DangalTV.in@SD | `http://103.175.73.12:8080/live/17/17_0.m3u8` | OK |
 | ✅ | Dangal TV | DangalTV.in@SD | `https://live-dangal.akamaized.net/liveabr/playlist.m3u8` | OK |
 | ❌ | Dangal TV | DangalTV.in@SD | `http://103.213.31.109:90/Dangal/playlist.m3u8` | ECONNABORTED |
 | ❌ | Darshan 24 | Darshan24.in@SD | `https://mumt05.tangotv.in/DARSHAN24/index.m3u8` | HTTP_404 |
 | ❌ | Darshana TV | DarshanaTV.in@SD | `https://mumt04.tangotv.in/DARSHANATV/index.m3u8` | HTTP_404 |
-| ✅ | DD Arun Prabha | DDArunPrabha.in@SD | `https://cdn-4.pishow.tv/live/32/master.m3u8` | OK |
 | ✅ | DD Arun Prabha | DDArunPrabha.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/308556d9fd1246adb479ef012a39bbfe/index.m3u8` | OK |
+| ✅ | DD Arun Prabha | DDArunPrabha.in@SD | `https://cdn-4.pishow.tv/live/32/master.m3u8` | OK |
 | ✅ | DD Assam | DDAssam.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/d380bf5c167b4319a46cdd8204bc26b2/index.m3u8` | OK |
 | ❌ | DD Assam | DDAssam.in@SD | `https://mumt05.tangotv.in/DDASSAM/index.m3u8` | HTTP_404 |
-| ✅ | DD Bangla | DDBangla.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index.m3u8` | OK |
 | ✅ | DD Bangla | DDBangla.in@SD | `https://cdn-4.pishow.tv/live/37/master.m3u8` | OK |
+| ✅ | DD Bangla | DDBangla.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/7ff57cc9046b4c188b51a0d506f36e7f/index.m3u8` | OK |
 | ❌ | DD Bangla | DDBangla.in@SD | `https://mumt05.tangotv.in/DDBANGLA/index.m3u8` | HTTP_404 |
 | ✅ | DD Bharati | DDBharati.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/67cec794d8b14f9ba21f73924ac65797/index.m3u8` | OK |
 | ✅ | DD Bharati | DDBharati.in@SD | `https://cdn-1.pishow.tv/live/10/master.m3u8` | OK |
@@ -268,18 +281,18 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | DD India (no logo) | DDIndia.in@SD | `https://cdn-1.pishow.tv/live/23/master.m3u8` | OK |
 | ✅ | DD Jharkhand | DDJharkhand.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/e8c3741f8c154d3185831f4e31777fb2/index.m3u8` | OK |
 | ✅ | DD Jharkhand | DDJharkhand.in@SD | `https://cdn-1.pishow.tv/live/1617/master.m3u8` | OK |
+| ❌ | DD Kashir | DDKashir.in@SD | `https://mumt05.tangotv.in/DDKASHIR/index.m3u8` | HTTP_404 |
 | ✅ | DD Kashir | DDKashir.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/8a59a828e80c49d0958925950cec0204/index.m3u8` | OK |
 | ✅ | DD Kashir | DDKashir.in@SD | `https://cdn-6.pishow.tv/live/16/master.m3u8` | OK |
-| ❌ | DD Kashir | DDKashir.in@SD | `https://mumt05.tangotv.in/DDKASHIR/index.m3u8` | HTTP_404 |
 | ✅ | DD Kisan | DDKisan.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/4f053f2c12a24641bf701fb7f2376750/index.m3u8` | OK |
-| ✅ | DD Kisan | DDKisan.in@SD | `https://cdn-6.pishow.tv/live/9/master.m3u8` | OK |
 | ❌ | DD Kisan | DDKisan.in@SD | `https://mumt04.tangotv.in/DDKISAN/index.m3u8` | HTTP_404 |
+| ✅ | DD Kisan | DDKisan.in@SD | `https://cdn-6.pishow.tv/live/9/master.m3u8` | OK |
 | ✅ | DD Madhya Pradesh | DDMadhyaPradesh.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b5256b391a7c4ae6977535b73fd6f591/index.m3u8` | OK |
 | ✅ | DD Madhya Pradesh | DDMadhyaPradesh.in@SD | `https://cdn-1.pishow.tv/live/31/master.m3u8` | OK |
 | ❌ | DD Madhya Pradesh | DDMadhyaPradesh.in@SD | `https://mumt04.tangotv.in/DDMADHYAPRADESH/index.m3u8` | HTTP_404 |
 | ✅ | DD Malayalam | DDMalayalam.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/c313674ffced4c9a90f1bba436df2b9b/index.m3u8` | OK |
 | ✅ | DD Malayalam | DDMalayalam.in@SD | `https://cdn-3.pishow.tv/live/27/master.m3u8` | OK |
-| ✅ | DD Malayalam | DDMalayalam.in@SD | `https://mumt02.tangotv.in/DDMALAYALAM/index.m3u8` | OK |
+| ❌ | DD Malayalam | DDMalayalam.in@SD | `https://mumt02.tangotv.in/DDMALAYALAM/index.m3u8` | ECONNABORTED |
 | ✅ | DD Manipur | DDManipur.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/8b75afc6576f450e8f554b6c877681d2/index.m3u8` | OK |
 | ✅ | DD Meghalaya | DDMeghalaya.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/4f81bc8d13dd49b484da35988abb8729/index.m3u8` | OK |
 | ✅ | DD Mizoram | DDMizoram.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/eea48c6b61074052a2fa8532ff795ff1/index.m3u8` | OK |
@@ -289,8 +302,8 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | DD National HD | DDNational.in@HD | `https://mumt01.tangotv.in/O5aw8Zn3DDNATIONALHD/index.m3u8` | OK |
 | ❌ | DD National HD | DDNational.in@HD | `https://mumt01.tangotv.in/DDNATIONALHD/index.m3u8` | HTTP_404 |
 | ✅ | DD National SD | DDNational.in@SD | `https://cdn-1.pishow.tv/live/11/master.m3u8` | OK |
-| ✅ | DD News | DDNews.in@SD | `https://cdn-2.pishow.tv/live/12/master.m3u8` | OK |
 | ❌ | DD News | DDNews.in@SD | `https://mumt04.tangotv.in/DDNEWS/index.m3u8` | HTTP_404 |
+| ✅ | DD News | DDNews.in@SD | `https://cdn-2.pishow.tv/live/12/master.m3u8` | OK |
 | ✅ | DD News HD | DDNews.in@HD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/0811cd8c37ca4c409d5385a6cd2fa18b/index.m3u8` | OK |
 | ✅ | DD Odia | DDOdia.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/ef4ea632b77a480ebd77106968aa99a9/index.m3u8` | OK |
 | ❌ | DD Odia | DDOdia.in@SD | `https://mumt05.tangotv.in/DDODIA/index.m3u8` | HTTP_404 |
@@ -299,15 +312,16 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | DD Rajasthan | DDRajasthan.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/5b6bbbf682b741ecbe279f75a4a9a3e6/index.m3u8` | OK |
 | ✅ | DD Rajasthan | DDRajasthan.in@SD | `https://cdn-1.pishow.tv/live/34/master.m3u8` | OK |
 | ❌ | DD Rajasthan (Fastway) | DDRajasthan.in@SD | `https://mumt05.tangotv.in/DDRAJASTHAN/index.m3u8` | HTTP_404 |
-| ❌ | DD Sahyadri | DDSahyadri.in@SD | `https://mumt01.tangotv.in/DDSAHYADRI/index.m3u8` | HTTP_404 |
-| ✅ | DD Sahyadri | DDSahyadri.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/66dcc3ebe182447ba42837e746cf0c7c/index.m3u8` | OK |
-| ✅ | DD Sahyadri | DDSahyadri.in@SD | `https://cdn-3.pishow.tv/live/30/master.m3u8` | OK |
+| ❌ | DD Sahyadri | DDSahyadri.in@SD | `https://cdn-3.pishow.tv/live/30/master.m3u8` | ECONNABORTED |
+| ❌ | DD Sahyadri | DDSahyadri.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/66dcc3ebe182447ba42837e746cf0c7c/index.m3u8` | ECONNABORTED |
+| ❌ | DD Sahyadri | DDSahyadri.in@SD | `https://mumt01.tangotv.in/DDSAHYADRI/index.m3u8` | ECONNABORTED |
 | ✅ | DD Saptagiri | DDSaptagiri.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/26e915d6d12b4a06822c5e33c088ed56/index.m3u8` | OK |
 | ✅ | DD Saptagiri | DDSaptagiri.in@SD | `https://cdn-1.pishow.tv/live/22/master.m3u8` | OK |
 | ❌ | DD Saptagiri | DDSaptagiri.in@SD | `https://mumt02.tangotv.in/DDSAPTAGIRI/index.m3u8` | ECONNABORTED |
 | ✅ | DD Sports | DDSports.in@SD | `https://cdn-6.pishow.tv/live/13/master.m3u8` | OK |
-| ✅ | DD Sports | DDSports.in@SD | `https://mumt02.tangotv.in/DDSPORTS/index.m3u8` | OK |
+| ❌ | DD Sports | DDSports.in@SD | `https://mumt02.tangotv.in/DDSPORTS/index.m3u8` | ECONNABORTED |
 | ✅ | DD Sports SD | DDSports.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/b17adfe543354fdd8d189b110617cddd/index.m3u8` | OK |
+| ✅ | DD Sports SD | DDSports.in@SD | `https://trs1.aynaott.com/ddsports/index.m3u8` | OK |
 | ❌ | DD Sports SD | DDSports.in@SD | `http://103.213.31.109:90/ZeeAnmolCinema2/playlist.m3u8` | ECONNABORTED |
 | ✅ | DD Tamil | DDTamil.in@SD | `https://d2lk5u59tns74c.cloudfront.net/out/v1/abf46b14847e45499f4a47f3a9afe93d/index.m3u8` | OK |
 | ✅ | DD Tamil | DDTamil.in@SD | `https://cdn-2.pishow.tv/live/26/master.m3u8` | OK |
@@ -317,16 +331,16 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | DD Urdu | DDUrdu.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/9b91e9007e754db39a8b32c6bfc5b24a/index.m3u8` | OK |
 | ✅ | DD Urdu | DDUrdu.in@SD | `https://cdn-4.pishow.tv/live/8/master.m3u8` | OK |
 | ✅ | DD Uttar Pradesh | DDUttarPradesh.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/70d4f6874fa64032a685e3123520f07d/index.m3u8` | OK |
-| ❌ | DD Uttar Pradesh | DDUttarPradesh.in@SD | `https://mumt01.tangotv.in/DDUTTARPRADESH/index.m3u8` | HTTP_404 |
 | ✅ | DD Uttar Pradesh | DDUttarPradesh.in@SD | `https://cdn-1.pishow.tv/live/36/master.m3u8` | OK |
+| ❌ | DD Uttar Pradesh | DDUttarPradesh.in@SD | `https://mumt01.tangotv.in/DDUTTARPRADESH/index.m3u8` | HTTP_404 |
 | ✅ | DD Uttarakhand | DDUttarakhand.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/a70323c56ac647c2a8c8fc34e4c73912/index.m3u8` | OK |
 | ✅ | DD Uttarakhand | DDUttarakhand.in@SD | `https://cdn-1.pishow.tv/live/17/master.m3u8` | OK |
 | ✅ | DD Yadagiri | DDYadagiri.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/c89fa6d6f5864ac29670d6f91cb7e32a/index.m3u8` | OK |
 | ✅ | DD Yadagiri | DDYadagiri.in@SD | `https://cdn-1.pishow.tv/live/21/master.m3u8` | OK |
 | ❌ | DD Yadagiri | DDYadagiri.in@SD | `https://mumt05.tangotv.in/DDYADAGIRI/index.m3u8` | HTTP_404 |
 | ✅ | Desi Channel | DesiChannel.in@SD | `https://livestream.unlimitedcdn.com/agm-dc/desi-channel/index.m3u8` | OK |
-| ❌ | Dhamaal | Dhamaal.in@SD | `https://cdn-1.pishow.tv/live/1291/master.m3u8` | HTTP_404 |
 | ❌ | Dhamaal | Dhamaal.in@SD | `https://mumt03.tangotv.in/DHAMAAL/index.m3u8` | HTTP_404 |
+| ❌ | Dhamaal | Dhamaal.in@SD | `https://cdn-1.pishow.tv/live/1291/master.m3u8` | HTTP_404 |
 | ❌ | Dhamaka Movies B4U | DhamakaMoviesB4U.in@SD | `https://cdn-1.pishow.tv/live/235/master.m3u8` | HTTP_404 |
 | ✅ | Dharm Sandesh | DharmSandesh.in@SD | `https://cdn-2.pishow.tv/live/1455/master.m3u8` | OK |
 | ❌ | Dharm Sandesh | DharmSandesh.in@SD | `https://mumt05.tangotv.in/DHARMSANDESH/index.m3u8` | HTTP_404 |
@@ -338,11 +352,12 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Disha TV | DishaTV.in@SD | `https://mumt04.tangotv.in/DISHATV/index.m3u8` | HTTP_404 |
 | ❌ | Disney International HD | DisneyInternationalHD.in@SD | `http://149.71.34.166:8002/play/a01p/index.m3u8` | ECONNABORTED |
 | ❌ | Disney Junior | DisneyJunior.in@SD | `http://149.71.34.166:8000/play/a00l/index.m3u8` | ECONNABORTED |
-| ❌ | Disney Stories | DisneyStories.in@SD | `http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/Chikitoonz/playlist.m3u8` | HTTP_404 |
+| ✅ | Disney Stories | DisneyStories.in@SD | `http://bantel-cdn1.iptvperu.tv:1935/btnscrtn/Chikitoonz/playlist.m3u8` | OK |
 | ✅ | Divyavani TV | DivyavaniTV.in@SD | `https://mumbai-edge.smartplaytv.in/Divyavani/index.m3u8` | OK |
 | ❌ | DY 365 | DY365.in@SD | `https://mumt04.tangotv.in/DY365/index.m3u8` | HTTP_404 |
 | ❌ | DY 365 | DY365.in@SD | `https://cdn.smartstream.video/smartstream-us/dy365/dy365/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | E 24 | E24.in@SD | `https://live-cf-e24.dailyhunt.in/master.m3u8` | OK |
+| ✅ | E 24 | E24.in@SD | `https://trs1.aynaott.com/e24/index.m3u8` | OK |
 | ❌ | E 24 | E24.in@SD | `https://mumt04.tangotv.in/E24/index.m3u8` | HTTP_404 |
 | ❌ | E-Vidya 1 | EVidya1.in@SD | `http://103.72.101.252:8080/live/400.m3u8` | ECONNABORTED |
 | ❌ | E-Vidya 10 | EVidya10.in@SD | `http://103.72.101.252:8080/live/411.m3u8` | ECONNABORTED |
@@ -366,6 +381,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Epic Bhojpuri | EpicBhojpuri.in@SD | `http://103.72.101.252:8080/live/3384.m3u8` | ECONNABORTED |
 | ✅ | Epic Music | EpicMusic.in@SD | `https://mumt04.tangotv.in/m18aqlK4EPICMUSIC/index.m3u8` | OK |
 | ❌ | Epic Music | EpicMusic.in@SD | `http://103.213.31.109:90/ShowBox/playlist.m3u8` | ECONNABORTED |
+| ✅ | Epic TV | EpicTV.in@SD | `http://de.russkoe-iptv.com:88/s/s-e3dc39e0/epic-hd.m3u8` | OK |
 | ❌ | Epic TV | EpicTV.in@SD | `http://149.71.34.166:8000/play/a00m/index.m3u8` | ECONNABORTED |
 | ✅ | Epic TV Digital | EpicTV.in@Digital | `https://cc-czbq30x55knit.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-czbq30x55knit/DIYC/PMSL/IN10/Epic_TV_IN_B/Epic_TV_IN_B.m3u8` | OK |
 | ❌ | ET Now | ETNow.in@SD | `https://dztlhgid9me95.cloudfront.net/live-tv/Vidgyor/etnow/etnow_master.m3u8` | HTTP_403_FORBIDDEN |
@@ -381,10 +397,10 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | ETV Telangana | ETVTelangana.in@SD | `https://d37d7pfp7vjqhh.cloudfront.net/v1/master/9d43eacaed199f8d5883927e7aef514a8a08e108/ETV_TS_H264_cloud_in/index.m3u8` | OK |
 | ✅ | ETV Telugu HD | ETVTelugu.in@HD | `https://d27zlkxhgwrfgo.cloudfront.net/v1/master/9d43eacaed199f8d5883927e7aef514a8a08e108/ETV_HD_H264_cloud_in/index.m3u8` | OK |
 | ✅ | ETV Telugu USA | ETVTelugu.in@USA | `https://livegeorouus.akamaized.net/100823/etvhd_2500/playlist.m3u8?hdnts=st=1735898689~exp=1835898688~acl=*~hmac=f5fe24724fe05481e3841f9eb5ab8efdee0a3dd83645ae9dcf45703f525bab7b` | OK |
-| ✅ | Fakt Marathi | FaktMarathi.in@SD | `https://cdn-6.pishow.tv/live/10002/master.m3u8` | OK |
-| ✅ | Fakt Marathi | FaktMarathi.in@SD | `https://mumt02.tangotv.in/FAKTMARATHI/index.m3u8` | OK |
-| ❌ | Fateh TV | FatehTV.in@SD | `https://mumt05.tangotv.in/FATEHTV/index.m3u8` | HTTP_404 |
+| ❌ | Fakt Marathi | FaktMarathi.in@SD | `https://cdn-6.pishow.tv/live/10002/master.m3u8` | ECONNABORTED |
+| ❌ | Fakt Marathi | FaktMarathi.in@SD | `https://mumt02.tangotv.in/FAKTMARATHI/index.m3u8` | ECONNABORTED |
 | ✅ | Fateh TV | FatehTV.in@SD | `https://ott.livelegitpro.in/fatehtv/fatehtv/index.m3u8` | OK |
+| ❌ | Fateh TV | FatehTV.in@SD | `https://mumt05.tangotv.in/FATEHTV/index.m3u8` | HTTP_404 |
 | ✅ | First India News | FirstIndiaNews.in@SD | `https://xlbor37ydvaj-hls-live.wmncdn.net/firstindianewstv1/live.stream/index.m3u8` | OK |
 | ❌ | First India News | FirstIndiaNews.in@SD | `https://mumt03.tangotv.in/1STINDIANEWS/index.m3u8` | HTTP_404 |
 | ❌ | Flowers TV | FlowersTV.in@SD | `http://103.72.101.252:8080/live/634.m3u8` | ECONNABORTED |
@@ -395,16 +411,19 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Global Punjab | GlobalPunjab.in@SD | `https://server.livelegitpro.in/globalpunjab/globalpunjab/index.m3u8` | OK |
 | ❌ | Global Punjab | GlobalPunjab.in@SD | `https://media.streambrothers.com:1936/8522/8522/playlist.m3u8` | HTTP_404 |
 | ❌ | Goa365 | Goa365.in@SD | `https://ktismaservers.in:3086/live/goa365live.m3u8` | ECONNREFUSED |
-| ❌ | Goldmines | Goldmines.in@SD | `https://mumt04.tangotv.in/GOLDMINES/index.m3u8` | HTTP_404 |
+| ❌ | Goldmines | Goldmines.in@SD | `https://trs1.aynaott.com/Goldmines/index.m3u8` | HTTP_404 |
 | ✅ | Goldmines | Goldmines.in@SD | `https://cdn-2.pishow.tv/live/1459/master.m3u8` | OK |
+| ❌ | Goldmines | Goldmines.in@SD | `https://mumt04.tangotv.in/GOLDMINES/index.m3u8` | HTTP_404 |
 | ✅ | Goldmines 2 | Goldmines2.in@SD | `https://cdn-2.pishow.tv/live/1460/master.m3u8` | OK |
-| ✅ | Goldmines Bollywood | GoldminesBollywood.in@SD | `https://mumt03.tangotv.in/Dsly5z3HGOLDMINESBOLLYWOOD/index.m3u8` | OK |
 | ✅ | Goldmines Bollywood | GoldminesBollywood.in@SD | `http://103.175.73.12:8080/live/52/52_0.m3u8` | OK |
+| ✅ | Goldmines Bollywood | GoldminesBollywood.in@SD | `https://mumt03.tangotv.in/Dsly5z3HGOLDMINESBOLLYWOOD/index.m3u8` | OK |
+| ❌ | Goldmines Bollywood | GoldminesBollywood.in@SD | `https://trs1.aynaott.com/GoldminesBollywood/index.m3u8` | HTTP_404 |
+| ✅ | Goldmines Movies | GoldminesMovies.in@SD | `https://trs1.aynaott.com/GoldminesMovies/index.m3u8` | OK |
 | ✅ | Goldmines Movies | GoldminesMovies.in@SD | `https://cdn-2.pishow.tv/live/1461/master.m3u8` | OK |
 | ❌ | Goldmines Movies | GoldminesMovies.in@SD | `http://103.213.31.109:90/GoldminesMovies/playlist.m3u8` | ECONNABORTED |
 | ✅ | Good News Today | GoodNewsToday.in@SD | `https://aajtaklive.vgcdn.net/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/3196cced-ce29-4219-9809-f07ccdaa02b9/vglive-sk-848805/master.m3u8` | OK |
 | ✅ | Good News Today | GoodNewsToday.in@SD | `https://cc-89m9zu7a2upfe.akamaized.net/hls/live/2016145/gnt/gntlive/playlist.m3u8` | OK |
-| ✅ | Goodness TV | GoodnessTV.in@SD | `https://mumt02.tangotv.in/GOODNESSTV/index.m3u8` | OK |
+| ❌ | Goodness TV | GoodnessTV.in@SD | `https://mumt02.tangotv.in/GOODNESSTV/index.m3u8` | ECONNABORTED |
 | ❌ | Goodnews TV | GoodNewsTV.in@SD | `https://mumt05.tangotv.in/GOODNEWSTV/index.m3u8` | HTTP_404 |
 | ✅ | GoodNews TV | GoodNewsTV.in@SD | `https://bpgdlwwar3ze-hls-live.wmncdn.net/goodnews/live.stream/playlist.m3u8` | OK |
 | ✅ | Gospel TV India | GospelTVIndia.in@SD | `https://server.livelegitpro.in:9899/gospeltv/index.m3u8` | OK |
@@ -412,33 +431,35 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | GS TV | GSTV.in@SD | `https://cdn-4.pishow.tv/live/1462/master.m3u8` | OK |
 | ❌ | GS TV | GSTV.in@SD | `https://mumt05.tangotv.in/GSTV/index.m3u8` | HTTP_404 |
 | ✅ | GTC News | GTCNews.in@SD | `https://vglivessai.akamaized.net/sg/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/921cca59-daee-4f89-8c38-7ffe8de44f4c/index.m3u8` | OK |
-| ❌ | GTC Punjabi | GTCPunjabi.in@SD | `https://mumt01.tangotv.in/GTC/index.m3u8` | HTTP_404 |
 | ✅ | GTC Punjabi | GTCPunjabi.in@SD | `http://103.175.73.12:8080/live/772/master.m3u8` | OK |
-| ✅ | GTC Punjabi | GTCPunjabi.in@SD | `https://gtc-yupp.vgcdn.net/vglive-sk-254807/index.m3u8` | OK |
+| ❌ | GTC Punjabi | GTCPunjabi.in@SD | `https://mumt01.tangotv.in/GTC/index.m3u8` | HTTP_404 |
 | ✅ | GTC Punjabi | GTCPunjabi.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/gtc-punjabi/index.m3u8?ads.vf=lZ1whEtKSKO` | OK |
+| ✅ | GTC Punjabi | GTCPunjabi.in@SD | `https://gtc-yupp.vgcdn.net/vglive-sk-254807/index.m3u8` | OK |
 | ❌ | GTC Punjabi | GTCPunjabi.in@SD | `http://103.213.31.109:90/FilmachiBhojpuri/playlist.m3u8` | ECONNABORTED |
 | ✅ | Guarantee News | GuaranteeNews.in@SD | `https://guaranteenews.in:8443/live/gnews/index.m3u8` | OK |
 | ❌ | Gujarat First | GujaratFirst.in@SD | `https://live.legitpro.co.in/gujaratfirst/index.m3u8` | HTTP_404 |
-| ✅ | Gujarat First | GujaratFirst.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/gujarat-first/index.m3u8?ads.vf=aXdXji5fkdu` | OK |
 | ❌ | Gujarat First | GujaratFirst.in@SD | `https://mumt01.tangotv.in/GUJARATFIRST/index.m3u8` | HTTP_404 |
+| ✅ | Gujarat First | GujaratFirst.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/gujarat-first/index.m3u8?ads.vf=aXdXji5fkdu` | OK |
 | ✅ | Gulistan News | GulistanNews.in@SD | `https://live.gulistannews.in/hls/gul.m3u8` | OK |
 | ✅ | Gyandarshan | Gyandarshan.in@SD | `https://cdn-6.pishow.tv/live/14/master.m3u8` | OK |
 | ❌ | Har Khabar | HarKhabar.in@SD | `https://mumt01.tangotv.in/HARKHABAR/index.m3u8` | HTTP_404 |
 | ❌ | Hare Krsna | HareKrsnaTV.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/hare-krsna/master.m3u8?ads.vf=BTLYq9OkYrW` | HTTP_504 |
 | ❌ | Hare Krsna TV | HareKrsnaTV.in@SD | `https://mumt05.tangotv.in/HAREKRSNA/index.m3u8` | HTTP_404 |
 | ✅ | Hare Krsna TV | HareKrsnaTV.in@SD | `https://hktv.harekrsnatv.com/HKTV/HKWebApp/manifest.mpd` | OK |
-| ✅ | Harvest TV | HarvestTV.in@SD | `https://7mbd4ogkr3gx-hls-live.wmncdn.net/harvesttvlive1/bbb19eae240ec100af921d511efc86a0.sdp/index.m3u8` | OK |
-| ✅ | Harvest TV Keralam | HarvestTVKeralam.in@SD | `https://7mbd4ogkr3gx-hls-live.wmncdn.net/harvestenglish/d1796a22d24e8696c7d5d0b5c349fdd2.sdp/index.m3u8` | OK |
+| ❌ | Harvest TV | HarvestTV.in@SD | `https://7mbd4ogkr3gx-hls-live.wmncdn.net/harvesttvlive1/bbb19eae240ec100af921d511efc86a0.sdp/index.m3u8` | ECONNABORTED |
+| ❌ | Harvest TV Keralam | HarvestTVKeralam.in@SD | `https://7mbd4ogkr3gx-hls-live.wmncdn.net/harvestenglish/d1796a22d24e8696c7d5d0b5c349fdd2.sdp/index.m3u8` | ECONNABORTED |
 | ✅ | Harvest USA | HarvestUSA.in@SD | `https://7mbd4ogkr3gx-hls-live.wmncdn.net/harvestusa/d57ffba6564caea2fee3f4085f19a098.sdp/playlist.m3u8` | OK |
 | ✅ | Hebron TV | HebronTV.in@SD | `https://account20.livebox.co.in/charleshls/live.m3u8` | OK |
 | ✅ | Hi Dost! | HiDost.in@SD | `https://cdn-1.pishow.tv/live/224/master.m3u8` | OK |
 | ❌ | Hi Dost! | HiDost.in@SD | `https://mumt03.tangotv.in/HIDOST/index.m3u8` | HTTP_404 |
+| ❌ | Hi Dost! | HiDost.in@SD | `https://trs1.aynaott.com/HiDost/index.m3u8` | ECONNABORTED |
 | ✅ | High News | HighNews.in@SD | `https://highmedia.livebox.co.in/HIGHNEWShls/LIVE.m3u8` | OK |
 | ✅ | Hindi Khabar | HindiKhabar.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/hindikhabar/playlist.m3u8` | OK |
+| ✅ | Hindi Khabar | HindiKhabar.in@SD | `https://trs1.aynaott.com/HindiKhabar/index.m3u8` | OK |
 | ✅ | Hindi Khabar | HindiKhabar.in@SD | `https://cdn-2.pishow.tv/live/1041/master.m3u8` | OK |
 | ❌ | Hindi Khabar | HindiKhabar.in@SD | `https://mumt04.tangotv.in/HINDIKHABAR/index.m3u8` | HTTP_404 |
-| ✅ | Hindu Dharmam | HinduDharmam.in@SD | `https://cdn-1.pishow.tv/live/959/master.m3u8` | OK |
 | ❌ | Hindu Dharmam | HinduDharmam.in@SD | `https://mumt01.tangotv.in/HINDUDHARMAM/index.m3u8` | HTTP_404 |
+| ✅ | Hindu Dharmam | HinduDharmam.in@SD | `https://cdn-1.pishow.tv/live/959/master.m3u8` | OK |
 | ❌ | History TV18 | HistoryTV18.in@SD | `http://103.72.101.252:8080/live/1471.m3u8` | ECONNABORTED |
 | ❌ | History TV18 HD | HistoryTV18.in@HD | `https://amg01448-amg01448c16-samsung-in-3495.playouts.now.amagi.tv/playlist/amg01448-samsungindia-historychannelenglish-samsungin/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | History TV18 HD | HistoryTV18.in@HD | `https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/HistoryTV18HD.m3u8` | OK |
@@ -447,7 +468,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | History TV18 HD Tamil | HistoryTV18.in@HD | `http://103.72.101.252:8080/live/579.m3u8` | ECONNABORTED |
 | ✅ | HMTV | HMTV.in@SD | `https://cdn-1.pishow.tv/live/280/master.m3u8` | OK |
 | ❌ | HMTV | HMTV.in@SD | `https://mumt04.tangotv.in/HMTV/index.m3u8` | HTTP_404 |
-| ❌ | HNN 24x7 | HNN24x7.in@SD | `https://mumt02.tangotv.in/HNN24X7/index.m3u8` | HTTP_404 |
+| ✅ | HNN 24x7 | HNN24x7.in@SD | `https://mumt02.tangotv.in/HNN24X7/index.m3u8` | OK |
 | ✅ | HNN 24x7 | HNN24x7.in@SD | `https://ott.livelegitpro.in:9899/hnnnews/hnnnews/tracks-v1/index.fmp4.m3u8` | OK |
 | ❌ | Hope Channel India | HopeChannelIndia.in@SD | `https://mumt01.tangotv.in/HOPECHANNELINDIA/index.m3u8` | HTTP_404 |
 | ✅ | Hornbill TV | HornbillTV.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/hornbilltv/playlist.m3u8` | OK |
@@ -455,35 +476,35 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Hungama TV | HungamaTV.in@SD | `http://149.71.34.166:8000/play/a075/index.m3u8` | ECONNABORTED |
 | ✅ | IBC 24 | IBC24.in@SD | `https://cdn-3.pishow.tv/live/220/master.m3u8` | OK |
 | ❌ | IBC 24 | IBC24.in@SD | `https://mumt05.tangotv.in/IBC24/index.m3u8` | HTTP_404 |
-| ✅ | Ind 24 | Ind24.in@SD | `https://mumt02.tangotv.in/IND24/index.m3u8` | OK |
-| ✅ | India Ahead | IndiaAhead.in@SD | `https://mumt05.tangotv.in/87NeALx2INDIAAHEAD/index.m3u8` | OK |
+| ❌ | Ind 24 | Ind24.in@SD | `https://mumt02.tangotv.in/IND24/index.m3u8` | HTTP_404 |
 | ❌ | India Ahead | IndiaAhead.in@SD | `https://mumt05.tangotv.in/INDIAAHEAD/index.m3u8` | HTTP_404 |
+| ✅ | India Ahead | IndiaAhead.in@SD | `https://mumt05.tangotv.in/87NeALx2INDIAAHEAD/index.m3u8` | OK |
 | ✅ | India Daily Live | IndiaDailyLive.in@SD | `https://mumt02.tangotv.in/INDIADAILY24X7/index.m3u8` | OK |
 | ✅ | India Daily Live | IndiaDailyLive.in@SD | `https://indiadaily.ottlive.co.in/indiadailylive/index.m3u8` | OK |
 | ❌ | India News Madhya Pradesh/Chhattisgarh | IndiaNewsMadhyaPradeshChhattisgarh.in@SD | `https://livetv.newsx.com/itv/itvnetwork7/playlist.m3u8` | ECONNABORTED |
 | ❌ | India Today | IndiaToday.in@SD | `https://amg00644-amg00644c1-ondemandkorea-amesia-10266.playouts.now.amagi.tv/playlist/amg00644-tvtodaynetworkltdfast-indiatoday-ondemandkoreaamesia/playlist.m3u8` | HTTP_403_FORBIDDEN |
-| ✅ | India Today | IndiaToday.in@SD | `https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-293160/master.m3u8` | OK |
 | ✅ | India Today | IndiaToday.in@SD | `https://indiatodaylive.akamaized.net/hls/live/2014320/indiatoday/indiatodaylive/playlist.m3u8` | OK |
+| ✅ | India Today | IndiaToday.in@SD | `https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-293160/master.m3u8` | OK |
 | ✅ | India Today | IndiaToday.in@SD | `https://livehub-voidnet.onrender.com/cluster/streamcore/in/INDIATODAY_StreamOrchestrator.m3u8` | OK |
 | ✅ | India TV | IndiaTV.in@SD | `https://pl-indiatvnews.akamaized.net/out/v1/db79179b608641ceaa5a4d0dd0dca8da/index.m3u8` | OK |
-| ❌ | India TV | IndiaTV.in@SD | `https://mumt01.tangotv.in/INDIATV/index.m3u8` | HTTP_404 |
 | ✅ | India TV | IndiaTV.in@SD | `https://cdn-2.pishow.tv/live/1043/master.m3u8` | OK |
+| ❌ | India TV | IndiaTV.in@SD | `https://mumt01.tangotv.in/INDIATV/index.m3u8` | HTTP_404 |
 | ❌ | India TV Aap Ki Adalat | IndiaTVAapKiAdalat.in@SD | `https://amg01550-amg01550c6-samsung-in-4679.playouts.now.amagi.tv/playlist/amg01550-indiatvfast-indiatvakasamsung-samsungin/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | India TV Speed News | IndiaTVSpeedNews.in@HD | `https://cc-lyf4c0hwzg5dd.akamaized.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-lyf4c0hwzg5dd/v1/vglive-sk-479089/main.m3u8` | OK |
-| ✅ | India TV Speed News | IndiaTVSpeedNews.in@HD | `https://poclive-indiatvnews.akamaized.net/hlslive/Admin/px0219297/live/janya/master.m3u8` | OK |
 | ✅ | India TV Speed News | IndiaTVSpeedNews.in@HD | `https://cc-lyf4c0hwzg5dd.akamaized.net/v1/vglive-sk-479089/main.m3u8` | OK |
+| ✅ | India TV Speed News | IndiaTVSpeedNews.in@HD | `https://poclive-indiatvnews.akamaized.net/hlslive/Admin/px0219297/live/janya/master.m3u8` | OK |
 | ❌ | India Voice | IndiaVoice.in@SD | `https://mumt04.tangotv.in/INDIAVOICE/index.m3u8` | HTTP_404 |
 | ✅ | Indywood TV | IndywoodTV.in@SD | `https://43wrzjnpqoxe-hls-live.wmncdn.net/indywood/indywoodtv/index.m3u8` | OK |
 | ✅ | INews | INews.in@SD | `https://cdn-1.pishow.tv/live/411/master.m3u8` | OK |
 | ✅ | INH 24x7 | INH24x7.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/inh24x7/playlist.m3u8` | OK |
-| ✅ | INH 24x7 | INH24x7.in@SD | `https://7epd6o8edk9b-hls-live.wmncdn.net/inh24/live.stream/playlist.m3u8` | OK |
 | ❌ | INH 24x7 | INH24x7.in@SD | `https://mumt01.tangotv.in/INH24X7/index.m3u8` | HTTP_404 |
+| ✅ | INH 24x7 | INH24x7.in@SD | `https://7epd6o8edk9b-hls-live.wmncdn.net/inh24/live.stream/playlist.m3u8` | OK |
 | ❌ | Insync | Insync.in@SD | `https://mumt04.tangotv.in/INSYNC/index.m3u8` | HTTP_404 |
 | ✅ | Isai Aruvi | IsaiAruvi.in@SD | `http://ptuf.ridsys.in/riptv/live/KALAIGNAR_ISAI_ARUVI/index.m3u8` | OK |
 | ✅ | Isai Aruvi | IsaiAruvi.in@SD | `https://segment.yuppcdn.net/140622/isaiaruvi/playlist.m3u8` | OK |
+| ✅ | Ishwar Bhakti TV | IshwarBhaktiTV.in@SD | `https://6n3yow8pl9ok-hls-live.5centscdn.com/ishwartvlive/tv.stream/playlist.m3u8` | OK |
 | ❌ | Ishwar Bhakti TV | IshwarBhaktiTV.in@SD | `https://mumt05.tangotv.in/ISHWARBHAKTI/index.m3u8` | HTTP_404 |
 | ✅ | Ishwar Bhakti TV | IshwarBhaktiTV.in@SD | `https://cdn-2.pishow.tv/live/1464/master.m3u8` | OK |
-| ✅ | Ishwar Bhakti TV | IshwarBhaktiTV.in@SD | `https://6n3yow8pl9ok-hls-live.5centscdn.com/ishwartvlive/tv.stream/playlist.m3u8` | OK |
 | ❌ | J Movie | JMovie.in@SD | `http://103.72.101.252:8080/live/417.m3u8` | ECONNABORTED |
 | ❌ | Jai Maharashtra | JaiMaharashtra.in@SD | `https://cdn-3.pishow.tv/live/1465/master.m3u8` | HTTP_404 |
 | ❌ | Jai Maharashtra | JaiMaharashtra.in@SD | `https://mumt03.tangotv.in/JAIMAHARASHTRA/index.m3u8` | HTTP_404 |
@@ -492,9 +513,9 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Jalsha Movies HD | JalshaMovies.in@HD | `http://103.229.254.25:7001/play/a0dt/index.m3u8` | ECONNREFUSED |
 | ✅ | Jan TV | JanTV.in@SD | `https://cdn-6.pishow.tv/live/10004/master.m3u8` | OK |
 | ❌ | Jan TV | JanTV.in@SD | `https://mumt03.tangotv.in/JANTV/index.m3u8` | HTTP_404 |
+| ❌ | Janam TV | JanamTV.in@SD | `https://mumt03.tangotv.in/JANAMTV/index.m3u8` | HTTP_404 |
 | ✅ | Janam TV | JanamTV.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/janamtv_nim_https/140622/janamtv/playlist.m3u8` | OK |
 | ✅ | Janam TV | JanamTV.in@SD | `https://cdn-3.pishow.tv/live/1466/master.m3u8` | OK |
-| ❌ | Janam TV | JanamTV.in@SD | `https://mumt03.tangotv.in/JANAMTV/index.m3u8` | HTTP_404 |
 | ❌ | Janapriyam TV | JanapriyamTV.in@SD | `http://103.72.101.252:8080/live/1455.m3u8` | ECONNABORTED |
 | ❌ | Janta TV | JantaTV.in@SD | `https://live.jswk.online/IK_RTPM/live/index.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Jaya Max | JayaMax.in@SD | `http://103.72.101.252:8080/live/420.m3u8` | ECONNABORTED |
@@ -508,11 +529,11 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Jothi TV | JothiTV.in@SD | `http://103.154.3.101:5001/live/2768.m3u8` | ECONNABORTED |
 | ✅ | Joy TV | JoyTV.in@SD | `https://ktismaservers.in:3412/live/joytvlive.m3u8` | OK |
 | ❌ | Joy TV | JoyTV.in@SD | `https://joy.inet.moe/live/joytv/index.m3u8` | ERR_TLS_CERT_ALTNAME_INVALID |
-| ✅ | K News India | KNewsIndia.in@SD | `https://mumt02.tangotv.in/KNEWSINDIA/index.m3u8` | OK |
+| ❌ | K News India | KNewsIndia.in@SD | `https://mumt02.tangotv.in/KNEWSINDIA/index.m3u8` | HTTP_404 |
 | ✅ | Kairali Arabia | KairaliArabia.in@SD | `https://mumt03.tangotv.in/Dsly5z3HKAIRALIARABIA/index.m3u8` | OK |
 | ❌ | Kairali Arabia | KairaliArabia.in@SD | `https://mumt03.tangotv.in/KAIRALIARABIA/index.m3u8` | HTTP_404 |
-| ✅ | Kairali News | KairaliNews.in@SD | `https://cdn-3.pishow.tv/live/1469/master.m3u8` | OK |
 | ❌ | Kairali News | KairaliNews.in@SD | `https://mumt01.tangotv.in/KAIRALINEWS/index.m3u8` | HTTP_404 |
+| ✅ | Kairali News | KairaliNews.in@SD | `https://cdn-3.pishow.tv/live/1469/master.m3u8` | OK |
 | ✅ | Kairali TV | KairaliTV.in@SD | `https://mumt01.tangotv.in/O5aw8Zn3KAIRALI/index.m3u8` | OK |
 | ❌ | Kairali TV | KairaliTV.in@SD | `https://mumt01.tangotv.in/KAIRALI/index.m3u8` | HTTP_404 |
 | ✅ | Kairali We | KairaliWe.in@SD | `https://cdn-3.pishow.tv/live/1530/master.m3u8` | OK |
@@ -523,14 +544,14 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Kalaignar TV | KalaignarTV.in@SD | `https://segment.yuppcdn.net/240122/kalaignartv/playlist.m3u8` | OK |
 | ❌ | Kalaignar TV | KalaignarTV.in@SD | `http://103.72.101.252:8080/live/1209.m3u8` | ECONNABORTED |
 | ✅ | Kalika TV | KalikaTV.in@SD | `http://server.applelive.in/kalikatv/kalikatv.m3u8` | OK |
-| ✅ | Kalinga TV | KalingaTV.in@SD | `https://cdn-4.pishow.tv/live/1470/master.m3u8` | OK |
 | ✅ | Kalinga TV | KalingaTV.in@SD | `https://server.thelegitpro.in/kalingatv/kalingatv/index.fmp4.m3u8` | OK |
+| ✅ | Kalinga TV | KalingaTV.in@SD | `https://cdn-4.pishow.tv/live/1470/master.m3u8` | OK |
 | ❌ | Kalinga TV | KalingaTV.in@SD | `https://mumt01.tangotv.in/KALINGATV/index.m3u8` | HTTP_404 |
 | ✅ | Kannur Vision | KannurVision.in@SD | `https://stream.logichost.in/kannurvision/live/playlist.m3u8` | OK |
 | ✅ | Kappa TV | KappaTV.in@SD | `https://cdn-3.pishow.tv/live/1123/master.m3u8` | OK |
-| ❌ | Kashish News | KashishNews.in@SD | `https://mumt03.tangotv.in/KASHISHNEWS/index.m3u8` | HTTP_404 |
 | ✅ | Kashish News | KashishNews.in@SD | `https://server.thelegitpro.in/kashishnews/kashishnews/index.m3u8` | OK |
 | ✅ | Kashish News | KashishNews.in@SD | `https://cdn-7.pishow.tv/live/1471/master.m3u8` | OK |
+| ❌ | Kashish News | KashishNews.in@SD | `https://mumt03.tangotv.in/KASHISHNEWS/index.m3u8` | HTTP_404 |
 | ✅ | Kaumudy TV | KaumudyTV.in@SD | `https://cdn-3.pishow.tv/live/1237/master.m3u8` | OK |
 | ✅ | Kaumudy TV | KaumudyTV.in@SD | `https://oqgdrkxby4rm-hls-live.5centscdn.com/kaumudytv/live.stream/playlist.m3u8` | OK |
 | ❌ | Kaumudy TV | KaumudyTV.in@SD | `https://mumt04.tangotv.in/KAUMUDYTV/index.m3u8` | HTTP_404 |
@@ -539,17 +560,19 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Khabar Fast | KhabarFast.in@SD | `https://mumt04.tangotv.in/KHABARFAST/index.m3u8` | HTTP_404 |
 | ✅ | Khabrain Abhi Tak | KhabrainAbhiTak.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/khabreinabhitak/playlist.m3u8` | OK |
 | ❌ | Khabrain Abhi Tak | KhabrainAbhiTak.in@SD | `https://mumt05.tangotv.in/KHABRAINABHITAK/index.m3u8` | HTTP_404 |
-| ❌ | Khushboo Bangla | KhushbooBangla.in@SD | `https://mumt01.tangotv.in/KHUSHBOOTVBANGLA/index.m3u8` | HTTP_404 |
 | ✅ | Khushboo Bangla | KhushbooBangla.in@SD | `https://cdn-4.pishow.tv/live/1473/master.m3u8` | OK |
+| ✅ | Khushboo Bangla | KhushbooBangla.in@SD | `https://trs1.aynaott.com/Khushboo/index.m3u8` | OK |
+| ❌ | Khushboo Bangla | KhushbooBangla.in@SD | `https://mumt01.tangotv.in/KHUSHBOOTVBANGLA/index.m3u8` | HTTP_404 |
 | ✅ | KITE Victers (Kerala) | KiteVicters.in@SD | `https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/playlist.m3u8` | OK |
 | ✅ | Kolkata Tv | KolkataTV.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/kolkata-tv/index.m3u8?ads.vf=XQ97azbjCMq` | OK |
+| ✅ | Kolkata TV | KolkataTV.in@SD | `https://trs1.aynaott.com/kolkatatv/index.m3u8` | OK |
 | ❌ | Kolkata TV | KolkataTV.in@SD | `https://mumt01.tangotv.in/KOLKATATV/index.m3u8` | HTTP_404 |
 | ✅ | Kolkata TV | KolkataTV.in@SD | `https://cdn.ottlive.co.in/kolkatatv/index.m3u8` | OK |
 | ✅ | KTV Bangla | KTVBangla.in@SD | `https://server.livelegitpro.in:9899/tribetv/tribetv/index.m3u8` | OK |
 | ✅ | KTV Bangla | KTVBangla.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tribe-tv/index.m3u8?ads.vf=n-PW1kNShHi` | OK |
 | ✅ | Life TV | LifeTV.in@SD | `https://lifetv.livebox.co.in/lifetvhls/lifetv.m3u8` | OK |
-| ✅ | Living India News | LivingIndiaNews.in@SD | `https://stream.ottlive.co.in/livingindia/index.m3u8` | OK |
 | ❌ | Living India News | LivingIndiaNews.in@SD | `https://mumt01.tangotv.in/LIVINGINDIANEWS/index.m3u8` | HTTP_404 |
+| ✅ | Living India News | LivingIndiaNews.in@SD | `https://stream.ottlive.co.in/livingindia/index.m3u8` | OK |
 | ✅ | Living India News | LivingIndiaNews.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/living-india-news/index.m3u8?ads.vf=wbLu_BTM9ES` | OK |
 | ❌ | Lokshahi News | LokshahiNews.in@SD | `https://see.lokshahi.live/live/index.m3u8` | ECONNABORTED |
 | ❌ | M Nadu TV | MNaduTV.in@SD | `https://mumt01.tangotv.in/MNADU/index.m3u8` | HTTP_404 |
@@ -571,29 +594,30 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Makkal TV | MakkalTV.in@SD | `https://5k8q87azdy4v-hls-live.wmncdn.net/MAKKAL/271ddf829afeece44d8732757fba1a66.sdp/playlist.m3u8` | OK |
 | ❌ | Malabar News | MalabarNews.in@SD | `http://cloud.logicwebs.in:1935/live/malabarnews/playlist.m3u8` | ECONNABORTED |
 | ❌ | Malabar News | MalabarNews.in@SD | `http://cloud.logichost.in:1935/live/malabarnews/index.m3u8` | ECONNABORTED |
-| ❌ | Malai Murasu TV | MalaiMurasuTV.in@SD | `https://amg17783-amg17783c1-amgplt0173.playout.now3.amagi.tv/playlist/amg17783-amg17783c1-amgplt0173/playlist.m3u8` | ECONNABORTED |
-| ❌ | Malai Murasu TV | MalaiMurasuTV.in@SD | `https://cdn-3.pishow.tv/live/1606/master.m3u8` | ECONNABORTED |
-| ❌ | Malar TV | MalarTV.in@SD | `https://cdn-3.pishow.tv/live/473/master.m3u8` | ECONNABORTED |
-| ❌ | Mango Mobile TV | MangoMobileTV.in@HD | `https://amg01911-mangotv-amg01911c1-xiaomi-in-1270.playouts.now.amagi.tv/playlist/amg01911-mangomassmedia-mangotv-xiaomiin/playlist.m3u8` | ECONNABORTED |
+| ❌ | Malai Murasu TV | MalaiMurasuTV.in@SD | `https://amg17783-amg17783c1-amgplt0173.playout.now3.amagi.tv/playlist/amg17783-amg17783c1-amgplt0173/playlist.m3u8` | HTTP_403_FORBIDDEN |
+| ✅ | Malai Murasu TV | MalaiMurasuTV.in@SD | `https://cdn-3.pishow.tv/live/1606/master.m3u8` | OK |
+| ✅ | Malar TV | MalarTV.in@SD | `https://cdn-3.pishow.tv/live/473/master.m3u8` | OK |
+| ❌ | Mango Mobile TV | MangoMobileTV.in@HD | `https://amg01911-mangotv-amg01911c1-xiaomi-in-1270.playouts.now.amagi.tv/playlist/amg01911-mangomassmedia-mangotv-xiaomiin/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Manorama News | ManoramaNews.in@SD | `https://mmtvnews1.akamaized.net/v1/master/673630b269b766886555eebfddd4f27f3de3ab50/mmtvNewsCampaign1/index.m3u8` | ECONNABORTED |
-| ❌ | Manoranjan Grand | ManoranjanGrand.in@SD | `https://cdn-1.pishow.tv/live/1011/master.m3u8` | ECONNABORTED |
+| ✅ | Manoranjan Grand | ManoranjanGrand.in@SD | `https://cdn-1.pishow.tv/live/1011/master.m3u8` | OK |
+| ❌ | Manoranjan Movies | ManoranjanMovies.in@SD | `https://cdn-2.pishow.tv/live/228/master.m3u8` | HTTP_404 |
 | ❌ | Manoranjan Movies | ManoranjanMovies.in@SD | `http://103.213.31.109:90/ManoranjanMovies/playlist.m3u8` | ECONNABORTED |
-| ❌ | Manoranjan Movies | ManoranjanMovies.in@SD | `https://cdn-2.pishow.tv/live/228/master.m3u8` | ECONNABORTED |
-| ❌ | Manoranjan Prime | ManoranjanPrime.in@SD | `https://cdn-4.pishow.tv/live/1474/master.m3u8` | ECONNABORTED |
+| ✅ | Manoranjan Prime | ManoranjanPrime.in@SD | `https://cdn-4.pishow.tv/live/1474/master.m3u8` | OK |
+| ✅ | Manoranjan TV | ManoranjanTV.in@SD | `https://trs1.aynaott.com/ManoranjanTV/index.m3u8` | OK |
+| ✅ | Manoranjan TV | ManoranjanTV.in@SD | `https://cdn-1.pishow.tv/live/1013/master.m3u8` | OK |
 | ❌ | Manoranjan TV | ManoranjanTV.in@SD | `http://103.213.31.109:90/ManoranjanTv/playlist.m3u8` | ECONNABORTED |
-| ❌ | Manoranjan TV | ManoranjanTV.in@SD | `https://cdn-1.pishow.tv/live/1013/master.m3u8` | ECONNABORTED |
-| ❌ | Mantavya News | MantavyaNews.in@SD | `https://mumt02.tangotv.in/MANTAVYA24X7NEWS/index.m3u8` | ECONNABORTED |
-| ❌ | Mastiii | Mastiii.in@SD | `https://mumt02.tangotv.in/MASTIII/index.m3u8` | ECONNABORTED |
+| ✅ | Mantavya News | MantavyaNews.in@SD | `https://mumt02.tangotv.in/MANTAVYA24X7NEWS/index.m3u8` | OK |
+| ❌ | Mastiii | Mastiii.in@SD | `https://mumt02.tangotv.in/MASTIII/index.m3u8` | HTTP_404 |
 | ❌ | Mathrubhumi News | MathrubhumiNews.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/mathrubhuminews_nim_https/110322/mathrubhuminews/playlist.m3u8` | ECONNABORTED |
 | ❌ | Mathrubhumi News | MathrubhumiNews.in@SD | `https://mathrubhumicdn.vidgyor.com/mathrubhumi-origin/liveabr/playlist.m3u8` | ECONNABORTED |
 | ❌ | Mathrubhumi News | MathrubhumiNews.in@SD | `https://mumt02.tangotv.in/MATHRUBHUMINEWS/index.m3u8` | ECONNABORTED |
 | ❌ | Max Movies | MaxMovies.in@HD | `https://live.maxtn.in/maxmovies/maxmovies/index.m3u8` | ECONNABORTED |
 | ❌ | Max Music | MaxMusic.in@HD | `https://live.maxtn.in/maxmusic/maxmusic/index.m3u8` | ECONNABORTED |
 | ❌ | Mayyazhi | Mayyazhi.in@SD | `http://131.153.22.8:1935/MAYYAZHI/live/playlist.m3u8` | ECONNABORTED |
-| ❌ | Mazhavil Manorama | MazhavilManorama.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/mazhavilmanorama_nim_https/050522/mazhavilmanorama/playlist.m3u8` | ECONNABORTED |
-| ❌ | Mazhavil Manorama | MazhavilManorama.in@SD | `https://cdn-3.pishow.tv/live/1479/master.m3u8` | ECONNABORTED |
-| ❌ | Mazhavil Manorama HD | MazhavilManorama.in@HD | `https://cdn-7.pishow.tv/live/1129/master.m3u8` | ECONNABORTED |
-| ❌ | MBC TV | MBCTV.in@SD | `https://mumt03.tangotv.in/MBCTV/index.m3u8` | ECONNABORTED |
+| ✅ | Mazhavil Manorama | MazhavilManorama.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/mazhavilmanorama_nim_https/050522/mazhavilmanorama/playlist.m3u8` | OK |
+| ✅ | Mazhavil Manorama | MazhavilManorama.in@SD | `https://cdn-3.pishow.tv/live/1479/master.m3u8` | OK |
+| ✅ | Mazhavil Manorama HD | MazhavilManorama.in@HD | `https://cdn-7.pishow.tv/live/1129/master.m3u8` | OK |
+| ❌ | MBC TV | MBCTV.in@SD | `https://mumt03.tangotv.in/MBCTV/index.m3u8` | HTTP_404 |
 | ❌ | Media One | MediaOne.in@SD | `https://cdn-3.pishow.tv/live/1481/master.m3u8` | ECONNABORTED |
 | ✅ | MediBizTV | MediBizTV.in@SD | `https://43wrzjnpqoxe-hls-live.wmncdn.net/marinebiztvlive/marinebiztvlive/playlist.m3u8` | OK |
 | ✅ | Mercy TV | MercyTV.in@SD | `https://5dd3981940faa.streamlock.net/mercytv/mercytv/playlist.m3u8` | OK |
@@ -605,23 +629,25 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | MH One Movies | MHOneMovies.in@SD | `https://mumt03.tangotv.in/MHONEMOVIE/index.m3u8` | HTTP_404 |
 | ❌ | MH One Shraddha | MHOneShraddha.in@SD | `https://paramount.jswk.online/shraddhamhone/index.m3u8` | ENOTFOUND |
 | ❌ | Mirror Now | MirrorNow.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/mirror-now/master.m3u8?ads.vf=T6rwD5JBif4` | HTTP_504 |
-| ✅ | Mirror Now | MirrorNow.in@SD | `https://pubads.g.doubleclick.net/ssai/event/DXkHhH2QSnma-HnE3QJqlA/master.m3u8` | OK |
 | ✅ | Mirror Now | MirrorNow.in@SD | `https://dai.google.com/linear/hls/event/ClPOullTQky5vGPf7fMZ8g/master.m3u8` | OK |
+| ✅ | Mirror Now | MirrorNow.in@SD | `https://pubads.g.doubleclick.net/ssai/event/DXkHhH2QSnma-HnE3QJqlA/master.m3u8` | OK |
 | ✅ | MK Six | MKSix.in@SD | `https://cdn-3.pishow.tv/live/1253/master.m3u8` | OK |
 | ✅ | MNTV | MarutamTV.in@SD | `https://mntv.livebox.co.in/mntvhls/live.m3u8` | OK |
 | ❌ | MNX HD | MNX.in@HD | `http://149.71.34.166:8000/play/a05u/index.m3u8` | ECONNABORTED |
-| ✅ | Moon TV | MoonTV.in@SD | `https://cdn-4.pishow.tv/live/1121/master.m3u8` | OK |
 | ✅ | Moon TV | MoonTV.in@SD | `https://player.mslivestream.net/mslive/e10bb900976df9177b9a080314f26f86.sdp/index.m3u8` | OK |
+| ✅ | Moon TV | MoonTV.in@SD | `https://cdn-4.pishow.tv/live/1121/master.m3u8` | OK |
 | ❌ | Movieplex | MoviePlex.in@SD | `https://mumt04.tangotv.in/MOVIEPLEX/index.m3u8` | HTTP_404 |
+| ✅ | MoviePlex | MoviePlex.in@SD | `https://mumt04.tangotv.in/m18aqlK4MOVIEPLEX/index.m3u8` | OK |
 | ❌ | Movies Now + | MoviesNowPlus.in@SD | `http://149.71.34.166:8000/play/a05t/index.m3u8` | ECONNABORTED |
 | ❌ | Movies Now HD | MoviesNow.in@HD | `http://103.161.153.165:8000/play/mnh/index.m3u8` | ECONNREFUSED |
 | ❌ | MTV | MTV.in@SD | `http://103.72.101.252:8080/live/248.m3u8` | ECONNABORTED |
 | ❌ | MTV HD | MTV.in@HD | `http://149.71.34.166:8000/play/a00p/index.m3u8` | ECONNABORTED |
 | ✅ | Munsif Tv | MunsifTV.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/munsif-tv/index.m3u8?ads.vf=bgM_sblbBYC` | OK |
 | ✅ | Music India | MusicIndia.in@SD | `https://cdn-2.pishow.tv/live/226/master.m3u8` | OK |
+| ❌ | Music India | MusicIndia.in@SD | `https://trs1.aynaott.com/MusicIndia/index.m3u8` | ECONNABORTED |
 | ✅ | Nagaland TV | NagalandTV.in@SD | `https://cdn-6.pishow.tv/live/10014/master.m3u8` | OK |
 | ✅ | Nambikkai TV | NambikkaiTV.in@SD | `https://cdn-3.pishow.tv/live/1389/master.m3u8` | OK |
-| ❌ | Nambikkai TV | NambikkaiTV.in@SD | `https://mumt02.tangotv.in/NAMBIKKAITV/index.m3u8` | HTTP_404 |
+| ✅ | Nambikkai TV | NambikkaiTV.in@SD | `https://mumt02.tangotv.in/NAMBIKKAITV/index.m3u8` | OK |
 | ✅ | Namdhari | NamdhariTV.in@SD | `https://namdhari.tv/live/sbs1.m3u8` | OK |
 | ❌ | Nandighosha TV | NandighoshaTV.in@SD | `https://www.nandighoshatvlive.com/hls/stream/index.m3u8` | UNABLE_TO_VERIFY_LEAF_SIGNATURE |
 | ❌ | National Geographic HD | NationalGeographic.in@HD | `http://149.71.34.166:8002/play/a013/index.m3u8` | ECONNABORTED |
@@ -643,12 +669,15 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | NE News | NENews.in@SD | `https://mumt05.tangotv.in/NENEWS/index.m3u8` | HTTP_404 |
 | ✅ | Nepal 1 | Nepal1.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/nepal1/chunks.m3u8` | OK |
 | ✅ | Nepal 1 | Nepal1.in@SD | `https://cdn-6.pishow.tv/live/1490/master.m3u8` | OK |
+| ❌ | Network 10 | Network10.in@SD | `https://trs1.aynaott.com/Network10/index.m3u8` | HTTP_404 |
 | ✅ | Network 10 | Network10.in@SD | `https://network10.livebox.co.in/network10hls/live.m3u8` | OK |
+| ❌ | News 1 India | News1India.in@SD | `https://trs1.aynaott.com/News1India/index.m3u8` | HTTP_404 |
 | ✅ | News 1 India | News1India.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/news1india/playlist.m3u8` | OK |
 | ✅ | News 11 | News11.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/news11bharat/playlist.m3u8` | OK |
-| ✅ | News 11 | News11.in@SD | `https://mumt02.tangotv.in/NEWS11BHARAT/index.m3u8` | OK |
+| ❌ | News 11 | News11.in@SD | `https://mumt02.tangotv.in/NEWS11BHARAT/index.m3u8` | HTTP_404 |
 | ✅ | News 1st | News1st.in@SD | `https://cdn-3.pishow.tv/live/268/master.m3u8` | OK |
 | ✅ | News 24 | News24.in@SD | `https://vidcdn.vidgyor.com/news24-origin/liveabr/playlist.m3u8` | OK |
+| ✅ | News 24 | News24.in@SD | `https://trs1.aynaott.com/News24/index.m3u8` | OK |
 | ❌ | News 24 MP & Chhattisgarh | News24MPChhattisgarh.in@SD | `https://mumt04.tangotv.in/NEWS24MPCG/index.m3u8` | HTTP_404 |
 | ✅ | News 7 Tamil | News7Tamil.in@SD | `https://segment.yuppcdn.net/240122/news7/playlist.m3u8` | OK |
 | ✅ | News 7 Tamil | News7Tamil.in@SD | `https://cdn-3.pishow.tv/live/1498/master.m3u8` | OK |
@@ -657,11 +686,12 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | News India 24X7 | NewsIndia24x7.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/news-india-24x7/index.m3u8?ads.vf=4diMqEgh9hm` | HTTP_504 |
 | ✅ | News J | NewsJ.in@SD | `https://cdn-3.pishow.tv/live/1279/master.m3u8` | OK |
 | ✅ | News Live | NewsLive.in@SD | `https://cdn-6.pishow.tv/live/10011/master.m3u8` | OK |
-| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://d18a8tqmogafg2.cloudfront.net/newsmalayalam/index.m3u8` | ENOTFOUND |
-| ✅ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://cdn-3.pishow.tv/live/1629/master.m3u8` | OK |
-| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/news-malayalam-24x7/index.m3u8?ads.vf=-yNYTSQyYSy` | HTTP_504 |
-| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://mumt03.tangotv.in/NEWSMALAYALAM24X7/index.m3u8` | HTTP_404 |
+| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://d18a8tqmogafg2.cloudfront.net/newsmalayalam/index.m3u8` | ECONNABORTED |
+| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://cdn-3.pishow.tv/live/1629/master.m3u8` | ECONNABORTED |
+| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://mumt03.tangotv.in/NEWSMALAYALAM24X7/index.m3u8` | ECONNABORTED |
+| ❌ | News Malayalam 24x7 | NewsMalayalam24x7.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/news-malayalam-24x7/index.m3u8?ads.vf=-yNYTSQyYSy` | ECONNABORTED |
 | ✅ | News Nation | NewsNation.in@SD | `https://d3qs3d2rkhfqrt.cloudfront.net/out/v1/6cd2f649739a45ca9de1daf81cc7d0f2/index.m3u8` | OK |
+| ❌ | News Nation | NewsNation.in@SD | `https://trs1.aynaott.com/NewsNation/index.m3u8` | HTTP_404 |
 | ✅ | News Nation | NewsNation.in@SD | `https://cdn-2.pishow.tv/live/1493/master.m3u8` | OK |
 | ❌ | News Nation | NewsNation.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/news-nation/index.m3u8?ads.vf=YPTdhDI1bvy` | HTTP_504 |
 | ❌ | News Tamil 24x7 | NewsTamil24x7.in@SD | `https://d18a8tqmogafg2.cloudfront.net/newstamil/index.m3u8` | ENOTFOUND |
@@ -674,8 +704,8 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | News18 Gujarati | News18Gujarati.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_Gujarati_NW18_MOB/output01/master.m3u8` | OK |
 | ✅ | News18 India | News18India.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_India_NW18_MOB/output01/master.m3u8` | OK |
 | ✅ | News18 Kannada | News18Kannada.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_Kannada_NW18_MOB/output01/master.m3u8` | OK |
-| ✅ | News18 Kerala | News18Kerala.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_Kerala_NW18_MOB/output01/master.m3u8` | OK |
-| ❌ | News18 Kerala | News18Kerala.in@SD | `https://nw18live.cdn.jio.com/bpk-tv/News18_Kerala_NW18_MOB/output01/index.m3u8` | HTTP_451 |
+| ❌ | News18 Kerala | News18Kerala.in@SD | `https://nw18live.cdn.jio.com/bpk-tv/News18_Kerala_NW18_MOB/output01/index.m3u8` | ECONNABORTED |
+| ❌ | News18 Kerala | News18Kerala.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_Kerala_NW18_MOB/output01/master.m3u8` | ECONNABORTED |
 | ✅ | News18 Madhya Pradesh/Chhattisgarh | News18MadhyaPradeshChhattisgarh.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_MP_Chhattisgarh_NW18_MOB/output01/master.m3u8` | OK |
 | ✅ | News18 Marathi | News18Marathi.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_Lokmat_NW18_MOB/output01/master.m3u8` | OK |
 | ✅ | News18 Odia | News18Odia.in@SD | `https://n18syndication.akamaized.net/bpk-tv/News18_Odia_NW18_MOB/output01/master.m3u8` | OK |
@@ -687,6 +717,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | News9Live | News9Live.in@SD | `https://amg01106-amg01106c3-amgplt0844.playout.now3.amagi.tv/ts-ap-s1-n1/playlist/amg01106-amg01106c3-amgplt0844/playlist.m3u8` | OK |
 | ✅ | News9Live | News9Live.in@SD | `https://vg-tv9yupp.vgcdn.net/vglive-sk-526536/v1/019e01ace8511ea540a871e333268/019e01ad3da31ea55784752988551/main.m3u8` | OK |
 | ✅ | NewsTime Bangla | NewsTimeBangla.in@SD | `https://cdn-2.pishow.tv/live/1494/master.m3u8` | OK |
+| ❌ | NewsTime Bangla | NewsTimeBangla.in@SD | `https://trs1.aynaott.com/NewsTime/index.m3u8` | ECONNABORTED |
 | ✅ | Nick HD+ | NickHDPlus.in@HD | `http://116.90.120.157:8000/play/a0i3/index.m3u8` | OK |
 | ❌ | Nick HD+ | NickHDPlus.in@HD | `http://103.72.101.252:8080/live/1226.m3u8` | ECONNABORTED |
 | ❌ | Nickelodeon | Nickelodeon.in@SD | `http://149.71.34.166:8000/play/a00u/index.m3u8` | ECONNABORTED |
@@ -697,8 +728,8 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | NKR TV Kannada | NKRTVKannada.in@SD | `https://mumt05.tangotv.in/NKRTV/index.m3u8` | HTTP_404 |
 | ✅ | Northeast Live | NortheastLive.in@HD | `https://server.thelegitpro.in/northeastlive/northeastlive/index.fmp4.m3u8` | OK |
 | ✅ | NTC TV | NTCTV.in@SD | `https://galaxyott.live/hls/ntv.m3u8` | OK |
-| ✅ | NTV Telugu | NTVTelugu.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/ntv_nim_https/110322/ntv/playlist.m3u8` | OK |
 | ✅ | NTV Telugu | NTVTelugu.in@SD | `https://mumbai-edge.smartplaytv.in/NTVTelugu/index.m3u8` | OK |
+| ✅ | NTV Telugu | NTVTelugu.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/ntv_nim_https/110322/ntv/playlist.m3u8` | OK |
 | ✅ | NTV Telugu | NTVTelugu.in@SD | `https://cdn-1.pishow.tv/live/383/master.m3u8` | OK |
 | ✅ | Odisha TV | OdishaTV.in@SD | `https://livetv.tarangplus.in/otv-origin/live/playlist.m3u8` | OK |
 | ✅ | Odisha TV | OdishaTV.in@SD | `https://cdn-2.pishow.tv/live/1600/master.m3u8` | OK |
@@ -713,13 +744,14 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Pasand TV | PasandTV.in@SD | `https://mumt01.tangotv.in/PASANDTV/index.m3u8` | HTTP_404 |
 | ❌ | Peace Of Mind TV | PeaceofMindTV.in@SD | `https://mumt03.tangotv.in/PEACEOFMIND/index.m3u8` | HTTP_404 |
 | ✅ | Peace TV Bangla | PeaceTVBangla.ae@SD | `https://dzkyvlfyge.erbvr.com/PeaceTvBangla/index.m3u8` | OK |
+| ❌ | Peace TV Bangla | PeaceTVBangla.ae@SD | `https://trs1.aynaott.com/PeaceTvBanglaHD/index.m3u8` | ECONNABORTED |
 | ✅ | Peace TV Chinese | PeaceTVChinese.ae@SD | `https://dzkyvlfyge.erbvr.com/PeaceTvChinese/index.m3u8` | OK |
 | ✅ | Peace TV English | PeaceTVEnglish.ae@SD | `https://dzkyvlfyge.erbvr.com/PeaceTvEnglish/index.m3u8` | OK |
 | ✅ | Peace TV Urdu | PeaceTVUrdu.ae@SD | `https://dzkyvlfyge.erbvr.com/PeaceTvUrdu/index.m3u8` | OK |
 | ✅ | Pear TV | PearTV.in@SD | `https://mumt01.tangotv.in/O5aw8Zn3PEARTV/index.m3u8` | OK |
 | ✅ | Peppers TV | PeppersTV.in@SD | `https://cdn-2.pishow.tv/live/1383/master.m3u8` | OK |
-| ✅ | Pitaara | Pitaara.in@SD | `http://212.102.34.8:9080/Pitaara/index.m3u8` | OK |
 | ✅ | Pitaara | Pitaara.in@SD | `https://vg-pitaaratvlive.akamaized.net/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-583798/playlist.m3u8` | OK |
+| ❌ | Pitaara | Pitaara.in@SD | `http://212.102.34.8:9080/Pitaara/index.m3u8` | ECONNREFUSED |
 | ✅ | Pitaara TV | Pitaara.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/pitaara-tv/playlist.m3u8?ads.vf=AwPO_-R4aNq` | OK |
 | ✅ | PMC Telugu | PMCTelugu.in@SD | `https://mumbai-edge.smartplaytv.in/PMC/index.m3u8` | OK |
 | ✅ | Polimer News | PolimerNews.in@SD | `https://live-cf-polimernews.dailyhunt.in/master.m3u8` | OK |
@@ -730,12 +762,12 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Prag News | PragNews.in@SD | `https://mumt05.tangotv.in/PRAGNEWS/index.m3u8` | HTTP_404 |
 | ❌ | Prameya News7 | PrameyaNews7.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/prameya-news7/index.m3u8?ads.vf=OOr8NB75jnK` | HTTP_504 |
 | ✅ | Prarthana TV | PrarthanaTV.in@SD | `https://livetv.tarangplus.in/prarthana-origin/live/playlist.m3u8` | OK |
-| ✅ | Pratham Khabar 24x7 | PrathamKhabar24x7.in@SD | `https://livelegitpro.in/hls2/newstime/index.m3u8` | OK |
 | ✅ | Pratham Khabar 24x7 | PrathamKhabar24x7.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/pratham-khabar-24x7/index.m3u8?ads.vf=BVw-POiR-D8` | OK |
+| ✅ | Pratham Khabar 24x7 | PrathamKhabar24x7.in@SD | `https://livelegitpro.in/hls2/newstime/index.m3u8` | OK |
 | ✅ | Pratidin Time | PratidinTime.in@SD | `https://server.thelegitpro.in/pratidintime/pratidintime/index.fmp4.m3u8` | OK |
 | ❌ | Pravah Picture HD | PravahPicture.in@HD | `http://149.71.34.166:8000/play/a06f/index.m3u8` | ECONNABORTED |
-| ✅ | Pravasi Channel | PravasiChannel.in@SD | `https://m6gdavepdn93-hls-live.5centscdn.com/pravasi/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8` | OK |
-| ✅ | Prime News | PrimeNews.in@SD | `https://mumt02.tangotv.in/PRIMENEWS/index.m3u8` | OK |
+| ❌ | Pravasi Channel | PravasiChannel.in@SD | `https://m6gdavepdn93-hls-live.5centscdn.com/pravasi/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8` | ECONNABORTED |
+| ❌ | Prime News | PrimeNews.in@SD | `https://mumt02.tangotv.in/PRIMENEWS/index.m3u8` | HTTP_404 |
 | ✅ | Prime9 News | Prime9News.in@SD | `https://mumbai-edge.smartplaytv.in/Prime9News/index.m3u8` | OK |
 | ✅ | Prudent Media | PrudentMedia.in@SD | `https://prudentmcdn.rixcast.com/prudentm.m3u8` | OK |
 | ✅ | PTC Chakde | PTCChakde.in@SD | `https://cdn-1.pishow.tv/live/449/master.m3u8` | OK |
@@ -757,12 +789,14 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Punjabi Hits | PunjabiHits.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/punjabi-hits/index.m3u8?ads.vf=QAmA4r77J0G` | OK |
 | ❌ | Punjabi Zindabad | PunjabiZindabadTV.in@SD | `http://stream.pztv.online/pztv/playlist.m3u8` | ENOTFOUND |
 | ✅ | Puthiya Thalaimurai | PuthiyaThalaimurai.in@SD | `https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8` | OK |
-| ✅ | Puthiya Thalaimurai | PuthiyaThalaimurai.in@SD | `https://cdn-3.pishow.tv/live/1261/master.m3u8` | OK |
 | ✅ | Puthiya Thalaimurai | PuthiyaThalaimurai.in@SD | `https://mumt07.tangotv.in/zHjX9OFlPUTHIYAEXPRESS/index.m3u8` | OK |
+| ✅ | Puthiya Thalaimurai | PuthiyaThalaimurai.in@SD | `https://cdn-3.pishow.tv/live/1261/master.m3u8` | OK |
 | ✅ | Puthuyugam TV | PuthuyugamTV.in@SD | `https://mumt04.tangotv.in/m18aqlK4PUTHUYUGAMTV/index.m3u8` | OK |
 | ❌ | Puthuyugam TV | PuthuyugamTV.in@SD | `https://mumt04.tangotv.in/PUTHUYUGAMTV/index.m3u8` | HTTP_404 |
 | ✅ | R Plus | RPlus.in@SD | `https://thelegitpro.in/pntv/rplusnews24x7/index.m3u8` | OK |
+| ❌ | R Plus | RPlus.in@SD | `https://trs1.aynaott.com/Rplus/index.m3u8` | ECONNABORTED |
 | ✅ | R Plus Gold | RPlusGold.in@SD | `https://cdn-4.pishow.tv/live/1231/master.m3u8` | OK |
+| ❌ | R Plus Gold | RPlusGold.in@SD | `https://trs1.aynaott.com/RplusGold/index.m3u8` | ECONNABORTED |
 | ✅ | Raftaar Media | RaftaarMedia.in@SD | `https://6n3yorwpy9ok-hls-live.5centscdn.com/raftaarmedia/243bd1ce0387f18005abfc43b001646a.sdp/playlist.m3u8` | OK |
 | ❌ | Raj Digital Plus | RajDigitalPlus.in@SD | `https://livestream.rajtv.tv/hlslive/Admin/px08241087/live/RajTV_Digital_plus/master_1.m3u8` | UNABLE_TO_VERIFY_LEAF_SIGNATURE |
 | ❌ | Raj Musix Kannada | RajMusixKannada.in@SD | `https://mumt01.tangotv.in/RAJMUSIXKANDA/index.m3u8` | HTTP_404 |
@@ -771,25 +805,27 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Raj Musix Telugu | RajMusixTelugu.in@SD | `https://cdn-1.pishow.tv/live/1213/master.m3u8` | OK |
 | ❌ | Raj News | RajNews.in@SD | `http://103.72.101.252:8080/live/767.m3u8` | ECONNABORTED |
 | ❌ | Raj News Kannada | RajNewsKannada.in@SD | `https://mumt03.tangotv.in/RAJNEWSKANDA/index.m3u8` | HTTP_404 |
-| ❌ | Raj News Malayalam | RajNewsMalayalam.in@SD | `https://mumt04.tangotv.in/RAJNEWSMALAYALAM/index.m3u8` | HTTP_404 |
+| ❌ | Raj News Malayalam | RajNewsMalayalam.in@SD | `https://mumt04.tangotv.in/RAJNEWSMALAYALAM/index.m3u8` | ECONNABORTED |
 | ❌ | Raj News Telugu | RajNewsTelugu.in@SD | `https://mumt04.tangotv.in/RAJNEWSTELUGU/index.m3u8` | HTTP_404 |
 | ❌ | Raj Pariwar | RajPariwar.in@SD | `http://103.72.101.252:8080/live/533.m3u8` | ECONNABORTED |
 | ❌ | Raj TV | RajTV.in@SD | `http://103.72.101.252:8080/live/707.m3u8` | ECONNABORTED |
 | ✅ | Ramdhenu | Ramdhenu.in@SD | `https://cdn-7.pishow.tv/live/10016/master.m3u8` | OK |
 | ❌ | Ramdhenu | Ramdhenu.in@SD | `https://mumt01.tangotv.in/RAMDHENU/index.m3u8` | HTTP_404 |
-| ✅ | Rang | Rang.in@SD | `https://cdn-7.pishow.tv/live/10017/master.m3u8` | OK |
 | ❌ | Rang | Rang.in@SD | `https://mumt01.tangotv.in/RANG/index.m3u8` | HTTP_404 |
-| ✅ | RC Music | RCMusic.in@SD | `https://view.rcserver.in/tmp_hls1/stream/index.m3u8` | OK |
+| ✅ | Rang | Rang.in@SD | `https://cdn-7.pishow.tv/live/10017/master.m3u8` | OK |
 | ❌ | RC Music | RCMusic.in@SD | `https://view.rcserver.in/tmp_hls2/stream/index.m3u8` | HTTP_404 |
+| ✅ | RC Music | RCMusic.in@SD | `https://view.rcserver.in/tmp_hls1/stream/index.m3u8` | OK |
 | ✅ | RDX Goa | RDXGoa.in@SD | `https://g5nl6xoalpq6-hls-live.5centscdn.com/rdxgoa/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8` | OK |
-| ✅ | Real News Kerala | RealNewsKerala.in@SD | `https://bk7l298nyx53-hls-live.5centscdn.com/realnews/e7dee419f91aa9e65939d3677fb9c4f5.sdp/playlist.m3u8` | OK |
+| ❌ | Real News Kerala | RealNewsKerala.in@SD | `https://bk7l298nyx53-hls-live.5centscdn.com/realnews/e7dee419f91aa9e65939d3677fb9c4f5.sdp/playlist.m3u8` | ECONNABORTED |
 | ✅ | Rengoni | Rengoni.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/rengonitv/playlist.m3u8` | OK |
-| ✅ | Reporter TV | ReporterTV.in@SD | `https://segment.yuppcdn.net/050522/reporter/playlist.m3u8` | OK |
-| ✅ | Reporter TV | ReporterTV.in@SD | `https://cdn-2.pishow.tv/live/1510/master.m3u8` | OK |
+| ❌ | Reporter TV | ReporterTV.in@SD | `https://segment.yuppcdn.net/050522/reporter/playlist.m3u8` | ECONNABORTED |
+| ❌ | Reporter TV | ReporterTV.in@SD | `https://cdn-2.pishow.tv/live/1510/master.m3u8` | ECONNABORTED |
+| ✅ | Republic Bangla | RepublicBangla.in@SD | `https://trs1.aynaott.com/R_Bangla/index.m3u8` | OK |
 | ✅ | Republic Bangla | RepublicBangla.in@SD | `https://vg-republictvlive.akamaized.net/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-456368/main.m3u8` | OK |
 | ✅ | Republic Bangla | RepublicBangla.in@SD | `https://cdn-4.pishow.tv/live/270/master.m3u8` | OK |
 | ✅ | Republic Bharat | RepublicBharat.in@SD | `https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/RepublicBharat.m3u8` | OK |
 | ✅ | Republic Bharat | RepublicBharat.in@SD | `https://vg-republictvlive.akamaized.net/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/vglive-sk-275673/main.m3u8` | OK |
+| ✅ | Republic Bharat | RepublicBharat.in@SD | `https://trs1.aynaott.com/RepublicTVBharat/index.m3u8` | OK |
 | ✅ | Republic Bharat | RepublicBharat.in@SD | `https://cdn-2.pishow.tv/live/1053/master.m3u8` | OK |
 | ✅ | Republic Kannada | RepublicKannada.in@SD | `https://vg-republictvlive.akamaized.net/ptnr-republicweb/title-Republic_TV_Kannada/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/1acd1ce1-c6a7-4ae4-afa1-133ffb111ebb/main.m3u8` | OK |
 | ✅ | Republic Kannada | RepublicKannada.in@SD | `https://cdn-3.pishow.tv/live/298/master.m3u8` | OK |
@@ -801,31 +837,34 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Roja TV | RojaTV.in@SD | `https://live.rojatv.cloud/rojatv/rojatv/index.m3u8` | OK |
 | ✅ | Romedy Now | RomedyNow.in@SD | `http://103.157.248.140:8000/play/a015/index.m3u8` | OK |
 | ✅ | Rongeen Tv | RongeenTV.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/rongeen-tv/index.m3u8?ads.vf=omZ-ScCp1GC` | OK |
-| ✅ | Rongeen TV | RongeenTV.in@SD | `https://server.thelegitpro.in/rongeentv/rongeentv/index.m3u8` | OK |
 | ✅ | Rongeen TV | RongeenTV.in@SD | `https://cdn-4.pishow.tv/live/1029/master.m3u8` | OK |
+| ✅ | Rongeen TV | RongeenTV.in@SD | `https://trs1.aynaott.com/RongeenTV/index.m3u8` | OK |
+| ✅ | Rongeen TV | RongeenTV.in@SD | `https://server.thelegitpro.in/rongeentv/rongeentv/index.m3u8` | OK |
 | ✅ | Rozana Spokesman | RozanaSpokesman.in@SD | `https://live1.ottlive.co.in/spokesman/spokesman/index.m3u8` | OK |
 | ✅ | RT India | RTIndia.in@HD | `https://rt-india.rttv.com/dvr/rtindia/playlist.m3u8` | OK |
 | ❌ | Rupasi Bangla | RupasiBangla.in@SD | `https://cdn-4.pishow.tv/live/1039/master.m3u8` | HTTP_404 |
 | ✅ | Rupasi Bangla | RupasiBangla.in@SD | `https://mumt05.tangotv.in/87NeALx2RUPASIBANGLA/index.m3u8` | OK |
+| ❌ | Rupasi Bangla | RupasiBangla.in@SD | `https://trs1.aynaott.com/RupshiBangla/index.m3u8` | ECONNABORTED |
 | ✅ | Saam TV | SaamTV.in@SD | `https://cdn-3.pishow.tv/live/437/master.m3u8` | OK |
 | ❌ | Sach Bedhadak | SachBedhadak.in@SD | `https://mumt04.tangotv.in/SACHBEDHADAK/index.m3u8` | HTTP_404 |
 | ✅ | Sada TV | SADATV.in@SD | `http://cdn12.henico.net:8080/live/sadatv/index.m3u8` | OK |
 | ✅ | Sadhna | Sadhna.in@SD | `https://6n3yow8pl9ok-hls-live.5centscdn.com/sadhanalivetv/live.stream/playlist.m3u8` | OK |
+| ✅ | Sadhna Plus News | SadhnaPlusNews.in@SD | `https://trs1.aynaott.com/SadhnaPrimeNews/index.m3u8` | OK |
 | ✅ | Sadhna Plus News | SadhnaPlusNews.in@SD | `https://6n3yow8pl9ok-hls-live.5centscdn.com/sadhananewstv/live.stream/playlist.m3u8` | OK |
 | ❌ | Sadhna Plus News | SadhnaPlusNews.in@SD | `https://mumt03.tangotv.in/SADHNAPLUSNEWS/index.m3u8` | HTTP_404 |
 | ✅ | Safari TV | SafariTV.in@SD | `https://cdn-6.pishow.tv/live/1513/master.m3u8` | OK |
 | ✅ | Safari TV | SafariTV.in@SD | `https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/playlist.m3u8` | OK |
 | ❌ | Sahana News | SahanaNews.in@SD | `https://mumt03.tangotv.in/SAHANANEWS/index.m3u8` | HTTP_404 |
-| ✅ | Sai TV | SaiTV.in@SD | `https://cdn-3.pishow.tv/live/1235/master.m3u8` | OK |
 | ❌ | Sai TV | SaiTV.in@SD | `https://mumt03.tangotv.in/SAITVTAMILDEVOTIONAL/index.m3u8` | HTTP_404 |
+| ✅ | Sai TV | SaiTV.in@SD | `https://cdn-3.pishow.tv/live/1235/master.m3u8` | OK |
 | ✅ | Sai TV | SaiTV.in@SD | `https://account31.livebox.co.in/saitvhls/live.m3u8` | OK |
-| ✅ | Sairam TV | SairamTV.in@SD | `https://cdn-3.pishow.tv/live/1611/master.m3u8` | OK |
 | ❌ | Sairam TV | SairamTV.in@SD | `https://mumt04.tangotv.in/SAIRAMTV/index.m3u8` | HTTP_404 |
+| ✅ | Sairam TV | SairamTV.in@SD | `https://cdn-3.pishow.tv/live/1611/master.m3u8` | OK |
 | ❌ | Sakshi Tv | SakshiTV.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/sakshi-tv/index.m3u8?ads.vf=V-hlmSQNYO4` | HTTP_504 |
 | ✅ | Sakshi TV | SakshiTV.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/sakshi_nim_https/240122/sakshi/playlist.m3u8` | OK |
 | ✅ | Sakshi TV | SakshiTV.in@SD | `https://cdn-1.pishow.tv/live/409/master.m3u8` | OK |
-| ✅ | Salaam TV | SalaamTV.in@SD | `https://d2o3r1shda7xvv.cloudfront.net/index_5.m3u8` | OK |
 | ✅ | Salaam TV | SalaamTV.in@SD | `https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zeesalaam/v1/manifest/611d79b11b77e2f571934fd80ca1413453772ac7/426c6db7-595e-4aa8-859c-7e86ed2811d0/af896be5-4743-41fc-8b6a-eb05e44f3a6e/3.m3u8` | OK |
+| ✅ | Salaam TV | SalaamTV.in@SD | `https://d2o3r1shda7xvv.cloudfront.net/index_5.m3u8` | OK |
 | ✅ | Salvation TV | SalvationTV.in@SD | `https://ktismaservers.in:3902/live/salvationtvlive.m3u8` | OK |
 | ✅ | Samachar Plus | SamacharPlus.in@SD | `https://cdn-2.pishow.tv/live/269/master.m3u8` | OK |
 | ❌ | Samachar Plus 24x7 | SamacharPlus24x7.in@SD | `https://mumt05.tangotv.in/VERTENTSAMACHARPLUS/index.m3u8` | HTTP_404 |
@@ -835,6 +874,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Sana Tv | SanaTV.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/sana-tv/index.m3u8?ads.vf=VcGQSvUuGWi` | HTTP_504 |
 | ✅ | Sana TV | SanaTV.in@SD | `https://vglivessai.akamaized.net/us/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/b6d9e864-ec16-410a-804d-ccf8f720bfaa/index.m3u8` | OK |
 | ❌ | Sandesh News | SandeshNews.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/sandesh-news/index.m3u8?ads.vf=-cicf8IVlO8` | HTTP_504 |
+| ✅ | Sangeet Bangla | SangeetBangla.in@SD | `https://trs1.aynaott.com/SangeetBangla/index.m3u8` | OK |
 | ✅ | Sangeet Bangla | SangeetBangla.in@SD | `https://cdn-4.pishow.tv/live/1143/master.m3u8` | OK |
 | ✅ | Sangeet Bhojpuri | SangeetBhojpuri.in@SD | `https://cdn-4.pishow.tv/live/1293/master.m3u8` | OK |
 | ❌ | Sangeet Bhojpuri | SangeetBhojpuri.in@SD | `http://103.213.31.109:90/SangeetBhojpuri/playlist.m3u8` | ECONNABORTED |
@@ -856,16 +896,17 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Sathiyam TV | SathiyamTV.in@SD | `https://live-cf-sathiyamtv.dailyhunt.in/master.m3u8` | OK |
 | ✅ | Satsang TV | SatsangTV.in@SD | `https://d2vfwvjxwtwq1t.cloudfront.net/out/v1/6b24239d5517495b986e7705490c6e65/index.m3u8` | OK |
 | ✅ | Satsang Web TV | SatsangWebTV.in@SD | `https://d1ji7e9jbzm5g8.cloudfront.net/out/v1/769f22f64d80442889306b9c4abea63c/index.m3u8` | OK |
-| ❌ | Shalini TV | ShaliniTV.in@SD | `https://stream.singamcloud.in/shalinitv/shalinitv/index.m3u8` | ECONNABORTED |
-| ✅ | Shalom | Shalom.in@SD | `https://d2c4zqo2rb5uf1.cloudfront.net/master.m3u8` | OK |
-| ✅ | Shalom Global | Shalom.in@Global | `https://d28xtgmk9tfk6b.cloudfront.net/master.m3u8` | OK |
-| ✅ | Shekinah TV | ShekinahTV.in@SD | `https://livetv.timeiptv.in/ShekinahNewsIndia/955ad3298db330b5ee880c2c9e6f23a0.sdp/playlist.m3u8` | OK |
+| ❌ | Shalini TV | ShaliniTV.in@SD | `https://stream.singamcloud.in/shalinitv/shalinitv/index.m3u8` | HTTP_404 |
+| ❌ | Shalom | Shalom.in@SD | `https://d2c4zqo2rb5uf1.cloudfront.net/master.m3u8` | ECONNABORTED |
+| ❌ | Shalom Global | Shalom.in@Global | `https://d28xtgmk9tfk6b.cloudfront.net/master.m3u8` | ECONNABORTED |
+| ❌ | Shekinah TV | ShekinahTV.in@SD | `https://livetv.timeiptv.in/ShekinahNewsIndia/955ad3298db330b5ee880c2c9e6f23a0.sdp/playlist.m3u8` | ECONNABORTED |
 | ✅ | Shemaroo Filmi Gaane | ShemarooFilmiGaane.in@HD | `https://prod-runn.cdn.runn.tv/shemaroo/stream/smrfgn/playlist.m3u8` | OK |
 | ❌ | Shemaroo Filmi Gaane | ShemarooFilmiGaane.in@HD | `http://103.213.31.109:90/ShemarooFilmiGaane/playlist.m3u8` | ECONNABORTED |
-| ✅ | Shemaroo Josh | ShemarooJosh.in@SD | `http://103.175.73.12:8080/live/21/21_0.m3u8` | OK |
 | ✅ | Shemaroo Josh | ShemarooJosh.in@SD | `https://airtelapp.shemaroo.com/shemarooChumbakTV/smil:shemarooChumbakTVadp.smil/playlist.m3u8` | OK |
+| ✅ | Shemaroo Josh | ShemarooJosh.in@SD | `http://103.175.73.12:8080/live/21/21_0.m3u8` | OK |
 | ❌ | Shemaroo Josh | ShemarooJosh.in@SD | `http://103.213.31.109:90/ChumbakTv/playlist.m3u8` | ECONNABORTED |
-| ❌ | Shemaroo Marathi Bana | ShemarooMarathiBana.in@SD | `https://airtelapp.shemaroo.com/marathibana/smil:marathibanaadp.smil/playlist.m3u8]` | ECONNABORTED |
+| ❌ | Shemaroo Marathi Bana | ShemarooMarathiBana.in@SD | `https://airtelapp.shemaroo.com/marathibana/smil:marathibanaadp.smil/playlist.m3u8]` | HTTP_404 |
+| ✅ | Shemaroo TV | ShemarooTV.in@SD | `https://trs1.aynaott.com/ShemarooTV/index.m3u8` | OK |
 | ✅ | Shemaroo TV | ShemarooTV.in@SD | `https://airtelapp.shemaroo.com/shemarootv/smil:shemarootvadp.smil/playlist.m3u8` | OK |
 | ✅ | Shemaroo TV | ShemarooTV.in@SD | `https://cdn-3.pishow.tv/live/230/master.m3u8` | OK |
 | ✅ | Shemaroo Umang | ShemarooUmang.in@SD | `https://airtelapp.shemaroo.com/shemarooumang/smil:shemarooumangadp.smil/playlist.m3u8` | OK |
@@ -876,11 +917,11 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Shubhsandesh TV | ShubhsandeshTV.in@SD | `https://cdn-2.pishow.tv/live/457/master.m3u8` | OK |
 | ✅ | Shubhsandesh TV | ShubhsandeshTV.in@SD | `https://6284rn2xr7xv-hls-live.wmncdn.net/shubhsandeshtv1/live123.stream/index.m3u8` | OK |
 | ❌ | Siri Kannada | SiriKannada.in@SD | `https://mumt02.tangotv.in/SIRIKANNADAALLTIME/index.m3u8` | HTTP_404 |
-| ✅ | Sirippoli TV | SirippoliTV.in@SD | `http://ptuf.ridsys.in/riptv/live/KALAIGNAR_SIRIPOLI/index.m3u8` | OK |
 | ✅ | Sirippoli TV | SirippoliTV.in@SD | `https://segment.yuppcdn.net/240122/siripoli/playlist.m3u8` | OK |
+| ✅ | Sirippoli TV | SirippoliTV.in@SD | `http://ptuf.ridsys.in/riptv/live/KALAIGNAR_SIRIPOLI/index.m3u8` | OK |
 | ❌ | Sky News | SkyNews.ie@SD | `https://jmp2.uk/plu-55b285cd2665de274553d66f.m3u8` | HTTP_400 |
-| ✅ | Sky News Arabia | SkyNewsArabia.ae@SD | `https://stream.skynewsarabia.com/ott/ott.m3u8` | OK |
 | ✅ | Sky News Arabia | SkyNewsArabia.ae@SD | `https://stream.skynewsarabia.com/hls/sna.m3u8` | OK |
+| ✅ | Sky News Arabia | SkyNewsArabia.ae@SD | `https://stream.skynewsarabia.com/ott/ott.m3u8` | OK |
 | ✅ | Sky News Arabia | SkyNewsArabia.ae@HD | `https://live-stream.skynewsarabia.com/c-horizontal-channel/horizontal-stream/index.m3u8` | OK |
 | ✅ | Sky News Arabia (Portrait) | SkyNewsArabiaVertical.ae@SD | `https://stream.skynewsarabia.com/vertical/vertical.m3u8` | OK |
 | ✅ | Sky News Arabia Vertical | SkyNewsArabiaVertical.ae@HD | `https://live-stream.skynewsarabia.com/c-vertical-channel/vertical-stream/index.m3u8` | OK |
@@ -893,7 +934,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Songdew TV | SongdewTV.in@SD | `http://103.72.101.252:8080/live/1411.m3u8` | ECONNABORTED |
 | ❌ | Sony Entertainment Television HD | SonyEntertainmentTelevision.in@HD | `http://stb-air.wasmer.app/play.php?id=LIVETV_LIVETVCHANNEL_SET_HD&pass=krish-ka&uid=gana-sunega` | HTTP_400 |
 | ✅ | Sony Marathi | SonyMarathi.in@SD | `http://217.20.112.199:8080/sonymarathi/index.m3u8` | OK |
-| ❌ | Sony Marathi | SonyMarathi.in@SD | `https://sl.vodep39240327.workers.dev/channel/SONY+MARATHI.m3u8` | ECONNRESET |
+| ❌ | Sony Marathi | SonyMarathi.in@SD | `https://sl.vodep39240327.workers.dev/channel/SONY+MARATHI.m3u8` | ECONNABORTED |
 | ❌ | Sony Max 2 | SonyMax2.in@SD | `http://149.71.34.166:8000/play/a00z/index.m3u8` | ECONNABORTED |
 | ❌ | Sony Pix HD | SonyPix.in@HD | `https://sl.vodep39240327.workers.dev/channel/SONY+PIX+HD.m3u8` | ECONNRESET |
 | ❌ | Sony Sports Ten 3 Hindi | SonySportsTen3Hindi.in@SD | `http://103.229.254.25:7001/play/a09q/index.m3u8` | ECONNREFUSED |
@@ -907,15 +948,15 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Star Gold Romance | StarGoldRomance.in@SD | `http://103.253.18.58:8000/play/a017` | OK |
 | ✅ | Star Gold Select HD | StarGoldSelect.in@HD | `http://103.253.18.58:8000/play/a02u` | OK |
 | ❌ | Star Gold Select HD | StarGoldSelect.in@HD | `http://149.71.34.166:8000/play/a01d/index.m3u8` | ECONNABORTED |
-| ✅ | Star Gold Thrills | StarGoldThrills.in@SD | `http://103.157.248.140:8000/play/a00b/index.m3u8` | OK |
 | ✅ | Star Gold Thrills | StarGoldThrills.in@SD | `http://103.253.18.58:8000/play/a00o` | OK |
-| ❌ | Star Jalsha HD | StarJalsha.in@HD | `https://tvsen4.aynaott.com/n64PH4YL/index.m3u8` | HTTP_404 |
+| ✅ | Star Gold Thrills | StarGoldThrills.in@SD | `http://103.157.248.140:8000/play/a00b/index.m3u8` | OK |
+| ✅ | Star Jalsha HD | StarJalsha.in@HD | `https://tvsen4.aynaott.com/n64PH4YL/index.m3u8` | OK |
 | ❌ | Star Maa Gold | StarMaaGold.in@SD | `http://103.121.6.5:8000/play/a063/index.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | Star Maa HD | StarMaa.in@HD | `http://217.20.112.199:8080/maatv/index.m3u8` | OK |
 | ❌ | Star Maa Movies HD | StarMaaMovies.in@HD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/maamovies_live_https/index.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Star Movies HD | StarMovies.in@HD | `http://149.71.34.166:8000/play/a01f/index.m3u8` | ECONNABORTED |
 | ❌ | Star Movies Select HD | StarMoviesSelect.in@HD | `http://149.71.34.166:8000/play/a01g/index.m3u8` | ECONNABORTED |
-| ❌ | Star Pravah HD | StarPravah.in@HD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/starpravah_live_https/index.m3u8` | HTTP_403_FORBIDDEN |
+| ❌ | Star Pravah HD | StarPravah.in@HD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/starpravah_live_https/index.m3u8` | ECONNABORTED |
 | ❌ | Star Sports 1 | StarSports1.in@SD | `https://tvsen7.aynaott.com/sspts1/index.m3u8` | ECONNABORTED |
 | ✅ | Star Sports 1 HD | StarSports1.in@HD | `http://103.253.18.58:8000/play/a00m` | OK |
 | ✅ | Star Sports 1 Hindi | StarSports1Hindi.in@SD | `http://103.253.18.58:8000/play/a03o` | OK |
@@ -923,10 +964,11 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Star Sports 2 Hindi HD | StarSports2Hindi.in@HD | `http://103.157.248.140:8000/play/a01m/index.m3u8` | OK |
 | ❌ | Star Suvarna HD | StarSuvarna.in@HD | `https://anet.keralive.workers.dev/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/suvarnatv_live_https/index.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Star Utsav Movies | StarUtsavMovies.in@SD | `http://149.71.34.166:8000/play/a059/index.m3u8` | ECONNABORTED |
-| ✅ | Star Vijay HD | StarVijay.in@HD | `https://peaky.techcoder40.workers.dev/776.m3u8` | OK |
+| ❌ | Star Vijay HD | StarVijay.in@HD | `https://peaky.techcoder40.workers.dev/776.m3u8` | HTTP_500 |
 | ❌ | Star Vijay HD | StarVijay.in@HD | `http://149.71.34.166:8000/play/a06i/index.m3u8` | ECONNABORTED |
 | ✅ | Starnet | Starnet.in@SD | `https://5a1178b42cc03.streamlock.net/8220/8220/playlist.m3u8` | OK |
 | ✅ | StarPlus | StarPlus.in@SD | `http://41.205.93.154/STAR-PLUS/index.m3u8` | OK |
+| ✅ | StarPlus HD | StarPlus.in@HD | `https://trs1.aynaott.com/starplushd/index.m3u8` | OK |
 | ✅ | Steelbird Music | SteelbirdMusic.in@SD | `https://cdn2.in/SteelbirdMusicTVhls/live.m3u8` | OK |
 | ✅ | Studio One + | StudioOnePlus.in@SD | `https://cdn-1.pishow.tv/live/276/master.m3u8` | OK |
 | ✅ | Studio Yuva | StudioYuva.in@SD | `https://mumt01.tangotv.in/O5aw8Zn3STUDIOYUVA/index.m3u8` | OK |
@@ -937,8 +979,8 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Subhavaartha TV | SubhavaarthaTV.in@SD | `https://2mk9qae4rwyb-hls-live.wmncdn.net/shubhavartha/live.stream/playlist.m3u8` | OK |
 | ✅ | Subin TV | SubinTV.in@SD | `https://stream.galaxyott.live/live/subintv/index.m3u8` | OK |
 | ✅ | Sudarshan News | SudarshanNews.in@SD | `https://d1msejlow1t3l4.cloudfront.net/fta/sudarshan/playlist.m3u8` | OK |
-| ✅ | Sudarshan News | SudarshanNews.in@SD | `https://cdn-2.pishow.tv/live/1516/master.m3u8` | OK |
 | ✅ | Sudarshan News | SudarshanNews.in@SD | `https://ott.livelegitpro.in/sudarshannews/sudarshannews/tracks-v1/index.fmp4.m3u8` | OK |
+| ✅ | Sudarshan News | SudarshanNews.in@SD | `https://cdn-2.pishow.tv/live/1516/master.m3u8` | OK |
 | ✅ | Sudarshan News | SudarshanNews.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/sudarshan-news/index.m3u8?ads.vf=6ZWahdKAvmG` | OK |
 | ✅ | Superhitz | Superhitz.in@SD | `https://live-evg5.tv360.bitel.com.pe/bitel/fillka/playlist.m3u8` | OK |
 | ✅ | Suriya TV | SuriyaTV.in@SD | `https://stream.ottlive.co.in/suryatvtamil/index.m3u8` | OK |
@@ -975,6 +1017,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Swayam Prabha 9 | SwayamPrabha9.in@SD | `http://103.72.101.252:8080/live/988.m3u8` | ECONNABORTED |
 | ✅ | T News | TNews.in@SD | `https://cdn-1.pishow.tv/live/385/master.m3u8` | OK |
 | ✅ | Taaza TV | TaazaTV.in@SD | `https://live.we2live.in/taazatv/live/playlist.m3u8` | OK |
+| ✅ | Taaza TV | TaazaTV.in@SD | `https://trs1.aynaott.com/TaazaTV/index.m3u8` | OK |
 | ✅ | Tabbar Hits | TabbarHits.in@SD | `https://vglivessai.akamaized.net/sg/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/e11b0319-52e8-4190-ab03-3931cc68eac9/index.m3u8` | OK |
 | ✅ | Tabbar Hits | TabbarHits.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tabbar-hits/index.m3u8?ads.vf=n1xb6TPm9sa` | OK |
 | ❌ | Tamil Janam | TamilJanam.in@SD | `https://mumt01.tangotv.in/JANAMTVTAMIL/index.m3u8` | HTTP_404 |
@@ -984,7 +1027,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Tehzeeb TV | TehzeebTV.in@SD | `https://cdn-4.pishow.tv/live/239/master.m3u8` | OK |
 | ✅ | Telugu One | TeluguOne.in@HD | `https://teluguone-yupptv.vgcdn.net/v1/019be9e3f04d1ea55784338b5c3e89/019be9e4474415fc60e93459e1e808/teluguone_2500k.m3u8` | OK |
 | ✅ | Thalaa TV | ThalaaTV.in@HD | `https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/2069c593-3c07-4d62-9d44-746be5c3a5d6/manifest.m3u8` | OK |
-| ❌ | Thanthi One | ThanthiOne.in@SD | `https://mumt02.tangotv.in/THANTHIONE/index.m3u8` | HTTP_404 |
+| ✅ | Thanthi One | ThanthiOne.in@SD | `https://mumt02.tangotv.in/THANTHIONE/index.m3u8` | OK |
 | ✅ | Thanthi One | ThanthiOne.in@SD | `https://mumt07.tangotv.in/zHjX9OFlTHANTHIONE/index.m3u8` | OK |
 | ✅ | Thanthi TV | ThanthiTV.in@SD | `https://cdn-3.pishow.tv/live/1612/master.m3u8` | OK |
 | ✅ | The Movie Club | TheMovieClub.in@HD | `https://sis-global.prod.samsungtv.plus/v1/tvpprd/sc-mp2ar4ca425xo.m3u8` | OK |
@@ -993,8 +1036,8 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Times Now | TimesNow.in@SD | `https://dztlhgid9me95.cloudfront.net/live-tv/Vidgyor/timesnow/timesnow_master.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | Times Now | TimesNow.in@SD | `https://pubads.g.doubleclick.net/ssai/event/1mR1QUQ3Tg-VuKfiyjwNuA/master.m3u8` | OK |
 | ❌ | Times Now Navbharat | TimesNowNavbharat.in@SD | `https://dztlhgid9me95.cloudfront.net/live-tv/Vidgyor/navbharat/navbharat_master.m3u8` | HTTP_403_FORBIDDEN |
-| ✅ | Times Now Navbharat | TimesNowNavbharat.in@SD | `https://amg01448-samsungin-tinnavbharat-samsungin-ad-m8.amagi.tv/playlist/amg01448-samsungin-tinnavbharat-samsungin/playlist.m3u8` | OK |
 | ✅ | Times Now Navbharat | TimesNowNavbharat.in@SD | `https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/TimesNowNavbharat.m3u8` | OK |
+| ✅ | Times Now Navbharat | TimesNowNavbharat.in@SD | `https://amg01448-samsungin-tinnavbharat-samsungin-ad-m8.amagi.tv/playlist/amg01448-samsungin-tinnavbharat-samsungin/playlist.m3u8` | OK |
 | ❌ | Times Now Navbharat | TimesNowNavbharat.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/times-now-navbharat/master.m3u8?ads.vf=IUKzRul6TaG` | HTTP_504 |
 | ❌ | Times Now News | TimesNow.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/times-now-news/master.m3u8?ads.vf=yxbqJWPCXd4` | HTTP_504 |
 | ❌ | Times Now World | TimesNowWorld.in@SD | `http://103.72.101.252:8080/live/876.m3u8` | ECONNABORTED |
@@ -1013,11 +1056,13 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | TV5 Kannada | TV5Kannada.in@SD | `https://cdn-3.pishow.tv/live/1526/master.m3u8` | OK |
 | ✅ | TV5 News | TV5News.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/tv5_nim_https/110322/tv5/playlist.m3u8` | OK |
 | ✅ | TV5 News | TV5News.in@SD | `https://cdn-1.pishow.tv/live/387/master.m3u8` | OK |
+| ❌ | TV9 Bangla | TV9Bangla.in@SD | `https://trs1.aynaott.com/TV9Bangla/index.m3u8` | HTTP_404 |
 | ✅ | TV9 Bangla | TV9Bangla.in@SD | `https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9banaen8yq/liveabr/playlist.m3u8` | OK |
 | ❌ | TV9 Bangla | TV9Bangla.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tv9-bangla/main.m3u8?ads.vf=iJMugprTh74` | HTTP_504 |
 | ✅ | TV9 Bharatvarsh | TV9Bharatvarsh.in@SD | `https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9hinjzgtpe/liveabr/playlist.m3u8` | OK |
 | ✅ | TV9 Bharatvarsh | TV9Bharatvarsh.in@SD | `https://vg-tv9yupp.vgcdn.net/vglive-sk-468570/v1/019dfce4b3371ea55784752988544/019dfce515ea1ea540a871e333259/main.m3u8` | OK |
 | ❌ | TV9 Bharatvarsh | TV9Bharatvarsh.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tv9-bharatvarsh/main.m3u8?ads.vf=CdIAZPYSkwa` | HTTP_504 |
+| ❌ | TV9 Bharatvarsh | TV9Bharatvarsh.in@SD | `https://trs1.aynaott.com/TV9Bharatvarsh/index.m3u8` | ECONNABORTED |
 | ✅ | TV9 Gujarati | TV9Gujarati.in@SD | `https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9guj3ki8lu/liveabr/playlist.m3u8` | OK |
 | ❌ | TV9 Gujarati | TV9Gujarati.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tv9-gujarati/main.m3u8?ads.vf=Bly85rHphki` | HTTP_504 |
 | ✅ | TV9 Kannada | TV9Kannada.in@SD | `https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9kanmo6oiq/liveabr/playlist.m3u8` | OK |
@@ -1027,11 +1072,11 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | TV9 Telugu | TV9Telugu.in@SD | `https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9telcmjhcs/liveabr/playlist.m3u8` | OK |
 | ❌ | TV9 Telugu | TV9Telugu.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tv9-telugu/main.m3u8?ads.vf=VbYdEvvCtAG` | HTTP_504 |
 | ❌ | TV9 Telugu USA | TV9Telugu.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/tv9-telugu-usa/main.m3u8?ads.vf=vzAABofvxum` | HTTP_504 |
-| ✅ | Ultimate TV | UltimateTV.in@SD | `https://mumbai-edge.smartplaytv.in/utv/index.m3u8` | OK |
 | ✅ | Ultimate TV | UltimateTV.in@SD | `https://stream.ottlive.co.in/utvtamil/index.m3u8` | OK |
+| ✅ | Ultimate TV | UltimateTV.in@SD | `https://mumbai-edge.smartplaytv.in/utv/index.m3u8` | OK |
 | ✅ | Unique TV | UniqueTV.in@SD | `https://mumt05.tangotv.in/87NeALx2UNIQUETV/index.m3u8` | OK |
 | ❌ | Unique TV | UniqueTV.in@SD | `https://mumt05.tangotv.in/UNIQUETV/index.m3u8` | HTTP_404 |
-| ✅ | Unite8 Sports 2 HD | Unite8Sports2.in@HD | `https://mini.allinonereborn.fun/tata.php?id=11624` | OK |
+| ❌ | Unite8 Sports 2 HD | Unite8Sports2.in@HD | `https://mini.allinonereborn.fun/tata.php?id=11624` | EPROTO |
 | ✅ | V6 News | V6News.in@SD | `https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/v6news_nim_https/140622/v6news/playlist.m3u8` | OK |
 | ✅ | V6 News | V6News.in@SD | `https://cdn-1.pishow.tv/live/389/master.m3u8` | OK |
 | ✅ | Vaanavil TV | VaanavilTV.in@SD | `https://6n3yope4d9ok-hls-live.5centscdn.com/vaanavil/TV.stream/playlist.m3u8` | OK |
@@ -1058,11 +1103,11 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Vedic | Vedic.in@SD | `https://aasthaott.akamaized.net/110923/smil:vedic.smil/playlist.m3u8` | OK |
 | ✅ | Velicham TV | VelichamTV.in@SD | `https://cdn-3.pishow.tv/live/461/master.m3u8` | OK |
 | ✅ | Vendhar TV | VendharTV.in@SD | `https://cdn-3.pishow.tv/live/1271/master.m3u8` | OK |
-| ❌ | Vijay Super | VijaySuper.in@SD | `http://202.70.146.135:8000/play/a008/index.m3u8` | HTTP_404 |
+| ✅ | Vijay Super | VijaySuper.in@SD | `http://202.70.146.135:8000/play/a008/index.m3u8` | OK |
 | ✅ | Vijay Takkar APAC | VijayTakkar.in@APAC | `https://tglmp01.akamaized.net/out/v1/c1071012b73f4f189b202e1529e8f802/manifest.mpd` | OK |
 | ✅ | Village TV | VillageTV.in@SD | `https://villagetv.applelive.in/villagetv/villagetv/index.m3u8` | OK |
 | ✅ | VIP News | VIPNews.in@SD | `https://live.vipnews24x7.co.in/vipnews24x7/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8` | OK |
-| ❌ | Vissa TV | VissaTV.in@SD | `https://mumt02.tangotv.in/VISSATV/index.m3u8` | HTTP_404 |
+| ✅ | Vissa TV | VissaTV.in@SD | `https://mumt02.tangotv.in/VISSATV/index.m3u8` | OK |
 | ❌ | Vistaar News | VistaarNews.in@SD | `https://mumt04.tangotv.in/VISTAARNEWS/index.m3u8` | HTTP_404 |
 | ❌ | VTV News | VTVNews.in@SD | `https://mumt04.tangotv.in/VTV/index.m3u8` | HTTP_404 |
 | ✅ | Vyas NIC | VyasChannel.in@SD | `https://playhls.media.nic.in/hls/live/vyas/vyas.m3u8` | OK |
@@ -1071,24 +1116,25 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | We One Kerala | WeOneKerala.in@SD | `http://kl.logicwebs.in:1935/sreemedia/sreemedia/playlist.m3u8` | ECONNABORTED |
 | ✅ | Weatherspy | WeatherSpy.in@SD | `https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8` | OK |
 | ✅ | Win TV | WinTV.in@SD | `https://cdn-4.pishow.tv/live/1531/master.m3u8` | OK |
-| ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_1.m3u8` | OK |
-| ✅ | WION | WION.in@SD | `http://vg-zeefta.akamaized.net/ptnr-yupptv/title-wion/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/20c3c0d9-0256-43fe-bca6-70fdd490b957/main.m3u8` | OK |
-| ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_4.m3u8` | OK |
-| ❌ | WION | WION.in@SD | `https://wion-klowdtv.amagi.tv/playlist.m3u8` | HTTP_403_FORBIDDEN |
+| ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_2.m3u8` | OK |
 | ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_7.m3u8` | OK |
+| ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_4.m3u8` | OK |
+| ✅ | WION | WION.in@SD | `http://vg-zeefta.akamaized.net/ptnr-yupptv/title-wion/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/20c3c0d9-0256-43fe-bca6-70fdd490b957/main.m3u8` | OK |
+| ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_1.m3u8` | OK |
 | ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_5.m3u8` | OK |
 | ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_3.m3u8` | OK |
-| ✅ | WION | WION.in@SD | `https://d7x8z4yuq42qn.cloudfront.net/index_2.m3u8` | OK |
+| ❌ | WION | WION.in@SD | `https://wion-klowdtv.amagi.tv/playlist.m3u8` | HTTP_403_FORBIDDEN |
+| ❌ | WION | WION.in@SD | `https://trs1.aynaott.com/wion/index.m3u8` | ECONNABORTED |
 | ✅ | WION (Adaptive) | WION.in@SD | `https://raw.githubusercontent.com/Alstruit/adaptive-streams/alstruit-10_23_in/streams/in/WION.in.m3u8` | OK |
 | ✅ | WION World is One News | WION.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/wion-world-is-one-news/index.m3u8?ads.vf=o0Hi_3Ro5Pi` | OK |
-| ❌ | YRF Music | YRFMusic.in@SD | `https://d14c63magvk61v.cloudfront.net/strm/channels/yrfmusic/master.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | YRF Music | YRFMusic.in@SD | `https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/yrf-music/master.m3u8?ads.vf=CA7XvKi0sQq` | HTTP_504 |
 | ✅ | YRF Music | YRFMusic.in@SD | `https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01412-xiaomiasia-yrfmusic-xiaomi/playlist.m3u8` | OK |
+| ❌ | YRF Music | YRFMusic.in@SD | `https://d14c63magvk61v.cloudfront.net/strm/channels/yrfmusic/master.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | Zainabia Channel | ZainabiaChannel.in@SD | `https://zainabia.livebox.co.in/ZainabiaChannelhls/channel.m3u8` | OK |
 | ✅ | ZB Bhakti | ZBBhakti.in@HD | `https://server.zillarbarta.com/zbbhakti/index.m3u8` | OK |
 | ✅ | ZB Cartoon | ZBCartoon.in@HD | `https://server.zillarbarta.com/zbcatun/video.m3u8` | OK |
-| ❌ | ZB Cinema | ZBCinema.in@HD | `https://server.zillarbarta.com/ZBCINEMA/index.m3u8` | HTTP_404 |
-| ❌ | ZB Music | ZBMusic.in@HD | `https://server.zillarbarta.com/zbmusic/index.m3u8` | HTTP_404 |
+| ✅ | ZB Cinema | ZBCinema.in@HD | `https://server.zillarbarta.com/ZBCINEMA/index.m3u8` | OK |
+| ✅ | ZB Music | ZBMusic.in@HD | `https://server.zillarbarta.com/zbmusic/index.m3u8` | OK |
 | ✅ | Zee 24 Ghanta | Zee24Ghanta.in@SD | `https://d2dsoyvkr33m05.cloudfront.net/index_4.m3u8` | OK |
 | ❌ | Zee 24 Ghanta | Zee24Ghanta.in@SD | `http://45.148.145.57/IN_Zee24Ghanta/index.m3u8` | ECONNABORTED |
 | ✅ | Zee 24 Kalak | Zee24Kalak.in@SD | `https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zee24kalak/v1/manifest/611d79b11b77e2f571934fd80ca1413453772ac7/497f7199-758d-495d-9d2f-a5489231c428/14b7c8ec-16da-47f2-8d7e-5bbaec67b3e2/3.m3u8` | OK |
@@ -1096,17 +1142,19 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Zee Action | ZeeAction.in@SD | `http://103.175.73.12:8080/live/270/master.m3u8` | OK |
 | ❌ | Zee Action | ZeeAction.in@SD | `http://103.72.101.252:8080/live/488.m3u8` | ECONNABORTED |
 | ✅ | Zee Bangla HD | ZeeBangla.in@HD | `http://217.20.112.199:8080/maamovies/index.m3u8` | OK |
+| ✅ | Zee Bangla HD | ZeeBangla.in@HD | `https://trs1.aynaott.com/zeebangla/index.m3u8` | OK |
 | ✅ | Zee Bharat | ZeeBharat.in@SD | `https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zeehindustan/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/96bbab12-582e-4540-af70-510ab6824581/main.m3u8` | OK |
-| ✅ | Zee Bihar Jharkhand | ZeeBiharJharkhand.in@SD | `https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zeebiharjharkhand/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/28077955-07d7-4ae2-8b11-9f318cd69420/main.m3u8` | OK |
 | ✅ | Zee Bihar Jharkhand | ZeeBiharJharkhand.in@SD | `https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/YuppTV/ZeeBiharJharkhand.m3u8` | OK |
+| ✅ | Zee Bihar Jharkhand | ZeeBiharJharkhand.in@SD | `https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zeebiharjharkhand/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/28077955-07d7-4ae2-8b11-9f318cd69420/main.m3u8` | OK |
 | ❌ | Zee Biskope | ZeeBiskope.in@SD | `http://103.154.3.101:5001/live/559.m3u8` | ECONNABORTED |
 | ❌ | Zee Bollymovies | ZeeBollymovies.in@SD | `https://amg17931-zee-amg17931c8-samsung-th-6526.playouts.now.amagi.tv/playlist.m3u8` | ENOTFOUND |
 | ❌ | Zee Bollymovies Australia | ZeeBollymovies.in@Australia | `https://amg17931-zee-amg17931c8-samsung-au-8871.playouts.now.amagi.tv/playlist.m3u8` | ENOTFOUND |
 | ❌ | Zee Bollywood | ZeeBollywood.in@SD | `http://149.71.34.166:8000/play/a01q/index.m3u8` | ECONNABORTED |
-| ✅ | Zee Business | ZeeBusiness.in@SD | `https://dwby15d04agvq.cloudfront.net/index_5.m3u8` | OK |
 | ✅ | Zee Business | ZeeBusiness.in@SD | `https://dwby15d04agvq.cloudfront.net/index_1.m3u8` | OK |
+| ✅ | Zee Business | ZeeBusiness.in@SD | `https://dwby15d04agvq.cloudfront.net/index_5.m3u8` | OK |
 | ❌ | Zee Business | ZeeBusiness.in@SD | `http://103.229.254.25:7001/play/a09r/index.m3u8` | ECONNREFUSED |
 | ❌ | Zee Cine Classic | ZeeCineClassic.in@SD | `https://amg00862-amg00862c8-amgplt0173.playout.now3.amagi.tv/playlist/amg00862-amg00862c8-amgplt0173/playlist.m3u8` | HTTP_403_FORBIDDEN |
+| ❌ | Zee Cinema | ZeeCinema.in@SD | `https://trs1.aynaott.com/ZeeCinemaHD/index.m3u8` | ECONNABORTED |
 | ❌ | Zee Cinema APAC | ZeeCinema.in@APAC | `https://amg17931-zee-amg17931c5-samsung-au-8873.playouts.now.amagi.tv/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Zee Cinema APAC | ZeeCinema.in@APAC | `https://amg17931-zee-amg17931c5-samsung-th-5696.playouts.now.amagi.tv/playlist/amg17931-asiatvusaltdfast-zeecinema-samsungth/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ❌ | Zee Cinema HD | ZeeCinema.in@HD | `http://103.72.101.252:8080/live/165.m3u8` | ECONNABORTED |
@@ -1121,7 +1169,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ❌ | Zee Horror Nights | ZeeHorrorNights.in@HD | `https://amg00862-amg00862c7-amgplt0173.playout.now3.amagi.tv/playlist/amg00862-amg00862c7-amgplt0173/playlist.m3u8` | HTTP_403_FORBIDDEN |
 | ✅ | Zee Kannada News | ZeeKannadaNews.in@SD | `https://d3vzwoqcbpfm8p.cloudfront.net/index_4.m3u8` | OK |
 | ✅ | Zee Madhya Pradesh Chhattisgarh | ZeeMadhyaPradeshChhattisgarh.in@SD | `https://vg-zeefta.akamaized.net/ptnr-yupptv/title-zeemadhyachhattisgarh/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/2ab17056-6187-4f0e-a34d-f436ac479d6c/main.m3u8` | OK |
-| ✅ | Zee Malayalam News | ZeeMalayalamNews.in@SD | `https://d1ty2af03alkwd.cloudfront.net/index_4.m3u8` | OK |
+| ❌ | Zee Malayalam News | ZeeMalayalamNews.in@SD | `https://d1ty2af03alkwd.cloudfront.net/index_4.m3u8` | ECONNABORTED |
 | ❌ | Zee Marathi | ZeeMarathi.in@SD | `http://103.72.101.252:8080/live/445.m3u8` | ECONNABORTED |
 | ❌ | Zee Marathi HD | ZeeMarathi.in@HD | `http://103.72.101.252:8080/live/1360.m3u8` | ECONNABORTED |
 | ✅ | Zee News | ZeeNews.in@SD | `https://dknttpxmr0dwf.cloudfront.net/index_57.m3u8` | OK |
@@ -1135,6 +1183,7 @@ Last checked: `2026-06-23T14:17:18.039Z`
 | ✅ | Zee Tamil News | ZeeTamilNews.in@SD | `https://raw.githubusercontent.com/amazeyourself/adaptive-streams/refs/heads/main/streams/in/ZMCL/ZeeTamilNews.m3u8` | OK |
 | ❌ | Zee Telugu HD | ZeeTelugu.in@HD | `https://mumbai-edge.smartplaytv.in/ZeeTeluguHD/index.m3u8` | HTTP_404 |
 | ✅ | Zee Telugu News | ZeeTeluguNews.in@SD | `https://d116gfrn8orazi.cloudfront.net/index.m3u8?akes=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NjcxOTc5NzJ9.O4qmdMPbHwKrCg6hFXvD70vjSPWKQd0a7NrjmFdeMB8` | OK |
+| ✅ | Zee TV HD | ZeeTV.in@HD | `https://trs1.aynaott.com/zeetvhd/index.m3u8` | OK |
 | ✅ | Zee TV HD | ZeeTV.in@HD | `http://41.205.93.154/ZEE-TV/index.m3u8` | OK |
 | ✅ | Zee Uttar Pradesh/Uttarakhand | ZeeUttarPradeshUttarakhand.in@SD | `https://duw35ict5q7th.cloudfront.net/index_3.m3u8` | OK |
 | ❌ | Zee Yuva | ZeeYuva.in@SD | `http://103.72.101.252:8080/live/414.m3u8` | ECONNABORTED |
