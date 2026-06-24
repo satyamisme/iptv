@@ -141,7 +141,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Delete the release and the git tag if they exist
-          gh release delete latest --yes --cleanup-tag || true
+          gh release delete latest --yes --cleanup-tag --repo ${{ github.repository }} || true
           
           # Wait a moment for deletion to propagate
           sleep 2
@@ -151,7 +151,9 @@ jobs:
             --title "Custom IPTV Playlist (Latest)" \
             --notes-file /tmp/release_notes.md \
             --target release \
+            --repo ${{ github.repository }} \
             custom.m3u \
             status.md \
             status.json
+
 
