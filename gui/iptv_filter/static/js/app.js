@@ -793,9 +793,13 @@ function triggerFilter() {
         const showSelectedOnly = selCheckbox ? selCheckbox.checked : false;
         activeFilters.selected_only = showSelectedOnly;
         
+        const exclCheckbox = document.getElementById('filter-excluded-only');
+        const showExcludedOnly = exclCheckbox ? exclCheckbox.checked : false;
+        activeFilters.excluded_only = showExcludedOnly;
+        
         const preserveSel = document.getElementById('preserve-selection');
         const preserve = preserveSel ? preserveSel.checked : false;
-        if (!preserve && !showSelectedOnly) {
+        if (!preserve && !showSelectedOnly && !showExcludedOnly) {
             selectedChannelIds.clear();
             const headerCheck = document.getElementById('header-select-all');
             if (headerCheck) headerCheck.checked = false;
@@ -803,6 +807,7 @@ function triggerFilter() {
         }
         
         activeFilters.selected_ids = Array.from(selectedChannelIds);
+        activeFilters.excluded_ids = Array.from(excludedChannelIds);
         activeFilters.exclude_languages = document.getElementById('exclude-languages') ? document.getElementById('exclude-languages').checked : false;
         activeFilters.exclude_categories = document.getElementById('exclude-categories') ? document.getElementById('exclude-categories').checked : false;
         activeFilters.exclude_countries = document.getElementById('exclude-countries') ? document.getElementById('exclude-countries').checked : false;
@@ -867,6 +872,22 @@ function triggerFilter() {
             showFilterLoadingState(false);
         });
     }, 250);
+}
+
+function toggleFilterSelectedOnly(checked) {
+    if (checked) {
+        const exclCheckbox = document.getElementById('filter-excluded-only');
+        if (exclCheckbox) exclCheckbox.checked = false;
+    }
+    triggerFilter();
+}
+
+function toggleFilterExcludedOnly(checked) {
+    if (checked) {
+        const selCheckbox = document.getElementById('filter-selected-only');
+        if (selCheckbox) selCheckbox.checked = false;
+    }
+    triggerFilter();
 }
 
 function showFilterLoadingState(show) {
@@ -2071,6 +2092,20 @@ function loadSettingsAndPlaylists() {
                 cacheSelect.value = data.cache_expiry_hours;
             }
             
+            // Populate sync save mode preference
+            const syncMode = data.sync_save_mode || 'update';
+            const radioUpdate = document.getElementById('sync-save-mode-update');
+            const radioOverwrite = document.getElementById('sync-save-mode-overwrite');
+            if (radioUpdate && radioOverwrite) {
+                if (syncMode === 'overwrite') {
+                    radioOverwrite.checked = true;
+                    radioUpdate.checked = false;
+                } else {
+                    radioUpdate.checked = true;
+                    radioOverwrite.checked = false;
+                }
+            }
+            
             // Populate Dashboard Playlist Checkboxes
             const listbox = document.getElementById('playlist-checkbox-list');
             if (listbox) {
@@ -2162,6 +2197,15 @@ function saveApiUrlSettings() {
         loadSettingsAndPlaylists();
     })
     .catch(err => alert('Save failed: ' + err));
+}
+
+function saveSyncSaveModeSetting(mode) {
+    fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sync_save_mode: mode })
+    })
+    .catch(err => console.error('Failed to save save mode setting:', err));
 }
 
 function savePerformanceSettings() {
@@ -2530,6 +2574,43 @@ function bulkExcludeSelectedChannels(event) {
     alert(`Bulk excluded ${list.length} channels! Remember to click "Save Selected to Config" to persist your changes.`);
 }
 
+function bulkIncludeSelectedChannels(event) {
+    if (event) event.preventDefault();
+    if (selectedChannelIds.size === 0) {
+        return alert('Please select/check at least one channel in the table/grid first to bulk include.');
+    }
+    
+    const list = Array.from(selectedChannelIds);
+    if (!confirm(`Are you sure you want to bulk-include the ${list.length} currently selected channels?`)) {
+        return;
+    }
+    
+    list.forEach(chId => {
+        // Include the channel and remove from exclusions
+        excludedChannelIds.delete(chId);
+        selectedChannelIds.add(chId);
+        
+        // Sync checkboxes (ensure they stay checked)
+        document.querySelectorAll(`.row-select-checkbox[data-id="${chId}"], .grid-select-checkbox[data-id="${chId}"]`).forEach(cb => {
+            cb.checked = true;
+        });
+        
+        // Sync exclude buttons
+        document.querySelectorAll(`.exclude-btn-ch[data-id="${chId}"]`).forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Sync row & card classes
+        const tr = document.getElementById(`ch-row-${chId}`);
+        if (tr) tr.classList.remove('excluded-row');
+        const card = document.getElementById(`ch-card-${chId}`);
+        if (card) card.classList.remove('excluded-card');
+    });
+    
+    updateCheckSelectedButtonState();
+    alert(`Bulk included ${list.length} channels! Remember to click "Save Selected to Config" to persist your changes.`);
+}
+
 
 function updateCheckSelectedButtonState() {
     const btn = document.getElementById('btn-check-selected');
@@ -2565,6 +2646,40 @@ function updateCheckSelectedButtonState() {
             plBtn.style.opacity = '0.5';
             plBtn.style.cursor = 'not-allowed';
             plBtn.textContent = 'Playlist Actions ▼';
+        }
+    }
+
+    const incBtn = document.getElementById('btn-always-include-selected');
+    if (incBtn) {
+        if (size > 0) {
+            incBtn.disabled = false;
+            incBtn.style.opacity = '1';
+            incBtn.style.cursor = 'pointer';
+            incBtn.className = 'btn btn-success';
+            incBtn.innerHTML = `<svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:5px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Always Include (${size})`;
+        } else {
+            incBtn.disabled = true;
+            incBtn.style.opacity = '0.5';
+            incBtn.style.cursor = 'not-allowed';
+            incBtn.className = 'btn btn-success-outline';
+            incBtn.innerHTML = `<svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:5px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Always Include`;
+        }
+    }
+
+    const excBtn = document.getElementById('btn-always-exclude-selected');
+    if (excBtn) {
+        if (size > 0) {
+            excBtn.disabled = false;
+            excBtn.style.opacity = '1';
+            excBtn.style.cursor = 'pointer';
+            excBtn.className = 'btn btn-danger';
+            excBtn.innerHTML = `<svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Always Exclude (${size})`;
+        } else {
+            excBtn.disabled = true;
+            excBtn.style.opacity = '0.5';
+            excBtn.style.cursor = 'not-allowed';
+            excBtn.className = 'btn btn-danger-outline';
+            excBtn.innerHTML = `<svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Always Exclude`;
         }
     }
 }
@@ -3797,10 +3912,19 @@ function saveSelectedForAutoUpdate(event) {
         return alert('Please select/exclude channels or set configuration options first.');
     }
     
+    const saveModeRadio = document.querySelector('input[name="sync-save-mode"]:checked');
+    const mode = saveModeRadio ? saveModeRadio.value : 'update';
     const countSelect = selectedChannelIds.size;
     const countExclude = excludedChannelIds.size;
     
-    if (!confirm(`Are you sure you want to save your selection (${countSelect} included, ${countExclude} excluded channels) and custom configuration to the repository files?`)) {
+    let confirmMsg = `Are you sure you want to `;
+    if (mode === 'update') {
+        confirmMsg += `APPEND/MERGE your current selection (${countSelect} included, ${countExclude} excluded channels) with the existing config?`;
+    } else {
+        confirmMsg += `OVERWRITE the existing config entirely with your current selection (${countSelect} included, ${countExclude} excluded channels)?`;
+    }
+
+    if (!confirm(confirmMsg)) {
         return;
     }
     
@@ -3810,6 +3934,7 @@ function saveSelectedForAutoUpdate(event) {
         body: JSON.stringify({
             channel_ids: Array.from(selectedChannelIds),
             excluded_ids: Array.from(excludedChannelIds),
+            mode: mode,
             config: {
                 excludeGlobal,
                 preferredLanguages,
@@ -3825,7 +3950,18 @@ function saveSelectedForAutoUpdate(event) {
         if (data.error) {
             alert('Failed to save configuration: ' + data.error);
         } else {
-            alert(`Successfully saved rules to repository config files!\n\nCommit and push your changes to GitHub to trigger the auto-sync and release!`);
+            if (data.merged_inclusions) {
+                selectedChannelIds.clear();
+                data.merged_inclusions.forEach(id => selectedChannelIds.add(id));
+            }
+            if (data.merged_exclusions) {
+                excludedChannelIds.clear();
+                data.merged_exclusions.forEach(id => excludedChannelIds.add(id));
+            }
+            updateCheckSelectedButtonState();
+            triggerFilter();
+            
+            alert(`Successfully saved rules to repository config files (Total in config: ${data.count} channels)!\n\nCommit and push your changes to GitHub to trigger the auto-sync and release!`);
         }
     })
     .catch(err => {

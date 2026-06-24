@@ -138,6 +138,8 @@ class FilterEngine:
                       stream_format: str = None,
                       selected_only: bool = False,
                       selected_ids: List[str] = None,
+                      excluded_only: bool = False,
+                      excluded_ids: List[str] = None,
                       exclude_dead: bool = False,
                       exclude_no_url: bool = False,
                       exclude_languages: bool = False,
@@ -166,12 +168,14 @@ class FilterEngine:
         countries = sanitize_list(countries)
         statuses = sanitize_list(statuses)
         selected_ids = sanitize_list(selected_ids)
+        excluded_ids = sanitize_list(excluded_ids)
 
         nsfw = bool(nsfw)
         exclude_closed = bool(exclude_closed)
         favorites_only = bool(favorites_only)
         working_only = bool(working_only)
         selected_only = bool(selected_only)
+        excluded_only = bool(excluded_only)
         exclude_dead = bool(exclude_dead)
         exclude_no_url = bool(exclude_no_url)
         exclude_languages = bool(exclude_languages)
@@ -192,6 +196,9 @@ class FilterEngine:
 
         if selected_only:
             result_ids.intersection_update(set(selected_ids))
+
+        if excluded_only:
+            result_ids.intersection_update(set(excluded_ids))
 
         if languages:
             lang_ids = set()

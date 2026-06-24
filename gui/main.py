@@ -487,37 +487,49 @@ def get_channels():
             "referrer": ch.streams[0].get("referrer") if ch.streams else None
         })
         
-    # Calculate counts using faceted search (filtering everything except the target facet itself)
-    # 1. Languages counts: filter everything except languages
-    filters_no_lang = filters.copy()
-    filters_no_lang["languages"] = None
-    filtered_no_lang = filter_engine.apply_filters(**filters_no_lang)
+    # Calculate counts for facets (languages, categories, countries) independently of the selections in these three facets
+    filters_no_facets = filters.copy()
+    filters_no_facets["languages"] = None
+    filters_no_facets["categories"] = None
+    filters_no_facets["countries"] = None
+    filtered_no_facets = filter_engine.apply_filters(**filters_no_facets)
+
+    # 1. Languages counts
     lang_counts = {}
-    for ch in filtered_no_lang:
+    for ch in filtered_no_facets:
         for lang in ch.languages:
             lang_counts[lang] = lang_counts.get(lang, 0) + 1
 
-    # 2. Categories counts: filter everything except categories
-    filters_no_cat = filters.copy()
-    filters_no_cat["categories"] = None
-    filtered_no_cat = filter_engine.apply_filters(**filters_no_cat)
+    # 2. Categories counts
     cat_counts = {}
-    for ch in filtered_no_cat:
+    for ch in filtered_no_facets:
         for cat in ch.categories:
             cat_counts[cat] = cat_counts.get(cat, 0) + 1
 
-    # 3. Countries counts: filter everything except countries
-    filters_no_country = filters.copy()
-    filters_no_country["countries"] = None
-    filtered_no_country = filter_engine.apply_filters(**filters_no_country)
+    # 3. Countries counts
     country_counts = {}
-    for ch in filtered_no_country:
+    for ch in filtered_no_facets:
         if ch.country:
             country_counts[ch.country] = country_counts.get(ch.country, 0) + 1
 
     # Restore main filtered channels list for correctness
     filter_engine.filtered_channels = filtered
 
+
+    # Log debug information to file
+    try:
+        log_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "debug_api.log"))
+        with open(log_path, "a", encoding="utf-8") as lf:
+            lf.write("=========================================\n")
+            lf.write(f"TIMESTAMP: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            lf.write(f"INCOMING REQUEST: {json.dumps({k: v for k, v in filters.items() if k != 'favorites_set'})}\n")
+            lf.write(f"FILTERS NO FACETS: {json.dumps({k: v for k, v in filters_no_facets.items() if k not in ['favorites_set']})}\n")
+            lf.write(f"FILTERED NO FACETS COUNT: {len(filtered_no_facets)}\n")
+            lf.write(f"LANGS SAMPLE: {list(lang_counts.items())[:5]}\n")
+            lf.write(f"CATS SAMPLE: {list(cat_counts.items())[:5]}\n")
+            lf.write(f"COUNTRIES SAMPLE: {list(country_counts.items())[:5]}\n")
+    except Exception as le:
+        print(f"Error writing to debug log: {le}")
 
     return jsonify({
         "total": len(filter_engine.channels),
@@ -862,11 +874,81 @@ def save_custom_selected():
     channel_ids = req_data.get("channel_ids", [])
     excluded_ids = req_data.get("excluded_ids", [])
     config_data = req_data.get("config", {})
+    mode = req_data.get("mode", "overwrite")
     
     rules_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "selected-channels.txt"))
     config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "config.json"))
     try:
         os.makedirs(os.path.dirname(rules_path), exist_ok=True)
+        
+        # Parse existing rules
+        existing_rules = []
+        if os.path.exists(rules_path):
+            try:
+                with open(rules_path, "r", encoding="utf-8") as f:
+                    existing_rules = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+            except Exception as e:
+                print(f"Error reading existing rules: {e}")
+
+        # Separate existing rules into preserved (not loaded) and managed (loaded)
+        preserved_inclusions = set()
+        preserved_exclusions = set()
+        existing_managed_inclusions = set()
+        existing_managed_exclusions = set()
+
+        for rule in existing_rules:
+            is_exclude = rule.startswith("-")
+            clean_rule = rule[1:].strip() if is_exclude else rule
+            if not clean_rule:
+                continue
+                
+            matched_loaded = False
+            for ch in filter_engine.channels:
+                if clean_rule.startswith("/") and clean_rule.endswith("/"):
+                    try:
+                        pattern = clean_rule[1:-1]
+                        regex = re.compile(pattern, re.IGNORECASE)
+                        if (ch.id and regex.search(ch.id)) or (ch.name and regex.search(ch.name)):
+                            matched_loaded = True
+                            break
+                    except Exception:
+                        pass
+                else:
+                    ch_id_base = ch.id.split("@")[0] if ch.id else ""
+                    rule_base = clean_rule.split("@")[0]
+                    if ch.id == clean_rule or ch.name == clean_rule or ch_id_base == rule_base:
+                        matched_loaded = True
+                        break
+            
+            if matched_loaded:
+                if is_exclude:
+                    existing_managed_exclusions.add(clean_rule)
+                else:
+                    existing_managed_inclusions.add(clean_rule)
+            else:
+                if is_exclude:
+                    preserved_exclusions.add(clean_rule)
+                else:
+                    preserved_inclusions.add(clean_rule)
+
+        # Build managed sets based on save mode
+        if mode == "update":
+            managed_inclusions = existing_managed_inclusions.copy()
+            managed_exclusions = existing_managed_exclusions.copy()
+            for ch_id in channel_ids:
+                managed_inclusions.add(ch_id)
+                managed_exclusions.discard(ch_id)
+            for ch_id in excluded_ids:
+                managed_exclusions.add(ch_id)
+                managed_inclusions.discard(ch_id)
+        else:
+            # Overwrite mode: the current GUI selections completely replace all managed rules
+            managed_inclusions = set(channel_ids)
+            managed_exclusions = set(excluded_ids)
+
+        # Combine preserved and managed rules
+        final_inclusions = sorted(list(preserved_inclusions.union(managed_inclusions)))
+        final_exclusions = sorted(list(preserved_exclusions.union(managed_exclusions)))
         
         # 1. Write selected-channels.txt
         with open(rules_path, "w", encoding="utf-8") as f:
@@ -874,19 +956,43 @@ def save_custom_selected():
             f.write("# Prefix rules with - to always exclude them.\n")
             f.write("# Generated from IPTV Filter GUI\n#\n")
             f.write("\n# --- Inclusions ---\n")
-            for ch_id in sorted(list(set(channel_ids))):
+            for ch_id in final_inclusions:
                 f.write(f"{ch_id}\n")
             f.write("\n# --- Exclusions ---\n")
-            for ch_id in sorted(list(set(excluded_ids))):
+            for ch_id in final_exclusions:
                 f.write(f"-{ch_id}\n")
                 
         # 2. Write config.json
+        if mode == "update" and os.path.exists(config_path):
+            try:
+                with open(config_path, "r", encoding="utf-8") as f:
+                    old_config = json.load(f)
+                for key, val in config_data.items():
+                    if isinstance(val, list):
+                        merged_list = list(set(old_config.get(key, []) + val))
+                        old_config[key] = merged_list
+                    elif isinstance(val, bool):
+                        if val:
+                            old_config[key] = val
+                    elif val:
+                        old_config[key] = val
+                config_data = old_config
+            except Exception as e:
+                print(f"Error merging config.json: {e}")
+
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(config_data, f, indent=2, ensure_ascii=False)
             
+        # Return only the matched loaded IDs to update the frontend state
+        loaded_ids = {ch.id for ch in filter_engine.channels}
+        merged_inclusions_loaded = [ch_id for ch_id in final_inclusions if ch_id in loaded_ids]
+        merged_exclusions_loaded = [ch_id for ch_id in final_exclusions if ch_id in loaded_ids]
+            
         return jsonify({
             "success": True, 
-            "count": len(channel_ids) + len(excluded_ids)
+            "count": len(final_inclusions) + len(final_exclusions),
+            "merged_inclusions": merged_inclusions_loaded,
+            "merged_exclusions": merged_exclusions_loaded
         })
     except Exception as e:
         return jsonify({"error": f"Failed to save configuration files: {str(e)}"}), 500
