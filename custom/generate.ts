@@ -108,8 +108,12 @@ async function main() {
   // Read selected channels from configuration
   const configPath = path.join(__dirname, 'selected-channels.txt')
   if (!fs.existsSync(configPath)) {
-    console.error('Error: custom/selected-channels.txt not found!')
-    process.exit(1)
+    console.warn('custom/selected-channels.txt not found. Creating empty file.');
+    try {
+      fs.writeFileSync(configPath, '# Add channel tvg-ids or exact channel names to include or exclude in your custom playlist.\n# Prefix rules with - to always exclude them.\n', 'utf8');
+    } catch (e) {
+      console.error('Failed to create custom/selected-channels.txt:', e);
+    }
   }
 
   const lines = fs.readFileSync(configPath, 'utf8')
@@ -146,12 +150,18 @@ async function main() {
       if (isExclude) {
         exactExclusions.add(cleanRule)
         if (cleanRule.includes('@')) {
-          exactExclusions.add(cleanRule.split('@')[0])
+          const base = cleanRule.split('@')[0]
+          if (base) {
+            exactExclusions.add(base)
+          }
         }
       } else {
         exactInclusions.add(cleanRule)
         if (cleanRule.includes('@')) {
-          exactInclusions.add(cleanRule.split('@')[0])
+          const base = cleanRule.split('@')[0]
+          if (base) {
+            exactInclusions.add(base)
+          }
         }
       }
     }
@@ -166,15 +176,28 @@ async function main() {
     const tvgIdBase = tvgId ? tvgId.split('@')[0] : ''
     const idBase = id ? id.split('@')[0] : ''
 
+    const channel = stream.getChannel()
+    const countryCode = channel ? channel.country?.toLowerCase() : ''
+    const countryObj = countryCode ? data.countriesKeyByCode.get(countryCode.toUpperCase()) : null
+    const countryName = countryObj ? countryObj.name.toLowerCase() : ''
+
     // A. Check explicit exclusions first (from selected-channels.txt)
-    if (
+    const matchesExactExclusion =
       (tvgId && exactExclusions.has(tvgId)) ||
       (id && exactExclusions.has(id)) ||
       (title && exactExclusions.has(title)) ||
       (fullTitle && exactExclusions.has(fullTitle)) ||
       (tvgIdBase && exactExclusions.has(tvgIdBase)) ||
-      (idBase && exactExclusions.has(idBase))
-    ) {
+      (idBase && exactExclusions.has(idBase)) ||
+      Array.from(exactExclusions).some(rule => {
+        const rLower = rule.toLowerCase()
+        const langMatch = stream.getLanguages().all().some((l: any) => l.name.toLowerCase() === rLower || l.code.toLowerCase() === rLower)
+        const catMatch = stream.getCategories() ? stream.getCategories().all().some((c: any) => c.name.toLowerCase() === rLower) : false
+        const countryMatch = countryCode === rLower || countryName === rLower
+        return langMatch || catMatch || countryMatch
+      })
+
+    if (matchesExactExclusion) {
       return false
     }
 
@@ -183,7 +206,11 @@ async function main() {
         (tvgId && regex.test(tvgId)) ||
         (title && regex.test(title)) ||
         (fullTitle && regex.test(fullTitle)) ||
-        (id && regex.test(id))
+        (id && regex.test(id)) ||
+        stream.getLanguages().all().some((l: any) => regex.test(l.name) || regex.test(l.code)) ||
+        (stream.getCategories() ? stream.getCategories().all().some((c: any) => regex.test(c.name)) : false) ||
+        (countryCode && regex.test(countryCode)) ||
+        (countryName && regex.test(countryName))
       )
     ) {
       return false
@@ -220,10 +247,6 @@ async function main() {
 
     // E. Exclude countries if requested
     if (excludeCountries.length > 0) {
-      const channel = stream.getChannel()
-      const countryCode = channel ? channel.country?.toLowerCase() : ''
-      const countryObj = countryCode ? data.countriesKeyByCode.get(countryCode.toUpperCase()) : null
-      const countryName = countryObj ? countryObj.name.toLowerCase() : ''
       const hasExcludedCountry = (countryCode && excludeCountries.includes(countryCode)) || 
                                 (countryName && excludeCountries.includes(countryName))
       if (hasExcludedCountry) {
@@ -239,11 +262,22 @@ async function main() {
       (fullTitle && exactInclusions.has(fullTitle)) ||
       (tvgIdBase && exactInclusions.has(tvgIdBase)) ||
       (idBase && exactInclusions.has(idBase)) ||
+      Array.from(exactInclusions).some(rule => {
+        const rLower = rule.toLowerCase()
+        const langMatch = stream.getLanguages().all().some((l: any) => l.name.toLowerCase() === rLower || l.code.toLowerCase() === rLower)
+        const catMatch = stream.getCategories() ? stream.getCategories().all().some((c: any) => c.name.toLowerCase() === rLower) : false
+        const countryMatch = countryCode === rLower || countryName === rLower
+        return langMatch || catMatch || countryMatch
+      }) ||
       regexInclusions.some(regex =>
         (tvgId && regex.test(tvgId)) ||
         (title && regex.test(title)) ||
         (fullTitle && regex.test(fullTitle)) ||
-        (id && regex.test(id))
+        (id && regex.test(id)) ||
+        stream.getLanguages().all().some((l: any) => regex.test(l.name) || regex.test(l.code)) ||
+        (stream.getCategories() ? stream.getCategories().all().some((c: any) => regex.test(c.name)) : false) ||
+        (countryCode && regex.test(countryCode)) ||
+        (countryName && regex.test(countryName))
       )
     )
 
@@ -349,6 +383,11 @@ async function main() {
   const outputPath = path.join(__dirname, 'custom.m3u')
   fs.writeFileSync(outputPath, playlist.toString())
   console.log(`Successfully generated custom playlist with ${playlist.streams.count()} streams at: ${outputPath}`)
+
+  if (process.argv.includes('--no-check')) {
+    console.log('Skipping stream status check due to --no-check flag.')
+    return
+  }
 
   console.log('Testing streams status...')
   const results: any[] = []

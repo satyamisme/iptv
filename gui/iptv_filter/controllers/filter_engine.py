@@ -200,6 +200,10 @@ class FilterEngine:
         if excluded_only:
             result_ids.intersection_update(set(excluded_ids))
 
+        hide_excluded = bool(kwargs.get("hide_excluded", False))
+        if hide_excluded and not excluded_only:
+            result_ids.difference_update(set(excluded_ids))
+
         if languages:
             lang_ids = set()
             for lang in languages:

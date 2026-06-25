@@ -3,6 +3,7 @@
 // App State
 let currentView = 'dashboard';
 let channels = [];
+let filteredChannelsList = [];
 let selectedChannel = null;
 let activeFilters = {
     search_term: '',
@@ -18,7 +19,8 @@ let activeFilters = {
     selected_only: false,
     selected_ids: [],
     exclude_dead: true,
-    exclude_no_url: true
+    exclude_no_url: true,
+    hide_excluded: false
 };
 let filterSearchTerms = { languages: '', categories: '', countries: '' };
 let activeFilterCounts = { languages: {}, categories: {}, countries: {} };
@@ -49,6 +51,8 @@ let selectedLanguages = []; // For the Languages tab bulk updates
 let currentLayout = 'table'; // 'table' or 'grid'
 let presets = {}; // Globally stored filter presets
 let selectedChannelIds = new Set(); // Globally tracked selected channels
+let selectionBinIds = new Set(); // Staged channels in selection bin (independent and persistent)
+let selectionBinCache = {}; // Cache of channel details for the Selection Bin
 let excludedChannelIds = new Set(); // Globally tracked excluded channels
 
 
@@ -797,6 +801,9 @@ function triggerFilter() {
         const showExcludedOnly = exclCheckbox ? exclCheckbox.checked : false;
         activeFilters.excluded_only = showExcludedOnly;
         
+        const hideExclCheckbox = document.getElementById('filter-hide-excluded');
+        activeFilters.hide_excluded = hideExclCheckbox ? hideExclCheckbox.checked : false;
+        
         const preserveSel = document.getElementById('preserve-selection');
         const preserve = preserveSel ? preserveSel.checked : false;
         if (!preserve && !showSelectedOnly && !showExcludedOnly) {
@@ -857,10 +864,11 @@ function triggerFilter() {
 
             // Update Label showing
             const showingLabel = document.getElementById('channels-showing-label');
+            const countsText = ` (${selectedChannelIds.size} selected, ${excludedChannelIds.size} excluded)`;
             if (data.filtered_count > data.shown_count) {
-                showingLabel.textContent = `Showing ${data.shown_count} (capped) of ${data.filtered_count} channels (Total: ${data.total})`;
+                showingLabel.textContent = `Showing ${data.shown_count} (capped) of ${data.filtered_count} channels (Total: ${data.total})${countsText}`;
             } else {
-                showingLabel.textContent = `Showing ${data.filtered_count} of ${data.total} channels`;
+                showingLabel.textContent = `Showing ${data.filtered_count} of ${data.total} channels${countsText}`;
             }
             
             // Render view
@@ -886,6 +894,16 @@ function toggleFilterExcludedOnly(checked) {
     if (checked) {
         const selCheckbox = document.getElementById('filter-selected-only');
         if (selCheckbox) selCheckbox.checked = false;
+        const hideExclCheckbox = document.getElementById('filter-hide-excluded');
+        if (hideExclCheckbox) hideExclCheckbox.checked = false;
+    }
+    triggerFilter();
+}
+
+function toggleFilterHideExcluded(checked) {
+    if (checked) {
+        const exclCheckbox = document.getElementById('filter-excluded-only');
+        if (exclCheckbox) exclCheckbox.checked = false;
     }
     triggerFilter();
 }
@@ -962,6 +980,9 @@ function renderChannelsList() {
         displayChannels = displayChannels.filter(ch => ch.languages && ch.languages.some(lang => lang.toLowerCase().includes(columnFilters.language)));
     }
     
+    // Save the full filtered list
+    filteredChannelsList = displayChannels;
+    
     // Calculate total pages
     const totalPages = Math.ceil(displayChannels.length / itemsPerPage) || 1;
     if (currentPage > totalPages) currentPage = totalPages;
@@ -987,7 +1008,7 @@ function renderChannelsList() {
     
     const showingLabel = document.getElementById('channels-showing-label');
     if (showingLabel) {
-        showingLabel.textContent = `Showing ${displayChannels.length} of ${channels.length} items`;
+        showingLabel.textContent = `Showing ${displayChannels.length} of ${channels.length} items (${selectedChannelIds.size} selected, ${excludedChannelIds.size} excluded)`;
     }
     
     if (currentLayout === 'table') {
@@ -1068,6 +1089,9 @@ function renderChannelsList() {
                 } else if (col.id === 'actions') {
                     cellsHtml += `
                         <td class="col-actions">
+                            <button class="action-btn-row" title="Add to Selection Bin" onclick="addSingleChannelToBin('${ch.id}', event)" style="margin-right: 5px; color: var(--color-accent);">
+                                📥+
+                            </button>
                             <button class="action-btn-row" title="Open Stream link in Browser" onclick="openStreamInBrowser('${ch.url}', event)">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                             </button>
@@ -1121,6 +1145,9 @@ function renderChannelsList() {
                         <input type="checkbox" class="grid-select-checkbox" data-id="${ch.id}" ${isChecked} onchange="toggleChannelSelection('${ch.id}', this.checked)">
                     </label>
                     <button class="exclude-btn-ch ${isExcluded ? 'active' : ''}" data-id="${ch.id}" title="Always Exclude Channel" onclick="toggleChannelExclusion('${ch.id}', event)">🚫</button>
+                    <button class="action-btn-row" title="Add to Selection Bin" onclick="addSingleChannelToBin('${ch.id}', event)" style="color: var(--color-accent); font-size: 14px; background: none; border: none; cursor: pointer; padding: 4px; display: inline-flex; align-items: center; justify-content: center;">
+                        📥+
+                    </button>
                     <span class="status-badge ${statusClass}">${ch.status_icon} ${ch.status_text}</span>
                     <span class="fav-star ${isFavClass}" onclick="toggleFavorite('${ch.id}', event)">★</span>
                 </div>
@@ -1139,7 +1166,7 @@ function renderChannelsList() {
 }
 
 function changePage(offset) {
-    const totalPages = Math.ceil(channels.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredChannelsList.length / itemsPerPage) || 1;
     currentPage += offset;
     if (currentPage < 1) currentPage = 1;
     if (currentPage > totalPages) currentPage = totalPages;
@@ -1756,6 +1783,7 @@ function exportPlaylistFile() {
     const filepath = document.getElementById('export-filepath').value;
     const file_format = document.querySelector('input[name="export-format"]:checked').value;
     const append = document.getElementById('export-append').checked;
+    const sort_order = document.getElementById('export-sort-order').value;
     
     if (!filepath) {
         return alert('Please enter a valid export local path, or click "Download Directly" instead.');
@@ -1767,7 +1795,8 @@ function exportPlaylistFile() {
         body: JSON.stringify({
             filepath: filepath,
             format: file_format,
-            append: append
+            append: append,
+            sort_order: sort_order
         })
     })
     .then(res => res.json())
@@ -1783,7 +1812,8 @@ function exportPlaylistFile() {
 
 function downloadPlaylistDirect() {
     const file_format = document.querySelector('input[name="export-format"]:checked').value;
-    window.open(`/api/download-export?format=${file_format}`, '_blank');
+    const sort_order = document.getElementById('export-sort-order').value;
+    window.open(`/api/download-export?format=${file_format}&sort_order=${sort_order}`, '_blank');
 }
 
 // Theme management
@@ -2636,15 +2666,12 @@ function updateCheckSelectedButtonState() {
     }
     
     if (plBtn) {
+        plBtn.disabled = false;
+        plBtn.style.opacity = '1';
+        plBtn.style.cursor = 'pointer';
         if (size > 0) {
-            plBtn.disabled = false;
-            plBtn.style.opacity = '1';
-            plBtn.style.cursor = 'pointer';
             plBtn.textContent = `Playlist Actions (${size}) ▼`;
         } else {
-            plBtn.disabled = true;
-            plBtn.style.opacity = '0.5';
-            plBtn.style.cursor = 'not-allowed';
             plBtn.textContent = 'Playlist Actions ▼';
         }
     }
@@ -2682,20 +2709,37 @@ function updateCheckSelectedButtonState() {
             excBtn.innerHTML = `<svg class="btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg> Always Exclude`;
         }
     }
+    
+    // Update Showing Label with current selections/exclusions counts
+    const showingLabel = document.getElementById('channels-showing-label');
+    if (showingLabel && showingLabel.textContent && !showingLabel.textContent.includes('Applying filters')) {
+        let baseText = showingLabel.textContent.split(' (')[0];
+        showingLabel.textContent = `${baseText} (${selectedChannelIds.size} selected, ${excludedChannelIds.size} excluded)`;
+    }
+    
+    // Sync Selection Bin badge and contents
+    updateSelectionBinUI();
 }
 
 function selectAllChannels(event) {
     if (event) event.preventDefault();
-    channels.forEach(ch => {
-        selectedChannelIds.add(ch.id);
+    filteredChannelsList.forEach(ch => {
+        if (!excludedChannelIds.has(ch.id)) {
+            selectedChannelIds.add(ch.id);
+        }
     });
     
     document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
-        cb.checked = true;
+        const id = cb.getAttribute('data-id');
+        cb.checked = selectedChannelIds.has(id);
     });
     
     const headerCheck = document.getElementById('header-select-all');
-    if (headerCheck) headerCheck.checked = true;
+    if (headerCheck) {
+        const checkboxes = document.querySelectorAll('.row-select-checkbox, .grid-select-checkbox');
+        const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        headerCheck.checked = allChecked;
+    }
     
     updateCheckSelectedButtonState();
     toggleSelectionDropdown();
@@ -2703,10 +2747,13 @@ function selectAllChannels(event) {
 
 function deselectAllChannels(event) {
     if (event) event.preventDefault();
-    selectedChannelIds.clear();
+    filteredChannelsList.forEach(ch => {
+        selectedChannelIds.delete(ch.id);
+    });
     
     document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
-        cb.checked = false;
+        const id = cb.getAttribute('data-id');
+        cb.checked = selectedChannelIds.has(id);
     });
     
     const headerCheck = document.getElementById('header-select-all');
@@ -2718,16 +2765,19 @@ function deselectAllChannels(event) {
 
 function toggleSelectAllChannels(headerCheckbox) {
     const checked = headerCheckbox.checked;
-    channels.forEach(ch => {
+    filteredChannelsList.forEach(ch => {
         if (checked) {
-            selectedChannelIds.add(ch.id);
+            if (!excludedChannelIds.has(ch.id)) {
+                selectedChannelIds.add(ch.id);
+            }
         } else {
             selectedChannelIds.delete(ch.id);
         }
     });
     
     document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
-        cb.checked = checked;
+        const id = cb.getAttribute('data-id');
+        cb.checked = selectedChannelIds.has(id);
     });
     
     updateCheckSelectedButtonState();
@@ -2735,23 +2785,25 @@ function toggleSelectAllChannels(headerCheckbox) {
 
 function invertChannelSelection(event) {
     if (event) event.preventDefault();
-    channels.forEach(ch => {
+    filteredChannelsList.forEach(ch => {
         const isSelected = selectedChannelIds.has(ch.id);
         if (isSelected) {
             selectedChannelIds.delete(ch.id);
         } else {
-            selectedChannelIds.add(ch.id);
+            if (!excludedChannelIds.has(ch.id)) {
+                selectedChannelIds.add(ch.id);
+            }
         }
     });
     
     document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox`).forEach(cb => {
-        cb.checked = !cb.checked;
+        const id = cb.getAttribute('data-id');
+        cb.checked = selectedChannelIds.has(id);
     });
     
     const headerCheck = document.getElementById('header-select-all');
     if (headerCheck) {
-        const checkboxes = document.querySelectorAll('.row-select-checkbox, .grid-select-checkbox');
-        const allChecked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        const allChecked = filteredChannelsList.length > 0 && filteredChannelsList.every(ch => selectedChannelIds.has(ch.id));
         headerCheck.checked = allChecked;
     }
     
@@ -3229,7 +3281,10 @@ function togglePlaylistDropdown(event) {
 
 function createPlaylistFromSelected(event) {
     if (event) event.preventDefault();
-    if (selectedChannelIds.size === 0) return;
+    if (selectedChannelIds.size === 0) {
+        alert('Please select/check at least one channel in the table first.');
+        return;
+    }
 
     const name = prompt("Enter a name for the new playlist:");
     if (!name || !name.trim()) return;
@@ -3258,7 +3313,10 @@ function createPlaylistFromSelected(event) {
 
 function addSelectedToPlaylistPrompt(event) {
     if (event) event.preventDefault();
-    if (selectedChannelIds.size === 0) return;
+    if (selectedChannelIds.size === 0) {
+        alert('Please select/check at least one channel in the table first.');
+        return;
+    }
 
     // Filter to find only file-type playlists (writable local files)
     const filePlaylists = activePlaylists.filter(pl => pl.type === 'file');
@@ -3305,7 +3363,10 @@ function addSelectedToPlaylistPrompt(event) {
 function removeSelectedFromList(event) {
     if (event) event.preventDefault();
     const count = selectedChannelIds.size;
-    if (count === 0) return;
+    if (count === 0) {
+        alert('Please select/check at least one channel in the table first.');
+        return;
+    }
 
     if (!confirm(`Are you sure you want to remove the ${count} selected channel(s) from the current loaded active channels list?`)) return;
 
@@ -3694,7 +3755,10 @@ function formatBytes(bytes, decimals = 2) {
 
 function markSelectedAsFavorite(event) {
     if (event) event.preventDefault();
-    if (selectedChannelIds.size === 0) return;
+    if (selectedChannelIds.size === 0) {
+        alert('Please select/check at least one channel in the table first.');
+        return;
+    }
 
     const ids = Array.from(selectedChannelIds);
     fetch('/api/favorites/bulk-update', {
@@ -3721,7 +3785,10 @@ function markSelectedAsFavorite(event) {
 
 function removeSelectedFromFavorites(event) {
     if (event) event.preventDefault();
-    if (selectedChannelIds.size === 0) return;
+    if (selectedChannelIds.size === 0) {
+        alert('Please select/check at least one channel in the table first.');
+        return;
+    }
 
     const ids = Array.from(selectedChannelIds);
     fetch('/api/favorites/bulk-update', {
@@ -3823,6 +3890,37 @@ function syncCurrentPlaylist() {
 
 // --- GitHub Upstream Auto-Sync Selection Handlers ---
 
+function syncSelectionBinCache(ids) {
+    if (!ids || ids.length === 0) return;
+    
+    // Filter out IDs that are already in the cache
+    const missingIds = ids.filter(id => !selectionBinCache[id]);
+    if (missingIds.length === 0) {
+        updateSelectionBinUI();
+        return;
+    }
+
+    fetch('/api/channels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            selected_only: true,
+            selected_ids: missingIds,
+            channel_limit: 0
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data && data.channels) {
+            data.channels.forEach(ch => {
+                cacheChannelForBin(ch);
+            });
+            updateSelectionBinUI();
+        }
+    })
+    .catch(err => console.error('Failed to sync selection bin cache:', err));
+}
+
 function loadSelectedFromConfig(event) {
     if (event) event.preventDefault();
     fetch('/api/custom/selected')
@@ -3830,15 +3928,19 @@ function loadSelectedFromConfig(event) {
         .then(data => {
             selectedChannelIds.clear();
             excludedChannelIds.clear();
+            selectionBinIds.clear();
             
             if (data.matched_ids && data.matched_ids.length > 0) {
-                data.matched_ids.forEach(id => selectedChannelIds.add(id));
+                data.matched_ids.forEach(id => {
+                    selectionBinIds.add(id);
+                });
             }
             if (data.excluded_ids && data.excluded_ids.length > 0) {
                 data.excluded_ids.forEach(id => excludedChannelIds.add(id));
             }
             
             updateCheckSelectedButtonState();
+            syncSelectionBinCache(data.matched_ids || []);
             
             // Populating settings fields from config
             const config = data.config || {};
@@ -3888,6 +3990,11 @@ function loadSelectedFromConfig(event) {
 
 function saveSelectedForAutoUpdate(event) {
     if (event) event.preventDefault();
+    openSaveModeModal();
+}
+
+function saveSelectedWithMode(event, mode) {
+    if (event) event.preventDefault();
     
     const excludeGlobal = document.getElementById('sync-exclude-global')?.checked || false;
     const langOrderVal = document.getElementById('sync-languages-order')?.value || '';
@@ -3901,8 +4008,6 @@ function saveSelectedForAutoUpdate(event) {
     const categoryOrder = catOrderVal.split(',').map(s => s.trim()).filter(Boolean);
     const excludeLanguages = excludeLangsVal.split(',').map(s => s.trim()).filter(Boolean);
     const excludeCountries = excludeCountriesVal.split(',').map(s => s.trim()).filter(Boolean);
-    
-    // Split textarea by newline or comma
     const excludeChannels = excludeChannelsVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
 
     if (selectedChannelIds.size === 0 && excludedChannelIds.size === 0 && 
@@ -3911,23 +4016,107 @@ function saveSelectedForAutoUpdate(event) {
         excludeChannels.length === 0 && !excludeGlobal) {
         return alert('Please select/exclude channels or set configuration options first.');
     }
-    
-    const saveModeRadio = document.querySelector('input[name="sync-save-mode"]:checked');
-    const mode = saveModeRadio ? saveModeRadio.value : 'update';
-    const countSelect = selectedChannelIds.size;
-    const countExclude = excludedChannelIds.size;
-    
-    let confirmMsg = `Are you sure you want to `;
-    if (mode === 'update') {
-        confirmMsg += `APPEND/MERGE your current selection (${countSelect} included, ${countExclude} excluded channels) with the existing config?`;
-    } else {
-        confirmMsg += `OVERWRITE the existing config entirely with your current selection (${countSelect} included, ${countExclude} excluded channels)?`;
-    }
 
-    if (!confirm(confirmMsg)) {
-        return;
+    openSaveModeModal(mode);
+}
+
+function openSaveModeModal(defaultMode) {
+    document.getElementById('save-modal-inc-count').textContent = selectedChannelIds.size;
+    document.getElementById('save-modal-exc-count').textContent = excludedChannelIds.size;
+    
+    // Sync radio buttons in modal with sidebar save mode
+    let mode = defaultMode;
+    if (!mode) {
+        const sidebarModeRadio = document.querySelector('input[name="sync-save-mode"]:checked');
+        mode = sidebarModeRadio ? sidebarModeRadio.value : 'update';
     }
     
+    const radioUpdate = document.getElementById('modal-save-mode-update');
+    const radioOverwrite = document.getElementById('modal-save-mode-overwrite');
+    if (radioUpdate && radioOverwrite) {
+        if (mode === 'overwrite') {
+            radioOverwrite.checked = true;
+        } else {
+            radioUpdate.checked = true;
+        }
+    }
+    
+    selectSaveModeModal(mode);
+    
+    document.getElementById('save-mode-modal').style.display = 'flex';
+}
+
+function closeSaveModeModal() {
+    document.getElementById('save-mode-modal').style.display = 'none';
+}
+
+function selectSaveModeModal(mode) {
+    const radio = document.getElementById('modal-save-mode-' + mode);
+    if (radio) radio.checked = true;
+    
+    // Highlight selected card
+    const cardUpdate = document.getElementById('modal-card-update');
+    const cardOverwrite = document.getElementById('modal-card-overwrite');
+    if (cardUpdate && cardOverwrite) {
+        if (mode === 'update') {
+            cardUpdate.style.borderColor = 'var(--color-accent)';
+            cardUpdate.style.background = 'rgba(255, 255, 255, 0.05)';
+            cardUpdate.style.boxShadow = '0 0 8px var(--color-accent)';
+            cardOverwrite.style.borderColor = 'var(--border-color)';
+            cardOverwrite.style.background = 'rgba(255, 255, 255, 0.02)';
+            cardOverwrite.style.boxShadow = 'none';
+        } else {
+            cardOverwrite.style.borderColor = 'var(--color-accent)';
+            cardOverwrite.style.background = 'rgba(255, 255, 255, 0.05)';
+            cardOverwrite.style.boxShadow = '0 0 8px var(--color-accent)';
+            cardUpdate.style.borderColor = 'var(--border-color)';
+            cardUpdate.style.background = 'rgba(255, 255, 255, 0.02)';
+            cardUpdate.style.boxShadow = 'none';
+        }
+    }
+}
+
+function confirmSaveSelectedForAutoUpdate() {
+    const modalRadio = document.querySelector('input[name="modal-save-mode-choice"]:checked');
+    const mode = modalRadio ? modalRadio.value : 'update';
+    
+    // Sync back to sidebar radios
+    const sidebarRadioUpdate = document.getElementById('sync-save-mode-update');
+    const sidebarRadioOverwrite = document.getElementById('sync-save-mode-overwrite');
+    if (sidebarRadioUpdate && sidebarRadioOverwrite) {
+        if (mode === 'overwrite') {
+            sidebarRadioOverwrite.checked = true;
+            sidebarRadioUpdate.checked = false;
+        } else {
+            sidebarRadioUpdate.checked = true;
+            sidebarRadioOverwrite.checked = false;
+        }
+    }
+    
+    // Save this preference
+    saveSyncSaveModeSetting(mode);
+    
+    closeSaveModeModal();
+    
+    // Proceed to execute save
+    executeSaveSelectedForAutoUpdate(mode);
+}
+
+function executeSaveSelectedForAutoUpdate(mode) {
+    const excludeGlobal = document.getElementById('sync-exclude-global')?.checked || false;
+    const langOrderVal = document.getElementById('sync-languages-order')?.value || '';
+    const catOrderVal = document.getElementById('sync-categories-order')?.value || '';
+    const excludeLangsVal = document.getElementById('sync-exclude-languages')?.value || '';
+    const excludeCountriesVal = document.getElementById('sync-exclude-countries')?.value || '';
+    const excludeChannelsVal = document.getElementById('sync-exclude-channels-input')?.value || '';
+
+    // Split and clean lists
+    const preferredLanguages = langOrderVal.split(',').map(s => s.trim()).filter(Boolean);
+    const categoryOrder = catOrderVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeLanguages = excludeLangsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeCountries = excludeCountriesVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeChannels = excludeChannelsVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+
     fetch('/api/custom/save-selected', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3945,20 +4134,32 @@ function saveSelectedForAutoUpdate(event) {
             }
         })
     })
-    .then(res => res.json())
     .then(data => {
         if (data.error) {
             alert('Failed to save configuration: ' + data.error);
         } else {
             if (data.merged_inclusions) {
-                selectedChannelIds.clear();
-                data.merged_inclusions.forEach(id => selectedChannelIds.add(id));
+                selectionBinIds.clear();
+                data.merged_inclusions.forEach(id => {
+                    selectionBinIds.add(id);
+                });
+                syncSelectionBinCache(data.merged_inclusions);
             }
             if (data.merged_exclusions) {
                 excludedChannelIds.clear();
                 data.merged_exclusions.forEach(id => excludedChannelIds.add(id));
             }
+            
+            // Clear active table selection after successful save
+            selectedChannelIds.clear();
+            
             updateCheckSelectedButtonState();
+            
+            // Uncheck table checkboxes
+            document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox, #header-select-all`).forEach(cb => {
+                cb.checked = false;
+            });
+            
             triggerFilter();
             
             alert(`Successfully saved rules to repository config files (Total in config: ${data.count} channels)!\n\nCommit and push your changes to GitHub to trigger the auto-sync and release!`);
@@ -3969,4 +4170,355 @@ function saveSelectedForAutoUpdate(event) {
     });
 }
 
+// SELECTION BIN (CHANNEL CART) FUNCTIONS
+function toggleSelectionBin(event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    const popover = document.getElementById('selection-bin-popover');
+    if (popover) {
+        const isHidden = popover.style.display === 'none';
+        popover.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden) {
+            updateSelectionBinUI();
+        }
+    }
+}
 
+// Close selection bin popover on clicking outside
+document.addEventListener('click', (e) => {
+    const popover = document.getElementById('selection-bin-popover');
+    const btn = document.getElementById('btn-selection-bin');
+    if (popover && popover.style.display === 'flex') {
+        if (e.target === btn || btn.contains(e.target) || popover.contains(e.target)) {
+            return;
+        }
+        // Do not close if clicking on row select checkboxes, exclusion buttons, action buttons, or dropdowns
+        if (e.target.closest('.row-select-checkbox') || 
+            e.target.closest('.grid-select-checkbox') || 
+            e.target.closest('.exclude-btn-ch') || 
+            e.target.closest('.action-btn-row') ||
+            e.target.closest('#playlist-dropdown') ||
+            e.target.closest('#btn-playlist-options')) {
+            return;
+        }
+        popover.style.display = 'none';
+    }
+});
+
+function findChannelById(id) {
+    let ch = channels.find(c => c.id === id);
+    if (!ch) {
+        ch = filteredChannelsList.find(c => c.id === id);
+    }
+    return ch;
+}
+
+function cacheChannelForBin(ch) {
+    if (ch && ch.id) {
+        selectionBinCache[ch.id] = {
+            id: ch.id,
+            name: ch.name,
+            country: ch.country,
+            languages: ch.languages || [],
+            categories: ch.categories || []
+        };
+    }
+}
+
+function updateSelectionBinUI() {
+    const countBadge = document.getElementById('bin-count');
+    if (countBadge) {
+        countBadge.textContent = selectionBinIds.size;
+    }
+
+    const listContainer = document.getElementById('bin-channels-list');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = '';
+
+    if (selectionBinIds.size === 0) {
+        listContainer.innerHTML = `<span style="color: var(--text-muted); text-align: center; display: block; padding: 20px 0;">No channels selected. Add channels to bin using checkboxes.</span>`;
+        return;
+    }
+
+    selectionBinIds.forEach(id => {
+        // Find channel object from cache first, then fallback to channels arrays
+        let ch = selectionBinCache[id];
+        if (!ch) {
+            const found = findChannelById(id);
+            if (found) {
+                cacheChannelForBin(found);
+                ch = selectionBinCache[id];
+            }
+        }
+        
+        // Fallback to skeleton if not found
+        if (!ch) {
+            ch = { id: id, name: id, country: '', languages: [], categories: [] };
+        }
+
+        const item = document.createElement('div');
+        item.className = 'bin-item';
+        item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px;';
+        
+        const info = document.createElement('div');
+        info.style.cssText = 'display: flex; flex-direction: column; max-width: 80%;';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.style.cssText = 'font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+        nameSpan.textContent = ch.name || ch.id;
+        
+        const metaSpan = document.createElement('span');
+        metaSpan.style.cssText = 'font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+        const langList = Array.isArray(ch.languages) ? ch.languages : [];
+        const catList = Array.isArray(ch.categories) ? ch.categories : [];
+        const countryStr = ch.country || 'No Country';
+        const langStr = langList.join(', ') || 'No Lang';
+        const catStr = catList.join(', ') || 'No Cat';
+        metaSpan.textContent = `${countryStr} | ${langStr} | ${catStr}`;
+        
+        info.appendChild(nameSpan);
+        info.appendChild(metaSpan);
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.style.cssText = 'background: none; border: none; color: var(--color-danger); cursor: pointer; font-size: 14px; padding: 4px;';
+        removeBtn.innerHTML = '✕';
+        removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeFromBin(id);
+        };
+        
+        item.appendChild(info);
+        item.appendChild(removeBtn);
+        listContainer.appendChild(item);
+    });
+}
+
+function addSingleChannelToBin(chId, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    selectionBinIds.add(chId);
+    const ch = findChannelById(chId);
+    if (ch) {
+        cacheChannelForBin(ch);
+    }
+    updateSelectionBinUI();
+    
+    // Toast notification style
+    console.log(`Added ${ch ? ch.name : chId} to Selection Bin.`);
+}
+
+function removeFromBin(id) {
+    selectionBinIds.delete(id);
+    delete selectionBinCache[id];
+    updateSelectionBinUI();
+}
+
+function clearSelectionBin() {
+    selectionBinIds.clear();
+    selectionBinCache = {};
+    selectedChannelIds.clear();
+    
+    // Uncheck all checkboxes in the table/grid UI
+    document.querySelectorAll('.row-select-checkbox, .grid-select-checkbox, #header-select-all').forEach(cb => {
+        cb.checked = false;
+    });
+    
+    updateCheckSelectedButtonState();
+    updateSelectionBinUI();
+}
+
+function addSelectedToBin(event) {
+    if (event) event.preventDefault();
+    if (selectedChannelIds.size === 0) {
+        alert("Please select/check one or more channels in the table first.");
+        return;
+    }
+    selectedChannelIds.forEach(id => {
+        selectionBinIds.add(id);
+        const ch = findChannelById(id);
+        if (ch) {
+            cacheChannelForBin(ch);
+        }
+    });
+    updateSelectionBinUI();
+    alert(`Staged ${selectedChannelIds.size} selected channels in the Selection Bin!`);
+}
+
+function addAllFilteredToBin(event) {
+    if (event) event.preventDefault();
+    if (filteredChannelsList.length === 0) {
+        alert('No filtered channels to add.');
+        return;
+    }
+    filteredChannelsList.forEach(ch => {
+        selectionBinIds.add(ch.id);
+        cacheChannelForBin(ch);
+    });
+    updateSelectionBinUI();
+    alert(`Staged all ${filteredChannelsList.length} filtered channels in the Selection Bin!`);
+}
+
+function removeSelectedFromBin(event) {
+    if (event) event.preventDefault();
+    if (selectedChannelIds.size === 0) {
+        alert("Please select/check one or more channels in the table to remove.");
+        return;
+    }
+    selectedChannelIds.forEach(id => {
+        selectionBinIds.delete(id);
+        delete selectionBinCache[id];
+    });
+    updateSelectionBinUI();
+    alert(`Removed ${selectedChannelIds.size} channels from the Selection Bin.`);
+}
+
+function saveSelectedFromBin(mode) {
+    if (selectionBinIds.size === 0) {
+        alert("The Selection Bin is empty. Add channels to the bin first.");
+        return;
+    }
+    
+    // Read other custom configurations from GUI inputs if applicable
+    const excludeGlobal = document.getElementById('sync-exclude-global')?.checked || false;
+    const prefLangsVal = document.getElementById('sync-languages-order')?.value || '';
+    const prefCatsVal = document.getElementById('sync-categories-order')?.value || '';
+    const excludeLangsVal = document.getElementById('sync-exclude-languages')?.value || '';
+    const excludeCountriesVal = document.getElementById('sync-exclude-countries')?.value || '';
+    const excludeChannelsVal = document.getElementById('sync-exclude-channels-input')?.value || '';
+    
+    const preferredLanguages = prefLangsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const categoryOrder = prefCatsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeLanguages = excludeLangsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeCountries = excludeCountriesVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeChannels = excludeChannelsVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+
+    fetch('/api/custom/save-selected', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            channel_ids: Array.from(selectionBinIds),
+            excluded_ids: Array.from(excludedChannelIds),
+            mode: mode,
+            config: {
+                excludeGlobal,
+                preferredLanguages,
+                categoryOrder,
+                excludeLanguages,
+                excludeCountries,
+                excludeChannels
+            }
+        })
+    })
+    .then(data => {
+        if (data.error) {
+            alert('Failed to save configuration: ' + data.error);
+        } else {
+            // Update frontend state with the returned merged selections/exclusions
+            if (data.merged_inclusions) {
+                selectionBinIds.clear();
+                data.merged_inclusions.forEach(id => {
+                    selectionBinIds.add(id);
+                });
+                syncSelectionBinCache(data.merged_inclusions);
+            }
+            if (data.merged_exclusions) {
+                excludedChannelIds.clear();
+                data.merged_exclusions.forEach(id => excludedChannelIds.add(id));
+            }
+            
+            // Clear active table selection
+            selectedChannelIds.clear();
+            
+            updateCheckSelectedButtonState();
+            updateSelectionBinUI();
+            
+            // Uncheck table checkboxes
+            document.querySelectorAll(`.row-select-checkbox, .grid-select-checkbox, #header-select-all`).forEach(cb => {
+                cb.checked = false;
+            });
+            
+            triggerFilter();
+            alert(`Successfully saved Selection Bin rules to repository config files (Total in config: ${data.count} channels)!\n\nCustom playlist generated successfully!`);
+        }
+    })
+    .catch(err => {
+        alert('Failed to save configuration: ' + err);
+    });
+}
+
+function downloadCustomPlaylistFile() {
+    window.open('/api/custom/download', '_blank');
+}
+
+// SAVE APPLIED FILTERS TO CONFIG
+function saveAppliedFiltersToConfig() {
+    let filterRules = [];
+    
+    // Add active filter categories
+    if (activeFilters.categories && activeFilters.categories.length > 0) {
+        activeFilters.categories.forEach(cat => {
+            filterRules.push(`/${cat}/`);
+        });
+    }
+    
+    // Add active filter languages
+    if (activeFilters.languages && activeFilters.languages.length > 0) {
+        activeFilters.languages.forEach(lang => {
+            filterRules.push(`/${lang}/`);
+        });
+    }
+    
+    // Add active filter countries
+    if (activeFilters.countries && activeFilters.countries.length > 0) {
+        activeFilters.countries.forEach(country => {
+            filterRules.push(`/${country}/`);
+        });
+    }
+    
+    // Add search term if non-empty
+    const searchVal = document.getElementById('filter-search')?.value || '';
+    if (searchVal.trim()) {
+        filterRules.push(`/${searchVal.trim()}/`);
+    }
+    const globalSearchVal = document.getElementById('global-search')?.value || '';
+    if (globalSearchVal.trim()) {
+        filterRules.push(`/${globalSearchVal.trim()}/`);
+    }
+    
+    if (filterRules.length === 0) {
+        alert("No active filters (Language, Category, Country, or Search) are currently applied in the sidebar.");
+        return;
+    }
+    
+    const confirmMsg = `Do you want to save the following filter rules to your custom playlist configuration?\n\n` + 
+                       filterRules.join('\n') + 
+                       `\n\nThese will be appended to your config and auto-generated immediately.`;
+                       
+    if (!confirm(confirmMsg)) return;
+    
+    fetch('/api/custom/save-selected', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            channel_ids: filterRules,
+            excluded_ids: [],
+            mode: 'update',
+            config: {}
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            alert('Failed to save filter rules: ' + data.error);
+        } else {
+            alert(`Successfully saved ${filterRules.length} filter rules to your custom config!`);
+            triggerFilter();
+        }
+    })
+    .catch(err => alert('Failed to save filter rules: ' + err));
+}

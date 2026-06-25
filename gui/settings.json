@@ -63,5 +63,6 @@
       "url": "cache\\playlists\\ip_1782206580.m3u"
     }
   ],
-  "items_per_page": 500
+  "items_per_page": 500,
+  "sync_save_mode": "overwrite"
 }

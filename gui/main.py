@@ -465,7 +465,7 @@ def get_channels():
     # Format channel list for frontend
     results = []
     # Cap details sent to browser based on settings
-    channel_limit = int(prefs.get_setting("channel_limit", 10000))
+    channel_limit = filters.get("channel_limit", int(prefs.get_setting("channel_limit", 10000)))
     if channel_limit > 0:
         capped_list = filtered[:channel_limit]
     else:
@@ -829,14 +829,27 @@ def get_custom_selected():
                 try:
                     pattern = clean_rule[1:-1]
                     regex = re.compile(pattern, re.IGNORECASE)
-                    if (ch.id and regex.search(ch.id)) or (ch.name and regex.search(ch.name)):
+                    if ((ch.id and regex.search(ch.id)) or
+                        (ch.name and regex.search(ch.name)) or
+                        (ch.country and regex.search(ch.country)) or
+                        any(regex.search(cat) for cat in ch.categories if cat) or
+                        any(regex.search(lang) for lang in ch.languages if lang) or
+                        (ch.status_text and regex.search(ch.status_text))):
                         matched = True
                 except Exception:
                     pass
             else:
                 ch_id_base = ch.id.split("@")[0] if ch.id else ""
                 rule_base = clean_rule.split("@")[0]
-                if ch.id == clean_rule or ch.name == clean_rule or ch_id_base == rule_base:
+                rule_lower = clean_rule.lower()
+                if (ch.id == clean_rule or
+                    (ch.id and ch.id.lower() == rule_lower) or
+                    (ch.id and ch_id_base and rule_base and ch_id_base == rule_base) or
+                    (ch.name and ch.name.lower() == rule_lower) or
+                    (ch.country and ch.country.lower() == rule_lower) or
+                    any(cat.lower() == rule_lower for cat in ch.categories if cat) or
+                    any(lang.lower() == rule_lower for lang in ch.languages if lang) or
+                    (ch.status_text and ch.status_text.lower() == rule_lower)):
                     matched = True
             
             if matched:
@@ -908,7 +921,12 @@ def save_custom_selected():
                     try:
                         pattern = clean_rule[1:-1]
                         regex = re.compile(pattern, re.IGNORECASE)
-                        if (ch.id and regex.search(ch.id)) or (ch.name and regex.search(ch.name)):
+                        if ((ch.id and regex.search(ch.id)) or
+                            (ch.name and regex.search(ch.name)) or
+                            (ch.country and regex.search(ch.country)) or
+                            any(regex.search(cat) for cat in ch.categories if cat) or
+                            any(regex.search(lang) for lang in ch.languages if lang) or
+                            (ch.status_text and regex.search(ch.status_text))):
                             matched_loaded = True
                             break
                     except Exception:
@@ -916,7 +934,15 @@ def save_custom_selected():
                 else:
                     ch_id_base = ch.id.split("@")[0] if ch.id else ""
                     rule_base = clean_rule.split("@")[0]
-                    if ch.id == clean_rule or ch.name == clean_rule or ch_id_base == rule_base:
+                    rule_lower = clean_rule.lower()
+                    if (ch.id == clean_rule or
+                        (ch.id and ch.id.lower() == rule_lower) or
+                        (ch.id and ch_id_base and rule_base and ch_id_base == rule_base) or
+                        (ch.name and ch.name.lower() == rule_lower) or
+                        (ch.country and ch.country.lower() == rule_lower) or
+                        any(cat.lower() == rule_lower for cat in ch.categories if cat) or
+                        any(lang.lower() == rule_lower for lang in ch.languages if lang) or
+                        (ch.status_text and ch.status_text.lower() == rule_lower)):
                         matched_loaded = True
                         break
             
@@ -983,6 +1009,9 @@ def save_custom_selected():
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(config_data, f, indent=2, ensure_ascii=False)
             
+        # Run custom generator immediately
+        run_custom_generator()
+            
         # Return only the matched loaded IDs to update the frontend state
         loaded_ids = {ch.id for ch in filter_engine.channels}
         merged_inclusions_loaded = [ch_id for ch_id in final_inclusions if ch_id in loaded_ids]
@@ -996,6 +1025,44 @@ def save_custom_selected():
         })
     except Exception as e:
         return jsonify({"error": f"Failed to save configuration files: {str(e)}"}), 500
+
+
+def run_custom_generator():
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    try:
+        import subprocess
+        print("Running custom/generate.ts --no-check...")
+        res = subprocess.run(
+            ["npx", "tsx", "custom/generate.ts", "--no-check"],
+            cwd=root_dir,
+            capture_output=True,
+            text=True,
+            shell=True
+        )
+        print("Generator stdout:", res.stdout)
+        if res.stderr:
+            print("Generator stderr:", res.stderr)
+        return res.returncode == 0
+    except Exception as e:
+        print(f"Error running auto-generator: {e}")
+        return False
+
+
+@app.route("/api/custom/download", methods=["GET"])
+def download_custom_playlist_file():
+    custom_m3u_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "custom.m3u"))
+    if not os.path.exists(custom_m3u_path):
+        # Generate on the fly
+        run_custom_generator()
+    
+    if not os.path.exists(custom_m3u_path):
+        return "Custom playlist file does not exist and could not be generated.", 404
+        
+    return send_file(
+        custom_m3u_path,
+        as_attachment=True,
+        download_name="custom.m3u"
+    )
 
 
 @app.route("/api/presets", methods=["POST"])
@@ -1015,17 +1082,18 @@ def export_playlist():
     filepath = req_data.get("filepath")
     file_format = req_data.get("format", "m3u")
     append = req_data.get("append", False)
+    sort_order = req_data.get("sort_order", "default")
     
     if not filepath:
         return jsonify({"error": "Filepath required"}), 400
         
     try:
         if file_format == "json":
-            ExportManager.export_json(filepath, filter_engine.filtered_channels)
+            ExportManager.export_json(filepath, filter_engine.filtered_channels, sort_order=sort_order)
         elif file_format == "csv":
-            ExportManager.export_csv(filepath, filter_engine.filtered_channels)
+            ExportManager.export_csv(filepath, filter_engine.filtered_channels, sort_order=sort_order)
         else:
-            ExportManager.export_m3u(filepath, filter_engine.filtered_channels, append=append)
+            ExportManager.export_m3u(filepath, filter_engine.filtered_channels, append=append, sort_order=sort_order)
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -1033,6 +1101,7 @@ def export_playlist():
 @app.route("/api/download-export", methods=["GET"])
 def download_export():
     file_format = request.args.get("format", "m3u")
+    sort_order = request.args.get("sort_order", "default")
     
     # Temporary buffer to write export file
     buffer = io.BytesIO()
@@ -1040,15 +1109,15 @@ def download_export():
     try:
         temp_file = "temp_export." + file_format
         if file_format == "json":
-            ExportManager.export_json(temp_file, filter_engine.filtered_channels)
+            ExportManager.export_json(temp_file, filter_engine.filtered_channels, sort_order=sort_order)
             mimetype = "application/json"
             attachment_filename = "playlist.json"
         elif file_format == "csv":
-            ExportManager.export_csv(temp_file, filter_engine.filtered_channels)
+            ExportManager.export_csv(temp_file, filter_engine.filtered_channels, sort_order=sort_order)
             mimetype = "text/csv"
             attachment_filename = "playlist.csv"
         else:
-            ExportManager.export_m3u(temp_file, filter_engine.filtered_channels, append=False)
+            ExportManager.export_m3u(temp_file, filter_engine.filtered_channels, append=False, sort_order=sort_order)
             mimetype = "audio/x-mpegurl"
             attachment_filename = "playlist.m3u"
             
@@ -1127,7 +1196,8 @@ def create_playlist_from_selected():
         new_playlist = {
             "name": name,
             "type": "file",
-            "url": filepath
+            "url": filepath,
+            "channel_ids": channel_ids
         }
         current_playlists.append(new_playlist)
         prefs.set_setting("custom_playlists", current_playlists)
@@ -1155,8 +1225,8 @@ def add_channels_to_existing_playlist():
         return jsonify({"error": "Can only append to local file playlists"}), 400
         
     filepath = pl.get("url")
-    if not filepath or not os.path.exists(filepath):
-        return jsonify({"error": "Playlist file not found on system"}), 404
+    if not filepath:
+        return jsonify({"error": "Playlist file path is required"}), 400
         
     # Find matching channels
     selected_channels = [c for c in filter_engine.channels if c.id in channel_ids]
@@ -1164,8 +1234,15 @@ def add_channels_to_existing_playlist():
         return jsonify({"error": "No valid channels selected"}), 400
         
     try:
-        # Append to M3U file
-        ExportManager.export_m3u(filepath, selected_channels, append=True)
+        # Append to M3U file if it exists, otherwise recreate it
+        file_exists = os.path.exists(filepath)
+        ExportManager.export_m3u(filepath, selected_channels, append=file_exists)
+        
+        # Update stored channel_ids
+        existing_ids = pl.get("channel_ids", [])
+        pl["channel_ids"] = list(set(existing_ids + channel_ids))
+        prefs.set_setting("custom_playlists", current_playlists)
+        
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -1183,14 +1260,25 @@ def get_playlists_details():
         channel_count = 0
         file_size = 0
         
-        if pl_type == "file" and url and os.path.exists(url):
-            try:
-                file_size = os.path.getsize(url)
-                with open(url, "r", encoding="utf-8", errors="ignore") as f:
-                    content = f.read()
-                    channel_count = content.count("#EXTINF:")
-            except Exception as e:
-                print(f"Error reading playlist file {url}: {e}")
+        if pl_type == "file" and url:
+            if not os.path.exists(url) and pl.get("channel_ids"):
+                try:
+                    # Recreate if missing
+                    ch_ids = pl["channel_ids"]
+                    selected_channels = [c for c in filter_engine.channels if c.id in ch_ids]
+                    if selected_channels:
+                        ExportManager.export_m3u(url, selected_channels, append=False)
+                except Exception as ex:
+                    print(f"Error auto-recreating missing file {url}: {ex}")
+            
+            if os.path.exists(url):
+                try:
+                    file_size = os.path.getsize(url)
+                    with open(url, "r", encoding="utf-8", errors="ignore") as f:
+                        content = f.read()
+                        channel_count = content.count("#EXTINF:")
+                except Exception as e:
+                    print(f"Error reading playlist file {url}: {e}")
         
         results.append({
             "index": idx,
@@ -1225,8 +1313,20 @@ def download_custom_playlist():
             return "Invalid playlist index", 400
         pl = current_playlists[idx]
         filepath = pl.get("url")
-        if not filepath or not os.path.exists(filepath):
-            return "Playlist file not found", 404
+        if not filepath:
+            return "Playlist file path is missing", 400
+            
+        if not os.path.exists(filepath):
+            # Recreate playlist file from channel_ids
+            channel_ids = pl.get("channel_ids", [])
+            if channel_ids:
+                selected_channels = [c for c in filter_engine.channels if c.id in channel_ids]
+                if selected_channels:
+                    ExportManager.export_m3u(filepath, selected_channels, append=False)
+                else:
+                    return "Playlist file not found and cannot be recreated (no matching channels)", 404
+            else:
+                return "Playlist file not found", 404
             
         return send_file(
             filepath,
@@ -1412,6 +1512,17 @@ def load_selected_playlist():
                 elif pl_type == "url":
                     playlist = data_processor.load_m3u_url(url)
                 elif pl_type == "file":
+                    if not os.path.exists(url):
+                        current_playlists = prefs.get_setting("custom_playlists", [])
+                        matching_pl = next((p for p in current_playlists if p.get("url") == url), None)
+                        if matching_pl and matching_pl.get("channel_ids"):
+                            try:
+                                ch_ids = matching_pl["channel_ids"]
+                                selected_channels = [c for c in filter_engine.channels if c.id in ch_ids]
+                                if selected_channels:
+                                    ExportManager.export_m3u(url, selected_channels, append=False)
+                            except Exception as ex:
+                                print(f"Error auto-recreating playlist {url}: {ex}")
                     playlist = data_processor.load_m3u_file(url)
                     
                 if playlist:
@@ -1499,7 +1610,20 @@ def save_current_playlist():
     try:
         # Write current filter_engine.channels to M3U file
         ExportManager.export_m3u(filepath, filter_engine.channels, append=False)
-        # Update custom playlists details count/size
+        
+        # Update channel_ids in settings.json under custom_playlists
+        current_playlists = prefs.get_setting("custom_playlists", [])
+        channel_ids = [c.id for c in filter_engine.channels]
+        
+        for pl in current_playlists:
+            if pl.get("url") == filepath:
+                pl["channel_ids"] = channel_ids
+                break
+        prefs.set_setting("custom_playlists", current_playlists)
+        
+        # Also update active_playlist_source in memory
+        active_playlist_source["channel_ids"] = channel_ids
+        
         return jsonify({"success": True, "message": "Playlist file updated successfully!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
