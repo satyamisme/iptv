@@ -597,3 +597,99 @@ https://adpnetworkhd-cmd.github.io/iptv/KomediynoeHD.m3u8
 https://adpnetworkhd-cmd.github.io/iptv/LubimoeHD.m3u8
 #EXTINF:-1 tvg-id="MatchPlaneta.ru@SD",Match! Planeta (576p)
 https://adpnetworkhd-cmd.github.io/iptv/MatchPlaneta.m3u8
+#EXTINF:-1 tvg-id="Mir.ru@SD",Mir (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Mir_Moskva.m3u8
+#EXTINF:-1 tvg-id="Mirvokrug.ru@SD",Mir vokrug (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/Mirvokrug.m3u8
+#EXTINF:-1 tvg-id="MosfilmGoldCollection.ru@SD",Mosfilm Gold Collection (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/MosfilmGoldCollection.m3u8
+#EXTINF:-1 tvg-id="Moyastikhiya.ru@HD",Moya stikhiya HD (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/Moyastikhiya.m3u8
+#EXTINF:-1 tvg-id="Mult.ru@HD",Mult HD (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/Mult.m3u8
+#EXTINF:-1 tvg-id="Multilandia.ru@SD",Multilandia (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Multilandia.m3u8
+#EXTINF:-1 tvg-id="Muzhskoy.ru@SD",Muzhskoy (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/MuzhskoyHD.m3u8
+#EXTINF:-1 tvg-id="MuzykaPervogo.ru@SD",Muzyka Pervogo (576p)
+https://adpnetworkhd-cmd.github.io/iptv/MuzykaPervogo.m3u8
+#EXTINF:-1 tvg-id="NTVHit.ru@SD",NTV-Hit (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/NTVHit.m3u8
+#EXTINF:-1 tvg-id="NTVMir.ru@SD",NTV Mir (576p)
+https://adpnetworkhd-cmd.github.io/iptv/NTVMir.m3u8
+#EXTINF:-1 tvg-id="NTVSeries.ru@SD",NTV Series (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/NTVSerial.m3u8
+#EXTINF:-1 tvg-id="Nashe.ru@SD",Nashe (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/NasheHD.m3u8
+#EXTINF:-1 tvg-id="NickJr.ru@SD",Nick Jr. (576p)
+https://adpnetworkhd-cmd.github.io/iptv/NickJrRussia.m3u8
+#EXTINF:-1 tvg-id="Nickelodeon.ru@SD",Nickelodeon (576p)
+https://adpnetworkhd-cmd.github.io/iptv/NickelodeonRussia.m3u8
+#EXTINF:-1 tvg-id="Nicktoons.ru@SD",Nicktoons (576p)
+https://adpnetworkhd-cmd.github.io/iptv/NicktoonsRussia.m3u8
+#EXTINF:-1 tvg-id="O.ru@SD",O! (576p)
+https://adpnetworkhd-cmd.github.io/iptv/O.m3u8
+#EXTINF:-1 tvg-id="Oruzhie.ru@SD",Oruzhie (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Oruzhie.m3u8
+#EXTINF:-1 tvg-id="Ostrosyuzhetnoye.ru@SD",Ostrosyuzhetnoye (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/OstrosyuzhetnoyeHD.m3u8
+#EXTINF:-1 tvg-id="PervyyKosmicheskiy.ru@HD",Pervyy Kosmicheskiy HD (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/PervyyKosmicheskiy.m3u8
+#EXTINF:-1 tvg-id="Pingvin.ru@SD",Pingvin (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Pingvin.m3u8
+#EXTINF:-1 tvg-id="Premialnoe.ru@HD",Premialnoe HD (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/PremialnoeHD.m3u8
+#EXTINF:-1 tvg-id="Psikhologiya.ru@SD",Psikhologiya (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Psikhologiya21.m3u8
+#EXTINF:-1 tvg-id="RENTV.ru@HD",REN TV HD (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/RENTVHD_Moskva.m3u8
+#EXTINF:-1 tvg-id="red.ru@HD",.red HD (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/RedHD.m3u8
+#EXTINF:-1 tvg-id="Russia24.ru@SD",Russia-24 (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Russia24_Moskva.m3u8
+#EXTINF:-1 tvg-id="RusskiyIllusion.ru@SD",Russkiy Illusion (1080p)
+https://adpnetworkhd-cmd.github.io/iptv/RusskiyIllusion.m3u8
+#EXTINF:-1 tvg-id="Rybolov.ru@SD",Rybolov (576p)
+https://adpnetworkhd-cmd.github.io/iptv/Rybolov.m3u8
+#EXTINF:-1 tvg-id="Channel8.ru@SD",Channel 8 (576p)
+http://45.11.139.43:8555/8kanal/index.m3u8
+#EXTINF:-1 tvg-id="TopSecret.ru@SD",Top Secret (576p)
+http://hls127.freeott.top:8080/Sovershenno_Sekretno/video.m3u8
+#EXTINF:-1 tvg-id="Nostalgia.ru@SD",Nostalgia (576p)
+http://hls127.freeott.top:8080/Nostalgiya/video.m3u8
+#EXTINF:-1 tvg-id="Zhara.ru@SD",Zhara (576p)
+http://hls127.freeott.top:8080/Zhara/video.m3u8
+#EXTINF:-1 tvg-id="OceanTV.ru@SD",Ocean-TV (576p)
+http://hls127.freeott.top:8080/Ocean_TV/video.m3u8
+#EXTINF:-1 tvg-id="Spas.ru@SD",Spas (576p)
+http://hls127.freeott.top:8080/Spas/video.m3u8
+#EXTINF:-1 tvg-id="Maidan.ru@SD",Maidan (576p)
+http://hls127.freeott.top:8080/Maydan/video.m3u8
+#EXTINF:-1 tvg-id="Teatr.ru@SD",Teatr (576p)
+http://hls127.freeott.top:8080/Teatr/video.m3u8
+#EXTINF:-1 tvg-id="ShansonTV.ru@SD",Shanson TV (576p)
+http://hls127.freeott.top:8080/Shanson_Tv/video.m3u8
+#EXTINF:-1 tvg-id="FonMusic.ru@SD",Fon Music (1080p)
+http://hls127.freeott.top:8080/TNT_MUSIC_HD/video.m3u8
+#EXTINF:-1 tvg-id="Multimuzyka.ru@SD",Mult i muzyka (576p)
+http://hls127.freeott.top:8080/Mult_Muzika/video.m3u8
+#EXTINF:-1 tvg-id="NTVStyle.ru@SD",NTV Style (576p)
+http://hls127.freeott.top:8080/NTV_STIL_TV/video.m3u8
+#EXTINF:-1 tvg-id="NTVLaw.ru@SD",NTV Law (576p)
+http://hls127.freeott.top:8080/NTV_PRAVO_TV/video.m3u8
+#EXTINF:-1 tvg-id="NasheNovoeKino.ru@SD",Nashe Novoe Kino (1080p)
+http://hls127.freeott.top:8080/Nashe_Novoe_Kino_HD/video.m3u8
+#EXTINF:-1 tvg-id="NasheLubimoeKino.ru@SD",Nashe Lubimoe Kino (576p)
+http://hls127.freeott.top:8080/Lubimoe_Kino/video.m3u8
+#EXTINF:-1 tvg-id="Istoriya.ru@SD",Istoriya (576p)
+http://hls127.freeott.top:8080/Istoriya/video.m3u8
+#EXTINF:-1 tvg-id="KukhnyaTV.ru@SD",Kukhnya TV (576p)
+http://hls127.freeott.top:8080/Kuhnya_TV/video.m3u8
+#EXTINF:-1 tvg-id="RT.ru@HD",RT HD (1080p)
+https://wisewatchoott.wiseplayout.com/RT/master.m3u8
+#EXTINF:-1 tvg-id="MosfilmGoldCollection.ru@SD",Mosfilm Gold Collection (576p)
+http://hls127.freeott.top:8080/Mosfilm/video.m3u8
+#EXTINF:-1 tvg-id="Russia24.ru@SD",Russia-24 (1080p)
+https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia24-hd/index.m3u8
+#EXTINF:-1 tvg-id="RTenEspanol.ru@SD",RT en Espanol (576p)
+https://streaming.thestream.cyou/live/46.m3u8
