@@ -4985,9 +4985,16 @@ function clearCustomEditorList() {
 function filterCustomEditorList() {
     const searchInput = document.getElementById('custom-editor-search');
     const query = searchInput ? searchInput.value.trim() : '';
+    
+    const cat = document.getElementById('custom-editor-filter-category')?.value || '';
+    const lang = document.getElementById('custom-editor-filter-language')?.value || '';
+    const country = document.getElementById('custom-editor-filter-country')?.value || '';
+    
+    const isFiltered = query || cat || lang || country;
+    
     const warning = document.getElementById('custom-editor-search-warning');
     if (warning) {
-        warning.style.display = query ? 'block' : 'none';
+        warning.style.display = isFiltered ? 'block' : 'none';
     }
     renderCustomEditorUI();
 }
@@ -5103,7 +5110,11 @@ function renderCustomEditorUI() {
     }
     
     const searchQuery = document.getElementById('custom-editor-search')?.value.trim().toLowerCase() || '';
-    const isSearchActive = searchQuery.length > 0;
+    const categoryFilter = document.getElementById('custom-editor-filter-category')?.value || '';
+    const languageFilter = document.getElementById('custom-editor-filter-language')?.value || '';
+    const countryFilter = document.getElementById('custom-editor-filter-country')?.value || '';
+    
+    const isFilteredActive = searchQuery.length > 0 || categoryFilter.length > 0 || languageFilter.length > 0 || countryFilter.length > 0;
     
     let renderedCount = 0;
     
@@ -5121,8 +5132,13 @@ function renderCustomEditorUI() {
             ch = { id: id, name: id, country: '', languages: [], categories: [], streams: [] };
         }
         
+        // Dropdown filters
+        if (categoryFilter && !(ch.categories || []).includes(categoryFilter)) return;
+        if (languageFilter && !(ch.languages || []).includes(languageFilter)) return;
+        if (countryFilter && ch.country !== countryFilter) return;
+        
         // Filter query match
-        if (isSearchActive) {
+        if (searchQuery.length > 0) {
             const idMatch = (ch.id || '').toLowerCase().includes(searchQuery);
             const nameMatch = (ch.name || '').toLowerCase().includes(searchQuery);
             const countryMatch = (ch.country || '').toLowerCase().includes(searchQuery);
@@ -5137,7 +5153,7 @@ function renderCustomEditorUI() {
         
         const item = document.createElement('div');
         item.className = 'bin-item custom-editor-item';
-        const isDraggable = !isSearchActive;
+        const isDraggable = !isFilteredActive;
         item.setAttribute('draggable', isDraggable ? 'true' : 'false');
         item.setAttribute('data-id', id);
         item.style.cssText = `display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 3px; cursor: ${isDraggable ? 'move' : 'default'};`;
@@ -5224,8 +5240,79 @@ function renderCustomEditorUI() {
             removeCustomEditorItem(id);
         };
         
+        // Play/Preview button
+        const playBtn = document.createElement('button');
+        playBtn.className = 'play-btn';
+        playBtn.innerHTML = '▶';
+        playBtn.title = 'Preview Stream';
+        playBtn.style.cssText = 'background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: var(--color-accent); cursor: pointer; font-size: 11px; padding: 4px 10px; margin-right: 8px; font-weight: bold; transition: all 0.2s ease;';
+        playBtn.addEventListener('mouseenter', () => {
+            playBtn.style.background = 'var(--color-accent)';
+            playBtn.style.color = '#fff';
+        });
+        playBtn.addEventListener('mouseleave', () => {
+            playBtn.style.background = 'rgba(255, 255, 255, 0.05)';
+            playBtn.style.color = 'var(--color-accent)';
+        });
+        
+        const hasStreams = ch.streams && ch.streams.length > 0;
+        const playUrl = hasStreams ? ch.streams[0].url : (ch.url || '');
+        if (playUrl) {
+            playBtn.onclick = (e) => {
+                e.stopPropagation();
+                playPreviewStream(playUrl, ch.user_agent || (hasStreams ? ch.streams[0].user_agent : ''), ch.referrer || (hasStreams ? ch.streams[0].referrer : ''), ch.name || ch.id);
+            };
+        } else {
+            playBtn.style.opacity = '0.3';
+            playBtn.style.cursor = 'default';
+        }
+        
+        rightActions.appendChild(playBtn);
         rightActions.appendChild(reorderControls);
         rightActions.appendChild(removeBtn);
+        
+        // Manual Channel Number Input
+        const chnoContainer = document.createElement('div');
+        chnoContainer.style.cssText = 'display: flex; align-items: center; margin-right: 12px; flex-shrink: 0;';
+        
+        const chnoLabel = document.createElement('span');
+        chnoLabel.textContent = 'Ch #';
+        chnoLabel.style.cssText = 'font-size: 10px; color: var(--text-muted); margin-right: 6px; font-weight: 600;';
+        
+        const chnoInput = document.createElement('input');
+        chnoInput.type = 'number';
+        chnoInput.min = '1';
+        chnoInput.style.cssText = 'width: 55px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 6px; font-size: 11px; text-align: center; color: var(--text-primary); height: 24px; font-family: monospace; transition: all 0.2s ease;';
+        chnoInput.addEventListener('focus', () => {
+            chnoInput.style.borderColor = 'var(--color-accent)';
+            chnoInput.style.boxShadow = '0 0 4px rgba(var(--color-accent-rgb), 0.25)';
+        });
+        chnoInput.addEventListener('blur', () => {
+            chnoInput.style.borderColor = 'rgba(255,255,255,0.1)';
+            chnoInput.style.boxShadow = 'none';
+        });
+        
+        if (customEditorChannelNumbers[id] !== undefined) {
+            chnoInput.value = customEditorChannelNumbers[id];
+        } else {
+            chnoInput.value = '';
+            chnoInput.placeholder = index + 1; // Default auto index as placeholder
+        }
+        
+        chnoInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            if (val === '') {
+                delete customEditorChannelNumbers[id];
+            } else {
+                const num = parseInt(val, 10);
+                if (!isNaN(num) && num > 0) {
+                    customEditorChannelNumbers[id] = num;
+                }
+            }
+        });
+        
+        chnoContainer.appendChild(chnoLabel);
+        chnoContainer.appendChild(chnoInput);
         
         // Checkbox for multi-select
         const selectCheck = document.createElement('input');
@@ -5244,6 +5331,7 @@ function renderCustomEditorUI() {
         
         item.appendChild(selectCheck);
         item.appendChild(indexBadge);
+        item.appendChild(chnoContainer);
         item.appendChild(dragHandle);
         item.appendChild(info);
         item.appendChild(rightActions);
@@ -5265,14 +5353,17 @@ function renderCustomEditorUI() {
         listContainer.appendChild(item);
     });
     
-    if (isSearchActive && renderedCount === 0) {
-        listContainer.innerHTML = '<span style="color: var(--text-muted); text-align: center; display: block; padding: 30px 0;">No channels match your search query.</span>';
+    if (isFilteredActive && renderedCount === 0) {
+        listContainer.innerHTML = '<span style="color: var(--text-muted); text-align: center; display: block; padding: 30px 0;">No channels match your filter criteria.</span>';
     }
     
     // Add or reset dragover listener
     listContainer.ondragover = (e) => {
         const searchQueryLocal = document.getElementById('custom-editor-search')?.value.trim().toLowerCase() || '';
-        if (searchQueryLocal.length > 0) return;
+        const catFilterLocal = document.getElementById('custom-editor-filter-category')?.value || '';
+        const langFilterLocal = document.getElementById('custom-editor-filter-language')?.value || '';
+        const countryFilterLocal = document.getElementById('custom-editor-filter-country')?.value || '';
+        if (searchQueryLocal || catFilterLocal || langFilterLocal || countryFilterLocal) return;
         
         e.preventDefault();
         const draggingItem = document.querySelector('.custom-editor-item.dragging');
@@ -5309,9 +5400,9 @@ function syncCustomEditorFromDOM() {
 // Multi-select and rearrange helpers for the Custom Editor
 function getVisibleCustomEditorIds() {
     const searchQuery = document.getElementById('custom-editor-search')?.value.trim().toLowerCase() || '';
-    if (searchQuery.length === 0) {
-        return [...customEditorChannelIds];
-    }
+    const categoryFilter = document.getElementById('custom-editor-filter-category')?.value || '';
+    const languageFilter = document.getElementById('custom-editor-filter-language')?.value || '';
+    const countryFilter = document.getElementById('custom-editor-filter-country')?.value || '';
     
     return customEditorChannelIds.filter(id => {
         let ch = selectionBinCache[id];
@@ -5326,13 +5417,23 @@ function getVisibleCustomEditorIds() {
             ch = { id: id, name: id, country: '', languages: [], categories: [], streams: [] };
         }
         
-        const idMatch = (ch.id || '').toLowerCase().includes(searchQuery);
-        const nameMatch = (ch.name || '').toLowerCase().includes(searchQuery);
-        const countryMatch = (ch.country || '').toLowerCase().includes(searchQuery);
-        const categoryMatch = (ch.categories || []).some(cat => cat.toLowerCase().includes(searchQuery));
-        const languageMatch = (ch.languages || []).some(lang => lang.toLowerCase().includes(searchQuery));
+        // Dropdown filters
+        if (categoryFilter && !(ch.categories || []).includes(categoryFilter)) return false;
+        if (languageFilter && !(ch.languages || []).includes(languageFilter)) return false;
+        if (countryFilter && ch.country !== countryFilter) return false;
         
-        return idMatch || nameMatch || countryMatch || categoryMatch || languageMatch;
+        // Search query
+        if (searchQuery.length > 0) {
+            const idMatch = (ch.id || '').toLowerCase().includes(searchQuery);
+            const nameMatch = (ch.name || '').toLowerCase().includes(searchQuery);
+            const countryMatch = (ch.country || '').toLowerCase().includes(searchQuery);
+            const categoryMatch = (ch.categories || []).some(cat => cat.toLowerCase().includes(searchQuery));
+            const languageMatch = (ch.languages || []).some(lang => lang.toLowerCase().includes(searchQuery));
+            
+            return idMatch || nameMatch || countryMatch || categoryMatch || languageMatch;
+        }
+        
+        return true;
     });
 }
 
@@ -5413,6 +5514,136 @@ function removeSelectedCustomEditor() {
     renderCustomEditorUI();
 }
 
+function populateCustomEditorFilterDropdowns() {
+    const categories = new Set();
+    const languages = new Set();
+    const countries = new Set();
+    
+    customEditorChannelIds.forEach(id => {
+        let ch = selectionBinCache[id];
+        if (!ch) {
+            const found = findChannelById(id);
+            if (found) {
+                cacheChannelForBin(found);
+                ch = selectionBinCache[id];
+            }
+        }
+        if (ch) {
+            if (ch.country) countries.add(ch.country);
+            if (Array.isArray(ch.languages)) ch.languages.forEach(l => languages.add(l));
+            if (Array.isArray(ch.categories)) ch.categories.forEach(c => categories.add(c));
+        }
+    });
+    
+    const catSelect = document.getElementById('custom-editor-filter-category');
+    const langSelect = document.getElementById('custom-editor-filter-language');
+    const countrySelect = document.getElementById('custom-editor-filter-country');
+    
+    if (catSelect) {
+        const currentVal = catSelect.value;
+        catSelect.innerHTML = '<option value="">All Categories</option>';
+        Array.from(categories).sort().forEach(cat => {
+            catSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+        });
+        catSelect.value = currentVal;
+    }
+    
+    if (langSelect) {
+        const currentVal = langSelect.value;
+        langSelect.innerHTML = '<option value="">All Languages</option>';
+        Array.from(languages).sort().forEach(lang => {
+            langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
+        });
+        langSelect.value = currentVal;
+    }
+    
+    if (countrySelect) {
+        const currentVal = countrySelect.value;
+        countrySelect.innerHTML = '<option value="">All Countries</option>';
+        Array.from(countries).sort().forEach(c => {
+            countrySelect.innerHTML += `<option value="${c}">${c}</option>`;
+        });
+        countrySelect.value = currentVal;
+    }
+}
+
+function playPreviewStream(url, userAgent, referrer, title) {
+    const modal = document.getElementById('preview-player-modal');
+    const titleEl = document.getElementById('preview-player-title');
+    const video = document.getElementById('preview-live-player');
+    const overlay = document.getElementById('preview-player-overlay');
+    const statusText = document.getElementById('preview-player-status-text');
+    
+    if (!modal || !video) return;
+    
+    modal.style.display = 'flex';
+    titleEl.textContent = `Preview: ${title || 'Stream'}`;
+    overlay.style.display = 'flex';
+    statusText.textContent = 'Initializing stream...';
+    
+    // Stop other playback
+    stopVideoPlayback();
+    
+    // Reset HLS
+    if (previewHlsInstance) {
+        previewHlsInstance.destroy();
+        previewHlsInstance = null;
+    }
+    
+    video.pause();
+    video.src = '';
+    
+    video.onplaying = () => {
+        overlay.style.display = 'none';
+    };
+    video.onerror = () => {
+        statusText.textContent = 'Error loading stream preview';
+    };
+    
+    if (url.endsWith('.m3u8') || url.includes('.m3u8')) {
+        if (Hls.isSupported()) {
+            previewHlsInstance = new Hls({
+                xhrSetup: function(xhr, url) {
+                    if (userAgent) xhr.setRequestHeader('User-Agent', userAgent);
+                    if (referrer) xhr.setRequestHeader('Referer', referrer);
+                }
+            });
+            previewHlsInstance.loadSource(url);
+            previewHlsInstance.attachMedia(video);
+            previewHlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play().catch(e => console.log("Autoplay blocked:", e));
+            });
+            previewHlsInstance.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    statusText.textContent = `Playback error: ${data.details}`;
+                }
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = url;
+            video.play().catch(e => console.log("Autoplay blocked:", e));
+        } else {
+            statusText.textContent = 'HLS playback not supported in this browser';
+        }
+    } else {
+        video.src = url;
+        video.play().catch(e => console.log("Autoplay blocked:", e));
+    }
+}
+
+function closePreviewPlayerModal() {
+    const modal = document.getElementById('preview-player-modal');
+    const video = document.getElementById('preview-live-player');
+    if (modal) modal.style.display = 'none';
+    if (video) {
+        video.pause();
+        video.src = '';
+    }
+    if (previewHlsInstance) {
+        previewHlsInstance.destroy();
+        previewHlsInstance = null;
+    }
+}
+
 function moveCustomEditorItem(id, direction) {
     const index = customEditorChannelIds.indexOf(id);
     if (index === -1) return;
@@ -5477,7 +5708,8 @@ function saveCustomEditorList() {
                 excludeDead,
                 excludeNoUrl,
                 excludeClosed,
-                sortBy: 'custom'
+                sortBy: 'custom',
+                channel_numbers: customEditorChannelNumbers
             }
         })
     })
