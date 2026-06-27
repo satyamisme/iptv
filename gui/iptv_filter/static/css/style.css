@@ -2695,3 +2695,31 @@ select.table-col-filter {
     border-color: rgba(255, 69, 58, 0.3) !important;
     background-color: rgba(255, 69, 58, 0.02) !important;
 }
+
+/* Drag and Drop / Reorder Styling in Selection Bin */
+.bin-item {
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.bin-item.dragging {
+    opacity: 0.4;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px dashed var(--color-accent) !important;
+    transform: scale(0.98);
+}
+.drag-handle {
+    cursor: grab;
+    transition: color 0.2s ease;
+}
+.drag-handle:active {
+    cursor: grabbing;
+}
+.drag-handle:hover {
+    color: var(--text-primary) !important;
+}
+.bin-reorder-btn {
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+.bin-reorder-btn:hover {
+    color: var(--text-primary) !important;
+    transform: scale(1.2);
+}

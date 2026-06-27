@@ -310,7 +310,7 @@ def load_initial_data():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", cache_buster=int(time.time()))
 
 @app.route("/api/status")
 def get_status():
@@ -484,7 +484,8 @@ def get_channels():
             "is_favorite": ch.id in prefs.favorites,
             "url": ch.streams[0].get("url") if ch.streams else None,
             "user_agent": ch.streams[0].get("user_agent") if ch.streams else None,
-            "referrer": ch.streams[0].get("referrer") if ch.streams else None
+            "referrer": ch.streams[0].get("referrer") if ch.streams else None,
+            "streams": [{"url": s.get("url"), "quality": s.get("quality"), "label": s.get("label")} for s in ch.streams] if ch.streams else []
         })
         
     # Calculate counts for facets (languages, categories, countries) independently of the selections in these three facets
@@ -859,8 +860,21 @@ def get_custom_selected():
                     matched_ids.append(ch.id)
                     
     # Remove duplicates but keep order/uniqueness
-    matched_ids = list(set(matched_ids))
-    excluded_ids = list(set(excluded_ids))
+    seen_matched = set()
+    matched_ids_ordered = []
+    for m in matched_ids:
+        if m not in seen_matched:
+            matched_ids_ordered.append(m)
+            seen_matched.add(m)
+    matched_ids = matched_ids_ordered
+
+    seen_excluded = set()
+    excluded_ids_ordered = []
+    for e in excluded_ids:
+        if e not in seen_excluded:
+            excluded_ids_ordered.append(e)
+            seen_excluded.add(e)
+    excluded_ids = excluded_ids_ordered
 
     config = {}
     config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "custom", "config.json"))
@@ -904,10 +918,15 @@ def save_custom_selected():
                 print(f"Error reading existing rules: {e}")
 
         # Separate existing rules into preserved (not loaded) and managed (loaded)
-        preserved_inclusions = set()
-        preserved_exclusions = set()
-        existing_managed_inclusions = set()
-        existing_managed_exclusions = set()
+        preserved_inclusions = []
+        preserved_exclusions = []
+        existing_managed_inclusions = []
+        existing_managed_exclusions = []
+        
+        preserved_inc_set = set()
+        preserved_exc_set = set()
+        existing_managed_inc_set = set()
+        existing_managed_exc_set = set()
 
         for rule in existing_rules:
             is_exclude = rule.startswith("-")
@@ -948,33 +967,76 @@ def save_custom_selected():
             
             if matched_loaded:
                 if is_exclude:
-                    existing_managed_exclusions.add(clean_rule)
+                    if clean_rule not in existing_managed_exc_set:
+                        existing_managed_exclusions.append(clean_rule)
+                        existing_managed_exc_set.add(clean_rule)
                 else:
-                    existing_managed_inclusions.add(clean_rule)
+                    if clean_rule not in existing_managed_inc_set:
+                        existing_managed_inclusions.append(clean_rule)
+                        existing_managed_inc_set.add(clean_rule)
             else:
                 if is_exclude:
-                    preserved_exclusions.add(clean_rule)
+                    if clean_rule not in preserved_exc_set:
+                        preserved_exclusions.append(clean_rule)
+                        preserved_exc_set.add(clean_rule)
                 else:
-                    preserved_inclusions.add(clean_rule)
+                    if clean_rule not in preserved_inc_set:
+                        preserved_inclusions.append(clean_rule)
+                        preserved_inc_set.add(clean_rule)
 
-        # Build managed sets based on save mode
+        # Build managed lists based on save mode
         if mode == "update":
-            managed_inclusions = existing_managed_inclusions.copy()
-            managed_exclusions = existing_managed_exclusions.copy()
+            managed_inclusions = list(existing_managed_inclusions)
+            managed_inclusions_set = set(existing_managed_inc_set)
+            
+            managed_exclusions = list(existing_managed_exclusions)
+            managed_exclusions_set = set(existing_managed_exc_set)
+            
             for ch_id in channel_ids:
-                managed_inclusions.add(ch_id)
-                managed_exclusions.discard(ch_id)
+                if ch_id not in managed_inclusions_set:
+                    managed_inclusions.append(ch_id)
+                    managed_inclusions_set.add(ch_id)
+                if ch_id in managed_exclusions_set:
+                    managed_exclusions.remove(ch_id)
+                    managed_exclusions_set.remove(ch_id)
+                    
             for ch_id in excluded_ids:
-                managed_exclusions.add(ch_id)
-                managed_inclusions.discard(ch_id)
+                if ch_id not in managed_exclusions_set:
+                    managed_exclusions.append(ch_id)
+                    managed_exclusions_set.add(ch_id)
+                if ch_id in managed_inclusions_set:
+                    managed_inclusions.remove(ch_id)
+                    managed_inclusions_set.remove(ch_id)
         else:
-            # Overwrite mode: the current GUI selections completely replace all managed rules
-            managed_inclusions = set(channel_ids)
-            managed_exclusions = set(excluded_ids)
+            # Overwrite mode: current selection completely replaces managed ones
+            managed_inclusions = []
+            managed_inclusions_set = set()
+            for ch_id in channel_ids:
+                if ch_id not in managed_inclusions_set:
+                    managed_inclusions.append(ch_id)
+                    managed_inclusions_set.add(ch_id)
+                    
+            managed_exclusions = []
+            managed_exclusions_set = set()
+            for ch_id in excluded_ids:
+                if ch_id not in managed_exclusions_set:
+                    managed_exclusions.append(ch_id)
+                    managed_exclusions_set.add(ch_id)
 
-        # Combine preserved and managed rules
-        final_inclusions = sorted(list(preserved_inclusions.union(managed_inclusions)))
-        final_exclusions = sorted(list(preserved_exclusions.union(managed_exclusions)))
+        # Combine preserved and managed, preserving original order
+        final_inclusions = []
+        final_inc_set = set()
+        for ch_id in preserved_inclusions + managed_inclusions:
+            if ch_id not in final_inc_set:
+                final_inclusions.append(ch_id)
+                final_inc_set.add(ch_id)
+                
+        final_exclusions = []
+        final_exc_set = set()
+        for ch_id in preserved_exclusions + managed_exclusions:
+            if ch_id not in final_exc_set:
+                final_exclusions.append(ch_id)
+                final_exc_set.add(ch_id)
         
         # 1. Write selected-channels.txt
         with open(rules_path, "w", encoding="utf-8") as f:

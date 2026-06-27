@@ -51,9 +51,14 @@ let selectedLanguages = []; // For the Languages tab bulk updates
 let currentLayout = 'table'; // 'table' or 'grid'
 let presets = {}; // Globally stored filter presets
 let selectedChannelIds = new Set(); // Globally tracked selected channels
-let selectionBinIds = new Set(); // Staged channels in selection bin (independent and persistent)
+let selectionBinIds = []; // Staged channels in selection bin (independent and persistent)
 let selectionBinCache = {}; // Cache of channel details for the Selection Bin
 let excludedChannelIds = new Set(); // Globally tracked excluded channels
+let configSortBy = 'default'; // Globally tracked sort option for custom playlist
+let customEditorChannelIds = []; // Channel IDs loaded in the Custom Editor view
+let selectedCustomEditorIds = new Set(); // Multi-select state for Custom Editor
+let customEditorChannelNumbers = {}; // Manual channel numbers for Custom Editor
+let previewHlsInstance = null; // HLS instance for preview player modal
 
 
 
@@ -65,6 +70,15 @@ const playerOverlay = document.getElementById('player-overlay');
 // Progress Poller
 let progressPoller = null;
 
+// Hashchange listener for browser history back/forward navigation support
+window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.substring(1);
+    const validViews = ['dashboard', 'channels', 'languages', 'export', 'playlists', 'custom-editor', 'settings'];
+    if (validViews.includes(hash)) {
+        switchView(hash);
+    }
+});
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     loadColumnConfiguration();
@@ -74,7 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
         scrollContainer.innerHTML = '';
     }
     
-    switchView('dashboard');
+    // Support deep linking based on URL hash (e.g. #playlists or #settings)
+    let initialView = 'dashboard';
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const validViews = ['dashboard', 'channels', 'languages', 'export', 'playlists', 'custom-editor', 'settings'];
+        if (validViews.includes(hash)) {
+            initialView = hash;
+        }
+    }
+    switchView(initialView);
     checkServerStatus();
     loadSettingsAndPlaylists();
     initWorkspaceResizers();
@@ -134,7 +157,8 @@ function switchView(viewId) {
         'languages': 'Language Directory',
         'export': 'Export & Sync',
         'settings': 'Console Settings',
-        'playlists': 'Playlist Manager'
+        'playlists': 'Playlist Manager',
+        'custom-editor': 'Custom Playlist Editor'
     };
     
     const subtitleMap = {
@@ -143,7 +167,8 @@ function switchView(viewId) {
         'languages': 'Bulk Language Assignment',
         'export': 'Playlist compilation & deployment',
         'settings': 'System details & specifications',
-        'playlists': 'Manage, import, and export stream lists'
+        'playlists': 'Manage, import, and export stream lists',
+        'custom-editor': 'Rearrange, modify, and manage custom stream rules'
     };
     
     document.getElementById('view-title').textContent = titleMap[viewId] || 'StreamControl Pro';
@@ -157,6 +182,9 @@ function switchView(viewId) {
     // If opening channels view and data is loaded, check if we need to load filters
     if (viewId === 'channels' || viewId === 'languages') {
         loadFiltersAndLists();
+    }
+    if (viewId === 'custom-editor') {
+        loadCustomEditorList();
     }
     if (viewId === 'settings' || viewId === 'dashboard' || viewId === 'playlists') {
         loadSettingsAndPlaylists();
@@ -3928,11 +3956,13 @@ function loadSelectedFromConfig(event) {
         .then(data => {
             selectedChannelIds.clear();
             excludedChannelIds.clear();
-            selectionBinIds.clear();
+            selectionBinIds = [];
             
             if (data.matched_ids && data.matched_ids.length > 0) {
                 data.matched_ids.forEach(id => {
-                    selectionBinIds.add(id);
+                    if (!selectionBinIds.includes(id)) {
+                        selectionBinIds.push(id);
+                    }
                 });
             }
             if (data.excluded_ids && data.excluded_ids.length > 0) {
@@ -3944,6 +3974,7 @@ function loadSelectedFromConfig(event) {
             
             // Populating settings fields from config
             const config = data.config || {};
+            configSortBy = config.sortBy || 'default';
             const excludeGlobalInput = document.getElementById('sync-exclude-global');
             if (excludeGlobalInput) {
                 excludeGlobalInput.checked = !!config.excludeGlobal;
@@ -4110,6 +4141,10 @@ function executeSaveSelectedForAutoUpdate(mode) {
     const excludeCountriesVal = document.getElementById('sync-exclude-countries')?.value || '';
     const excludeChannelsVal = document.getElementById('sync-exclude-channels-input')?.value || '';
 
+    const excludeDead = document.getElementById('filter-exclude-dead')?.checked || false;
+    const excludeNoUrl = document.getElementById('filter-exclude-no-url')?.checked || false;
+    const excludeClosed = document.getElementById('filter-closed')?.checked || false;
+
     // Split and clean lists
     const preferredLanguages = langOrderVal.split(',').map(s => s.trim()).filter(Boolean);
     const categoryOrder = catOrderVal.split(',').map(s => s.trim()).filter(Boolean);
@@ -4130,21 +4165,19 @@ function executeSaveSelectedForAutoUpdate(mode) {
                 categoryOrder,
                 excludeLanguages,
                 excludeCountries,
-                excludeChannels
+                excludeChannels,
+                excludeDead,
+                excludeNoUrl,
+                excludeClosed,
+                sortBy: configSortBy
             }
         })
     })
+    .then(res => res.json())
     .then(data => {
         if (data.error) {
             alert('Failed to save configuration: ' + data.error);
         } else {
-            if (data.merged_inclusions) {
-                selectionBinIds.clear();
-                data.merged_inclusions.forEach(id => {
-                    selectionBinIds.add(id);
-                });
-                syncSelectionBinCache(data.merged_inclusions);
-            }
             if (data.merged_exclusions) {
                 excludedChannelIds.clear();
                 data.merged_exclusions.forEach(id => excludedChannelIds.add(id));
@@ -4222,7 +4255,8 @@ function cacheChannelForBin(ch) {
             name: ch.name,
             country: ch.country,
             languages: ch.languages || [],
-            categories: ch.categories || []
+            categories: ch.categories || [],
+            streams: ch.streams || []
         };
     }
 }
@@ -4230,7 +4264,7 @@ function cacheChannelForBin(ch) {
 function updateSelectionBinUI() {
     const countBadge = document.getElementById('bin-count');
     if (countBadge) {
-        countBadge.textContent = selectionBinIds.size;
+        countBadge.textContent = selectionBinIds.length;
     }
 
     const listContainer = document.getElementById('bin-channels-list');
@@ -4238,7 +4272,7 @@ function updateSelectionBinUI() {
 
     listContainer.innerHTML = '';
 
-    if (selectionBinIds.size === 0) {
+    if (selectionBinIds.length === 0) {
         listContainer.innerHTML = `<span style="color: var(--text-muted); text-align: center; display: block; padding: 20px 0;">No channels selected. Add channels to bin using checkboxes.</span>`;
         return;
     }
@@ -4261,10 +4295,17 @@ function updateSelectionBinUI() {
 
         const item = document.createElement('div');
         item.className = 'bin-item';
-        item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px;';
+        item.setAttribute('draggable', 'true');
+        item.setAttribute('data-id', id);
+        item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 5px; cursor: move;';
+        
+        const dragHandle = document.createElement('div');
+        dragHandle.className = 'drag-handle';
+        dragHandle.innerHTML = '⋮⋮';
+        dragHandle.style.cssText = 'cursor: grab; padding: 4px 8px; color: var(--text-muted); font-weight: bold; margin-right: 5px; user-select: none;';
         
         const info = document.createElement('div');
-        info.style.cssText = 'display: flex; flex-direction: column; max-width: 80%;';
+        info.style.cssText = 'display: flex; flex-direction: column; max-width: 60%; flex-grow: 1;';
         
         const nameSpan = document.createElement('span');
         nameSpan.style.cssText = 'font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
@@ -4282,6 +4323,35 @@ function updateSelectionBinUI() {
         info.appendChild(nameSpan);
         info.appendChild(metaSpan);
         
+        const rightActions = document.createElement('div');
+        rightActions.style.cssText = 'display: flex; align-items: center;';
+        
+        const reorderControls = document.createElement('div');
+        reorderControls.style.cssText = 'display: flex; gap: 4px; margin-right: 8px;';
+        
+        const upBtn = document.createElement('button');
+        upBtn.className = 'bin-reorder-btn';
+        upBtn.innerHTML = '▲';
+        upBtn.title = 'Move Up';
+        upBtn.style.cssText = 'background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 10px; padding: 2px;';
+        upBtn.onclick = (e) => {
+            e.stopPropagation();
+            moveBinItem(id, 'up');
+        };
+        
+        const downBtn = document.createElement('button');
+        downBtn.className = 'bin-reorder-btn';
+        downBtn.innerHTML = '▼';
+        downBtn.title = 'Move Down';
+        downBtn.style.cssText = 'background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 10px; padding: 2px;';
+        downBtn.onclick = (e) => {
+            e.stopPropagation();
+            moveBinItem(id, 'down');
+        };
+        
+        reorderControls.appendChild(upBtn);
+        reorderControls.appendChild(downBtn);
+        
         const removeBtn = document.createElement('button');
         removeBtn.style.cssText = 'background: none; border: none; color: var(--color-danger); cursor: pointer; font-size: 14px; padding: 4px;';
         removeBtn.innerHTML = '✕';
@@ -4290,18 +4360,84 @@ function updateSelectionBinUI() {
             removeFromBin(id);
         };
         
+        rightActions.appendChild(reorderControls);
+        rightActions.appendChild(removeBtn);
+        
+        item.appendChild(dragHandle);
         item.appendChild(info);
-        item.appendChild(removeBtn);
+        item.appendChild(rightActions);
+        
+        // Drag and drop event listeners
+        item.addEventListener('dragstart', (e) => {
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', id);
+        });
+        
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            reorderBinIdsFromUI();
+        });
+        
         listContainer.appendChild(item);
     });
+    
+    // Add dragover listener to the list container for sorting
+    listContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const draggingItem = document.querySelector('.bin-item.dragging');
+        if (!draggingItem) return;
+        const siblings = [...listContainer.querySelectorAll('.bin-item:not(.dragging)')];
+        let nextSibling = siblings.find(sibling => {
+            const rect = sibling.getBoundingClientRect();
+            return e.clientY <= rect.top + rect.height / 2;
+        });
+        listContainer.insertBefore(draggingItem, nextSibling);
+    });
 }
+
+function reorderBinIdsFromUI() {
+    const listContainer = document.getElementById('bin-channels-list');
+    if (!listContainer) return;
+    const items = listContainer.querySelectorAll('.bin-item');
+    const newOrder = [];
+    items.forEach(item => {
+        const id = item.getAttribute('data-id');
+        if (id) {
+            newOrder.push(id);
+        }
+    });
+    selectionBinIds = newOrder;
+    const countBadge = document.getElementById('bin-count');
+    if (countBadge) {
+        countBadge.textContent = selectionBinIds.length;
+    }
+}
+
+function moveBinItem(id, direction) {
+    const index = selectionBinIds.indexOf(id);
+    if (index === -1) return;
+    if (direction === 'up' && index > 0) {
+        const temp = selectionBinIds[index];
+        selectionBinIds[index] = selectionBinIds[index - 1];
+        selectionBinIds[index - 1] = temp;
+    } else if (direction === 'down' && index < selectionBinIds.length - 1) {
+        const temp = selectionBinIds[index];
+        selectionBinIds[index] = selectionBinIds[index + 1];
+        selectionBinIds[index + 1] = temp;
+    }
+    updateSelectionBinUI();
+}
+
 
 function addSingleChannelToBin(chId, event) {
     if (event) {
         event.stopPropagation();
         event.preventDefault();
     }
-    selectionBinIds.add(chId);
+    if (!selectionBinIds.includes(chId)) {
+        selectionBinIds.push(chId);
+    }
     const ch = findChannelById(chId);
     if (ch) {
         cacheChannelForBin(ch);
@@ -4313,13 +4449,13 @@ function addSingleChannelToBin(chId, event) {
 }
 
 function removeFromBin(id) {
-    selectionBinIds.delete(id);
+    selectionBinIds = selectionBinIds.filter(x => x !== id);
     delete selectionBinCache[id];
     updateSelectionBinUI();
 }
 
 function clearSelectionBin() {
-    selectionBinIds.clear();
+    selectionBinIds = [];
     selectionBinCache = {};
     selectedChannelIds.clear();
     
@@ -4339,7 +4475,9 @@ function addSelectedToBin(event) {
         return;
     }
     selectedChannelIds.forEach(id => {
-        selectionBinIds.add(id);
+        if (!selectionBinIds.includes(id)) {
+            selectionBinIds.push(id);
+        }
         const ch = findChannelById(id);
         if (ch) {
             cacheChannelForBin(ch);
@@ -4356,7 +4494,9 @@ function addAllFilteredToBin(event) {
         return;
     }
     filteredChannelsList.forEach(ch => {
-        selectionBinIds.add(ch.id);
+        if (!selectionBinIds.includes(ch.id)) {
+            selectionBinIds.push(ch.id);
+        }
         cacheChannelForBin(ch);
     });
     updateSelectionBinUI();
@@ -4370,7 +4510,7 @@ function removeSelectedFromBin(event) {
         return;
     }
     selectedChannelIds.forEach(id => {
-        selectionBinIds.delete(id);
+        selectionBinIds = selectionBinIds.filter(x => x !== id);
         delete selectionBinCache[id];
     });
     updateSelectionBinUI();
@@ -4378,7 +4518,7 @@ function removeSelectedFromBin(event) {
 }
 
 function saveSelectedFromBin(mode) {
-    if (selectionBinIds.size === 0) {
+    if (selectionBinIds.length === 0) {
         alert("The Selection Bin is empty. Add channels to the bin first.");
         return;
     }
@@ -4391,17 +4531,22 @@ function saveSelectedFromBin(mode) {
     const excludeCountriesVal = document.getElementById('sync-exclude-countries')?.value || '';
     const excludeChannelsVal = document.getElementById('sync-exclude-channels-input')?.value || '';
     
+    const excludeDead = document.getElementById('filter-exclude-dead')?.checked || false;
+    const excludeNoUrl = document.getElementById('filter-exclude-no-url')?.checked || false;
+    const excludeClosed = document.getElementById('filter-closed')?.checked || false;
+    
     const preferredLanguages = prefLangsVal.split(',').map(s => s.trim()).filter(Boolean);
     const categoryOrder = prefCatsVal.split(',').map(s => s.trim()).filter(Boolean);
     const excludeLanguages = excludeLangsVal.split(',').map(s => s.trim()).filter(Boolean);
     const excludeCountries = excludeCountriesVal.split(',').map(s => s.trim()).filter(Boolean);
     const excludeChannels = excludeChannelsVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
 
+    configSortBy = 'custom';
     fetch('/api/custom/save-selected', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            channel_ids: Array.from(selectionBinIds),
+            channel_ids: selectionBinIds,
             excluded_ids: Array.from(excludedChannelIds),
             mode: mode,
             config: {
@@ -4410,22 +4555,19 @@ function saveSelectedFromBin(mode) {
                 categoryOrder,
                 excludeLanguages,
                 excludeCountries,
-                excludeChannels
+                excludeChannels,
+                excludeDead,
+                excludeNoUrl,
+                excludeClosed,
+                sortBy: 'custom'
             }
         })
     })
+    .then(res => res.json())
     .then(data => {
         if (data.error) {
             alert('Failed to save configuration: ' + data.error);
         } else {
-            // Update frontend state with the returned merged selections/exclusions
-            if (data.merged_inclusions) {
-                selectionBinIds.clear();
-                data.merged_inclusions.forEach(id => {
-                    selectionBinIds.add(id);
-                });
-                syncSelectionBinCache(data.merged_inclusions);
-            }
             if (data.merged_exclusions) {
                 excludedChannelIds.clear();
                 data.merged_exclusions.forEach(id => excludedChannelIds.add(id));
@@ -4521,4 +4663,837 @@ function saveAppliedFiltersToConfig() {
         }
     })
     .catch(err => alert('Failed to save filter rules: ' + err));
+}
+
+function syncCustomEditorCache(ids, callback) {
+    if (!ids || ids.length === 0) {
+        if (callback) callback();
+        return;
+    }
+    
+    // Filter out IDs that are already in the cache
+    const missingIds = ids.filter(id => !selectionBinCache[id]);
+    if (missingIds.length === 0) {
+        if (callback) callback();
+        return;
+    }
+
+    fetch('/api/channels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            selected_only: true,
+            selected_ids: missingIds,
+            channel_limit: 0
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data && data.channels) {
+            data.channels.forEach(ch => {
+                cacheChannelForBin(ch);
+            });
+        }
+        if (callback) callback();
+    })
+    .catch(err => {
+        console.error('Failed to sync custom editor cache:', err);
+        if (callback) callback();
+    });
+}
+
+function resolveChannelId(parsedId, parsedName) {
+    const idLower = (parsedId || '').toLowerCase().trim();
+    const nameLower = (parsedName || '').toLowerCase().trim();
+    
+    if (!idLower && !nameLower) return null;
+    
+    // 1. Match by exact ID or case-insensitive ID in loaded channels
+    for (const ch of channels) {
+        const chIdLower = (ch.id || '').toLowerCase();
+        if (idLower && chIdLower === idLower) return ch.id;
+        if (nameLower && chIdLower === nameLower) return ch.id;
+    }
+    
+    // 2. Match by exact ID or case-insensitive ID in selectionBinCache
+    for (const id in selectionBinCache) {
+        const ch = selectionBinCache[id];
+        const chIdLower = (ch.id || '').toLowerCase();
+        if (idLower && chIdLower === idLower) return ch.id;
+        if (nameLower && chIdLower === nameLower) return ch.id;
+    }
+    
+    // 3. Match by exact or case-insensitive Name in loaded channels
+    for (const ch of channels) {
+        const chNameLower = (ch.name || '').toLowerCase();
+        if (idLower && chNameLower === idLower) return ch.id;
+        if (nameLower && chNameLower === nameLower) return ch.id;
+    }
+    
+    // 4. Match by exact or case-insensitive Name in selectionBinCache
+    for (const id in selectionBinCache) {
+        const ch = selectionBinCache[id];
+        const chNameLower = (ch.name || '').toLowerCase();
+        if (idLower && chNameLower === idLower) return ch.id;
+        if (nameLower && chNameLower === nameLower) return ch.id;
+    }
+    
+    // 5. Fallback to parsedId or parsedName
+    return parsedId || parsedName;
+}
+
+function resolveRuleToChannelIds(rule) {
+    const isRegex = rule.startsWith('/') && rule.endsWith('/');
+    const matchedIds = [];
+    
+    let regex = null;
+    if (isRegex) {
+        try {
+            regex = new RegExp(rule.slice(1, -1), 'i');
+        } catch (e) {
+            console.error("Invalid regex rule in imported file:", rule);
+            return [];
+        }
+    }
+    
+    const ruleLower = rule.toLowerCase().trim();
+    
+    // Loop through all loaded channels
+    for (const ch of channels) {
+        let matched = false;
+        if (isRegex && regex) {
+            matched = (ch.id && regex.test(ch.id)) ||
+                      (ch.name && regex.test(ch.name)) ||
+                      (ch.country && regex.test(ch.country)) ||
+                      (ch.categories && ch.categories.some(cat => regex.test(cat))) ||
+                      (ch.languages && ch.languages.some(lang => regex.test(lang)));
+        } else {
+            const chIdBase = ch.id ? ch.id.split('@')[0] : '';
+            const ruleBase = rule.split('@')[0];
+            matched = ch.id === rule || 
+                       (ch.id && ch.id.toLowerCase() === ruleLower) ||
+                       (chIdBase && ruleBase && chIdBase.toLowerCase() === ruleBase.toLowerCase()) ||
+                       (ch.name && ch.name.toLowerCase() === ruleLower) ||
+                       (ch.country && ch.country.toLowerCase() === ruleLower) ||
+                       (ch.categories && ch.categories.some(cat => cat.toLowerCase() === ruleLower)) ||
+                       (ch.languages && ch.languages.some(lang => lang.toLowerCase() === ruleLower));
+        }
+        
+        if (matched) {
+            matchedIds.push(ch.id);
+        }
+    }
+    
+    // Fallback for custom/external IDs that aren't loaded
+    if (matchedIds.length === 0 && !isRegex) {
+        matchedIds.push(rule);
+    }
+    
+    return matchedIds;
+}
+
+function importSelectedChannelsTxt(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split(/[\r\n]+/);
+        
+        const importedInclusions = [];
+        const importedExclusions = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line || line.startsWith('#')) continue;
+            
+            const isExclude = line.startsWith('-');
+            const cleanRule = isExclude ? line.slice(1).trim() : line;
+            if (!cleanRule) continue;
+            
+            // Resolve rule to concrete channel IDs
+            const resolvedIds = resolveRuleToChannelIds(cleanRule);
+            if (isExclude) {
+                resolvedIds.forEach(id => {
+                    if (!importedExclusions.includes(id)) {
+                        importedExclusions.push(id);
+                    }
+                });
+            } else {
+                resolvedIds.forEach(id => {
+                    if (!importedInclusions.includes(id)) {
+                        importedInclusions.push(id);
+                    }
+                });
+            }
+        }
+        
+        if (importedInclusions.length === 0 && importedExclusions.length === 0) {
+            alert("No valid channel rules found in the uploaded text file.");
+            return;
+        }
+        
+        const totalIncs = importedInclusions.length;
+        const totalExcs = importedExclusions.length;
+        
+        const mode = confirm(`Parsed selected-channels.txt:\n- ${totalIncs} inclusions resolved\n- ${totalExcs} exclusions resolved\n\nDo you want to REPLACE the current Custom Editor list and exclusions? (Click 'OK' to replace, or click 'Cancel' to APPEND/merge them)`) ? 'replace' : 'append';
+        
+        if (mode === 'replace') {
+            customEditorChannelIds = [...importedInclusions];
+            excludedChannelIds = new Set(importedExclusions);
+        } else {
+            // Merge/Append
+            const addedIncs = [];
+            importedInclusions.forEach(id => {
+                if (!customEditorChannelIds.includes(id)) {
+                    customEditorChannelIds.push(id);
+                    addedIncs.push(id);
+                }
+            });
+            importedExclusions.forEach(id => {
+                excludedChannelIds.add(id);
+            });
+            alert(`Merged rules: Added ${addedIncs.length} new inclusion channels, and registered ${totalExcs} exclusions.`);
+        }
+        
+        // Sync cache and re-render
+        syncCustomEditorCache(customEditorChannelIds, () => {
+            renderCustomEditorUI();
+        });
+        
+        // Reset file input
+        event.target.value = '';
+    };
+    reader.readAsText(file);
+}
+
+function importM3UFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split(/[\r\n]+/);
+        const parsedChannels = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line.startsWith('#EXTINF:')) {
+                // Parse tvg-id
+                let tvgId = '';
+                const tvgIdMatch = line.match(/tvg-id="([^"]+)"/i);
+                if (tvgIdMatch && tvgIdMatch[1]) {
+                    tvgId = tvgIdMatch[1].trim();
+                }
+                
+                // Parse channel name (after last comma)
+                let chName = '';
+                const commaIndex = line.lastIndexOf(',');
+                if (commaIndex !== -1) {
+                    chName = line.substring(commaIndex + 1).trim();
+                }
+                
+                if (tvgId || chName) {
+                    parsedChannels.push({ tvgId, chName });
+                }
+            }
+        }
+        
+        if (parsedChannels.length === 0) {
+            alert("No channels found in the uploaded M3U file. Ensure the file has valid #EXTINF lines.");
+            return;
+        }
+        
+        // Resolve IDs
+        const importedIds = [];
+        parsedChannels.forEach(item => {
+            const resolvedId = resolveChannelId(item.tvgId, item.chName);
+            if (resolvedId && !importedIds.includes(resolvedId)) {
+                importedIds.push(resolvedId);
+            }
+        });
+        
+        if (importedIds.length === 0) {
+            alert("Failed to extract valid channel identifiers from the file.");
+            return;
+        }
+        
+        const mode = confirm(`Successfully parsed ${importedIds.length} channels from the M3U file.\n\nDo you want to REPLACE the current custom playlist? (Click 'OK' to replace, or click 'Cancel' to APPEND/merge them to the end of the list)`) ? 'replace' : 'append';
+        
+        if (mode === 'replace') {
+            customEditorChannelIds = [...importedIds];
+        } else {
+            const added = [];
+            importedIds.forEach(id => {
+                if (!customEditorChannelIds.includes(id)) {
+                    customEditorChannelIds.push(id);
+                    added.push(id);
+                }
+            });
+            alert(`Merged M3U file: Added ${added.length} new channel(s) to the custom list.`);
+        }
+        
+        // Sync cache & render
+        syncCustomEditorCache(customEditorChannelIds, () => {
+            renderCustomEditorUI();
+        });
+        
+        // Reset file input
+        event.target.value = '';
+    };
+    reader.readAsText(file);
+}
+
+function importFromSelectionBin(mode) {
+    if (selectionBinIds.length === 0) {
+        alert("Your Selection Bin is currently empty. Add channels to the bin from the Channel Manager first.");
+        return;
+    }
+    
+    if (mode === 'replace') {
+        if (!confirm(`Are you sure you want to REPLACE the entire custom list with the ${selectionBinIds.length} channels from your Selection Bin?`)) {
+            return;
+        }
+        customEditorChannelIds = [...selectionBinIds];
+    } else {
+        // Append mode
+        const added = [];
+        selectionBinIds.forEach(id => {
+            if (!customEditorChannelIds.includes(id)) {
+                customEditorChannelIds.push(id);
+                added.push(id);
+            }
+        });
+        alert(`Merged Selection Bin: Added ${added.length} new channel(s) to the custom list.`);
+    }
+    
+    syncCustomEditorCache(customEditorChannelIds, () => {
+        renderCustomEditorUI();
+    });
+}
+
+function clearCustomEditorList() {
+    if (customEditorChannelIds.length === 0) return;
+    if (confirm("Are you sure you want to remove all channels from the current custom list? (Remember to click 'Save Changes' to apply this on the server)")) {
+        customEditorChannelIds = [];
+        renderCustomEditorUI();
+    }
+}
+
+function filterCustomEditorList() {
+    const searchInput = document.getElementById('custom-editor-search');
+    const query = searchInput ? searchInput.value.trim() : '';
+    const warning = document.getElementById('custom-editor-search-warning');
+    if (warning) {
+        warning.style.display = query ? 'block' : 'none';
+    }
+    renderCustomEditorUI();
+}
+
+function sortCustomEditor(criteria) {
+    if (!criteria) return;
+    
+    customEditorChannelIds.sort((a, b) => {
+        let chA = selectionBinCache[a] || { id: a, name: a, country: '', categories: [], languages: [] };
+        let chB = selectionBinCache[b] || { id: b, name: b, country: '', categories: [], languages: [] };
+        
+        if (criteria === 'name_asc') {
+            return (chA.name || chA.id).localeCompare(chB.name || chB.id);
+        } else if (criteria === 'name_desc') {
+            return (chB.name || chB.id).localeCompare(chA.name || chA.id);
+        } else if (criteria === 'genre') {
+            const catA = (chA.categories && chA.categories[0]) || '';
+            const catB = (chB.categories && chB.categories[0]) || '';
+            if (catA !== catB) return catA.localeCompare(catB);
+            return (chA.name || chA.id).localeCompare(chB.name || chB.id);
+        } else if (criteria === 'language') {
+            const langA = (chA.languages && chA.languages[0]) || '';
+            const langB = (chB.languages && chB.languages[0]) || '';
+            if (langA !== langB) return langA.localeCompare(langB);
+            return (chA.name || chA.id).localeCompare(chB.name || chB.id);
+        } else if (criteria === 'country') {
+            const countryA = chA.country || '';
+            const countryB = chB.country || '';
+            if (countryA !== countryB) return countryA.localeCompare(countryB);
+            return (chA.name || chA.id).localeCompare(chB.name || chB.id);
+        }
+        return 0;
+    });
+    
+    renderCustomEditorUI();
+}
+
+function loadCustomEditorList() {
+    selectedCustomEditorIds.clear();
+    customEditorChannelNumbers = {};
+    
+    const listContainer = document.getElementById('custom-editor-list-container');
+    if (listContainer) {
+        listContainer.innerHTML = '<span style="color: var(--text-muted); text-align: center; display: block; padding: 20px 0;">Loading custom playlist...</span>';
+    }
+    
+    // Clear search and sort controls
+    const searchInput = document.getElementById('custom-editor-search');
+    if (searchInput) searchInput.value = '';
+    
+    const catSelect = document.getElementById('custom-editor-filter-category');
+    if (catSelect) catSelect.value = '';
+    const langSelect = document.getElementById('custom-editor-filter-language');
+    if (langSelect) langSelect.value = '';
+    const countrySelect = document.getElementById('custom-editor-filter-country');
+    if (countrySelect) countrySelect.value = '';
+    
+    const sortSelect = document.getElementById('custom-editor-sort-select');
+    if (sortSelect) sortSelect.value = '';
+    
+    const warning = document.getElementById('custom-editor-search-warning');
+    if (warning) warning.style.display = 'none';
+    
+    fetch('/api/custom/selected')
+        .then(res => res.json())
+        .then(data => {
+            customEditorChannelIds = data.matched_ids || [];
+            
+            // Load channel numbers from config
+            const config = data.config || {};
+            customEditorChannelNumbers = config.channel_numbers || {};
+            
+            // Sync cache first
+            syncCustomEditorCache(customEditorChannelIds, () => {
+                populateCustomEditorFilterDropdowns();
+                const countLabel = document.getElementById('custom-editor-count');
+                if (countLabel) {
+                    countLabel.textContent = customEditorChannelIds.length;
+                }
+                renderCustomEditorUI();
+            });
+        })
+        .catch(err => {
+            console.error('Failed to load custom playlist config:', err);
+            if (listContainer) {
+                listContainer.innerHTML = `<span style="color: var(--color-danger); text-align: center; display: block; padding: 20px 0;">Failed to load custom playlist: ${err}</span>`;
+            }
+        });
+}
+
+function renderCustomEditorUI() {
+    const listContainer = document.getElementById('custom-editor-list-container');
+    if (!listContainer) return;
+    
+    // Clean up stale IDs from selection
+    selectedCustomEditorIds.forEach(id => {
+        if (!customEditorChannelIds.includes(id)) {
+            selectedCustomEditorIds.delete(id);
+        }
+    });
+    
+    listContainer.innerHTML = '';
+    updateCustomEditorSelectionToolbar();
+    
+    const countLabel = document.getElementById('custom-editor-count');
+    if (countLabel) {
+        countLabel.textContent = customEditorChannelIds.length;
+    }
+    
+    if (customEditorChannelIds.length === 0) {
+        listContainer.innerHTML = '<span style="color: var(--text-muted); text-align: center; display: block; padding: 30px 0;">Your custom playlist configuration has no rules or inclusions.</span>';
+        return;
+    }
+    
+    const searchQuery = document.getElementById('custom-editor-search')?.value.trim().toLowerCase() || '';
+    const isSearchActive = searchQuery.length > 0;
+    
+    let renderedCount = 0;
+    
+    customEditorChannelIds.forEach((id, index) => {
+        let ch = selectionBinCache[id];
+        if (!ch) {
+            const found = findChannelById(id);
+            if (found) {
+                cacheChannelForBin(found);
+                ch = selectionBinCache[id];
+            }
+        }
+        
+        if (!ch) {
+            ch = { id: id, name: id, country: '', languages: [], categories: [], streams: [] };
+        }
+        
+        // Filter query match
+        if (isSearchActive) {
+            const idMatch = (ch.id || '').toLowerCase().includes(searchQuery);
+            const nameMatch = (ch.name || '').toLowerCase().includes(searchQuery);
+            const countryMatch = (ch.country || '').toLowerCase().includes(searchQuery);
+            const categoryMatch = (ch.categories || []).some(cat => cat.toLowerCase().includes(searchQuery));
+            const languageMatch = (ch.languages || []).some(lang => lang.toLowerCase().includes(searchQuery));
+            if (!idMatch && !nameMatch && !countryMatch && !categoryMatch && !languageMatch) {
+                return;
+            }
+        }
+        
+        renderedCount++;
+        
+        const item = document.createElement('div');
+        item.className = 'bin-item custom-editor-item';
+        const isDraggable = !isSearchActive;
+        item.setAttribute('draggable', isDraggable ? 'true' : 'false');
+        item.setAttribute('data-id', id);
+        item.style.cssText = `display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 3px; cursor: ${isDraggable ? 'move' : 'default'};`;
+        
+        // Index badge
+        const indexBadge = document.createElement('span');
+        indexBadge.style.cssText = 'background: rgba(255,255,255,0.08); border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: monospace; color: var(--text-muted); margin-right: 8px; font-weight: 600; min-width: 32px; text-align: center;';
+        indexBadge.textContent = `#${index + 1}`;
+        
+        const dragHandle = document.createElement('div');
+        dragHandle.className = 'drag-handle';
+        dragHandle.innerHTML = '⋮⋮';
+        dragHandle.style.cssText = 'cursor: grab; padding: 4px 10px; color: var(--text-muted); font-weight: bold; margin-right: 10px; user-select: none; font-size: 14px;';
+        if (!isDraggable) {
+            dragHandle.style.display = 'none';
+        }
+        
+        const info = document.createElement('div');
+        info.style.cssText = 'display: flex; flex-direction: column; max-width: 70%; flex-grow: 1;';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.style.cssText = 'font-weight: 600; color: var(--text-primary); font-size: 13px;';
+        nameSpan.textContent = ch.name || ch.id;
+        
+        const metaSpan = document.createElement('span');
+        metaSpan.style.cssText = 'font-size: 10.5px; color: var(--text-muted); margin-top: 2px;';
+        const langList = Array.isArray(ch.languages) ? ch.languages : [];
+        const catList = Array.isArray(ch.categories) ? ch.categories : [];
+        const countryStr = ch.country || 'No Country';
+        const langStr = langList.join(', ') || 'No Language';
+        const catStr = catList.join(', ') || 'No Category';
+        
+        // Dynamic multi-stream display
+        let streamsText = '';
+        if (ch.streams && ch.streams.length > 1) {
+            const qualities = ch.streams.map(s => s.quality || 'SD').filter(Boolean);
+            const qualitiesStr = qualities.join(', ');
+            streamsText = ` | 🔗 ${ch.streams.length} Streams (${qualitiesStr})`;
+        }
+        
+        metaSpan.textContent = `${countryStr} | ${langStr} | ${catStr}${streamsText}`;
+        
+        info.appendChild(nameSpan);
+        info.appendChild(metaSpan);
+        
+        const rightActions = document.createElement('div');
+        rightActions.style.cssText = 'display: flex; align-items: center; gap: 6px;';
+        
+        const reorderControls = document.createElement('div');
+        reorderControls.style.cssText = 'display: flex; gap: 4px; margin-right: 12px;';
+        if (!isDraggable) {
+            reorderControls.style.display = 'none';
+        }
+        
+        const upBtn = document.createElement('button');
+        upBtn.className = 'bin-reorder-btn';
+        upBtn.innerHTML = '▲';
+        upBtn.title = 'Move Up';
+        upBtn.style.cssText = 'background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 4px;';
+        upBtn.onclick = (e) => {
+            e.stopPropagation();
+            moveCustomEditorItem(id, 'up');
+        };
+        
+        const downBtn = document.createElement('button');
+        downBtn.className = 'bin-reorder-btn';
+        downBtn.innerHTML = '▼';
+        downBtn.title = 'Move Down';
+        downBtn.style.cssText = 'background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 4px;';
+        downBtn.onclick = (e) => {
+            e.stopPropagation();
+            moveCustomEditorItem(id, 'down');
+        };
+        
+        reorderControls.appendChild(upBtn);
+        reorderControls.appendChild(downBtn);
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.style.cssText = 'background: none; border: none; color: var(--color-danger); cursor: pointer; font-size: 16px; padding: 4px 8px;';
+        removeBtn.innerHTML = '✕';
+        removeBtn.title = 'Remove from playlist';
+        removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeCustomEditorItem(id);
+        };
+        
+        rightActions.appendChild(reorderControls);
+        rightActions.appendChild(removeBtn);
+        
+        // Checkbox for multi-select
+        const selectCheck = document.createElement('input');
+        selectCheck.type = 'checkbox';
+        selectCheck.className = 'custom-editor-checkbox';
+        selectCheck.style.cssText = 'margin-right: 12px; cursor: pointer; transform: scale(1.15); accent-color: var(--color-accent);';
+        selectCheck.checked = selectedCustomEditorIds.has(id);
+        selectCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                selectedCustomEditorIds.add(id);
+            } else {
+                selectedCustomEditorIds.delete(id);
+            }
+            updateCustomEditorSelectionToolbar();
+        });
+        
+        item.appendChild(selectCheck);
+        item.appendChild(indexBadge);
+        item.appendChild(dragHandle);
+        item.appendChild(info);
+        item.appendChild(rightActions);
+        
+        // Drag events
+        if (isDraggable) {
+            item.addEventListener('dragstart', (e) => {
+                item.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', id);
+            });
+            
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                syncCustomEditorFromDOM();
+            });
+        }
+        
+        listContainer.appendChild(item);
+    });
+    
+    if (isSearchActive && renderedCount === 0) {
+        listContainer.innerHTML = '<span style="color: var(--text-muted); text-align: center; display: block; padding: 30px 0;">No channels match your search query.</span>';
+    }
+    
+    // Add or reset dragover listener
+    listContainer.ondragover = (e) => {
+        const searchQueryLocal = document.getElementById('custom-editor-search')?.value.trim().toLowerCase() || '';
+        if (searchQueryLocal.length > 0) return;
+        
+        e.preventDefault();
+        const draggingItem = document.querySelector('.custom-editor-item.dragging');
+        if (!draggingItem) return;
+        const siblings = [...listContainer.querySelectorAll('.custom-editor-item:not(.dragging)')];
+        let nextSibling = siblings.find(sibling => {
+            const rect = sibling.getBoundingClientRect();
+            return e.clientY <= rect.top + rect.height / 2;
+        });
+        listContainer.insertBefore(draggingItem, nextSibling);
+    };
+}
+
+function syncCustomEditorFromDOM() {
+    const listContainer = document.getElementById('custom-editor-list-container');
+    if (!listContainer) return;
+    const items = listContainer.querySelectorAll('.custom-editor-item');
+    const newOrder = [];
+    items.forEach(item => {
+        const id = item.getAttribute('data-id');
+        if (id) {
+            newOrder.push(id);
+        }
+    });
+    customEditorChannelIds = newOrder;
+    const countLabel = document.getElementById('custom-editor-count');
+    if (countLabel) {
+        countLabel.textContent = customEditorChannelIds.length;
+    }
+    // Re-render UI to update index badges (#1, #2, etc.) to their new correct values
+    renderCustomEditorUI();
+}
+
+// Multi-select and rearrange helpers for the Custom Editor
+function getVisibleCustomEditorIds() {
+    const searchQuery = document.getElementById('custom-editor-search')?.value.trim().toLowerCase() || '';
+    if (searchQuery.length === 0) {
+        return [...customEditorChannelIds];
+    }
+    
+    return customEditorChannelIds.filter(id => {
+        let ch = selectionBinCache[id];
+        if (!ch) {
+            const found = findChannelById(id);
+            if (found) {
+                cacheChannelForBin(found);
+                ch = selectionBinCache[id];
+            }
+        }
+        if (!ch) {
+            ch = { id: id, name: id, country: '', languages: [], categories: [], streams: [] };
+        }
+        
+        const idMatch = (ch.id || '').toLowerCase().includes(searchQuery);
+        const nameMatch = (ch.name || '').toLowerCase().includes(searchQuery);
+        const countryMatch = (ch.country || '').toLowerCase().includes(searchQuery);
+        const categoryMatch = (ch.categories || []).some(cat => cat.toLowerCase().includes(searchQuery));
+        const languageMatch = (ch.languages || []).some(lang => lang.toLowerCase().includes(searchQuery));
+        
+        return idMatch || nameMatch || countryMatch || categoryMatch || languageMatch;
+    });
+}
+
+function updateCustomEditorSelectionToolbar() {
+    const toolbar = document.getElementById('custom-editor-toolbar');
+    if (!toolbar) return;
+    
+    if (customEditorChannelIds.length === 0) {
+        toolbar.style.display = 'none';
+        return;
+    }
+    
+    toolbar.style.display = 'flex';
+    
+    const selectedCountLabel = document.getElementById('custom-editor-selected-count');
+    if (selectedCountLabel) {
+        selectedCountLabel.textContent = `${selectedCustomEditorIds.size} selected`;
+    }
+    
+    // Update Select All checkbox state
+    const selectAllCheck = document.getElementById('custom-editor-select-all');
+    if (selectAllCheck) {
+        const visibleIds = getVisibleCustomEditorIds();
+        const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedCustomEditorIds.has(id));
+        selectAllCheck.checked = allVisibleSelected;
+    }
+}
+
+function toggleSelectAllCustomEditor(isChecked) {
+    const visibleIds = getVisibleCustomEditorIds();
+    if (isChecked) {
+        visibleIds.forEach(id => selectedCustomEditorIds.add(id));
+    } else {
+        visibleIds.forEach(id => selectedCustomEditorIds.delete(id));
+    }
+    renderCustomEditorUI();
+}
+
+function moveSelectedCustomEditor(target) {
+    if (selectedCustomEditorIds.size === 0) {
+        alert('Please select one or more channels to move.');
+        return;
+    }
+    
+    const selected = [];
+    const remaining = [];
+    
+    customEditorChannelIds.forEach(id => {
+        if (selectedCustomEditorIds.has(id)) {
+            selected.push(id);
+        } else {
+            remaining.push(id);
+        }
+    });
+    
+    if (target === 'top') {
+        customEditorChannelIds = [...selected, ...remaining];
+    } else if (target === 'bottom') {
+        customEditorChannelIds = [...remaining, ...selected];
+    }
+    
+    renderCustomEditorUI();
+}
+
+function removeSelectedCustomEditor() {
+    if (selectedCustomEditorIds.size === 0) {
+        alert('Please select one or more channels to remove.');
+        return;
+    }
+    
+    if (!confirm(`Are you sure you want to remove the ${selectedCustomEditorIds.size} selected channel(s) from the playlist?`)) {
+        return;
+    }
+    
+    customEditorChannelIds = customEditorChannelIds.filter(id => !selectedCustomEditorIds.has(id));
+    selectedCustomEditorIds.clear();
+    
+    renderCustomEditorUI();
+}
+
+function moveCustomEditorItem(id, direction) {
+    const index = customEditorChannelIds.indexOf(id);
+    if (index === -1) return;
+    if (direction === 'up' && index > 0) {
+        const temp = customEditorChannelIds[index];
+        customEditorChannelIds[index] = customEditorChannelIds[index - 1];
+        customEditorChannelIds[index - 1] = temp;
+    } else if (direction === 'down' && index < customEditorChannelIds.length - 1) {
+        const temp = customEditorChannelIds[index];
+        customEditorChannelIds[index] = customEditorChannelIds[index + 1];
+        customEditorChannelIds[index + 1] = temp;
+    }
+    renderCustomEditorUI();
+}
+
+function removeCustomEditorItem(id) {
+    customEditorChannelIds = customEditorChannelIds.filter(x => x !== id);
+    renderCustomEditorUI();
+}
+
+function saveCustomEditorList() {
+    if (customEditorChannelIds.length === 0) {
+        if (!confirm("Are you sure you want to save an empty playlist config? This will clear all rules.")) {
+            return;
+        }
+    }
+    
+    // Read other custom configurations
+    const excludeGlobal = document.getElementById('sync-exclude-global')?.checked || false;
+    const prefLangsVal = document.getElementById('sync-languages-order')?.value || '';
+    const prefCatsVal = document.getElementById('sync-categories-order')?.value || '';
+    const excludeLangsVal = document.getElementById('sync-exclude-languages')?.value || '';
+    const excludeCountriesVal = document.getElementById('sync-exclude-countries')?.value || '';
+    const excludeChannelsVal = document.getElementById('sync-exclude-channels-input')?.value || '';
+    
+    const excludeDead = document.getElementById('filter-exclude-dead')?.checked || false;
+    const excludeNoUrl = document.getElementById('filter-exclude-no-url')?.checked || false;
+    const excludeClosed = document.getElementById('filter-closed')?.checked || false;
+    
+    const preferredLanguages = prefLangsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const categoryOrder = prefCatsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeLanguages = excludeLangsVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeCountries = excludeCountriesVal.split(',').map(s => s.trim()).filter(Boolean);
+    const excludeChannels = excludeChannelsVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+
+    configSortBy = 'custom';
+    
+    fetch('/api/custom/save-selected', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            channel_ids: customEditorChannelIds,
+            excluded_ids: Array.from(excludedChannelIds),
+            mode: 'overwrite', // Overwrite rules to keep exact order and removed channels
+            config: {
+                excludeGlobal,
+                preferredLanguages,
+                categoryOrder,
+                excludeLanguages,
+                excludeCountries,
+                excludeChannels,
+                excludeDead,
+                excludeNoUrl,
+                excludeClosed,
+                sortBy: 'custom'
+            }
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) {
+            alert('Failed to save changes: ' + data.error);
+        } else {
+            alert(`Successfully saved custom playlist changes (Total: ${data.count} channels)!\n\nCustom playlist generated successfully!`);
+            // Synchronize the Selection Bin too to stay updated
+            selectionBinIds = [...customEditorChannelIds];
+            updateSelectionBinUI();
+            loadCustomEditorList();
+        }
+    })
+    .catch(err => {
+        alert('Failed to save changes: ' + err);
+    });
 }

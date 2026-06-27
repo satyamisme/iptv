@@ -4,9 +4,19 @@
 #
 
 # --- Inclusions ---
-4FunKids.pl
 6TVTelugu.in
 99TV.in
+BRKNews.in
+HMTV.in
+INews.in
+RajMusixTelugu.in
+StarMaa.in
+StudioOnePlus.in
+TNews.in
+TV9Telugu.in
+VanithaTV.in
+ZeeTeluguNews.in
+4FunKids.pl
 ABPGanga.in
 ABPNews.in
 ADNTVPlus.fr
@@ -29,7 +39,6 @@ ArgusNews.in
 AtfalMawahebTV.sa
 AwaazIndiaTV.in
 B4UMusic.in
-BRKNews.in
 BTTV.in
 BabySharkTV.us
 BabyTV.uk
@@ -60,13 +69,11 @@ Goldmines2.in
 GoldminesBollywood.in
 Gulli.fr
 GulliGirl.ru
-HMTV.in
 HiDost.in
 HindiKhabar.in
 HodHodFarsiTV.ir
 HornbillTV.in
 INH24x7.in
-INews.in
 JimJamEurope.uk
 KMBYLD275.us
 KetchupTV.us
@@ -107,7 +114,6 @@ QTV6.cn
 RING.bg
 RadostMoya.ru
 RaftaarMedia.in
-RajMusixTelugu.in
 RetroCrush.us
 RiC.de
 RomedyNow.in
@@ -127,22 +133,18 @@ StarGold2.in
 StarGoldRomance.in
 StarGoldSelect.in
 StarGoldThrills.in
-StarMaa.in
 StarPlus.in
 StarSports1.in
 StarSports2Hindi.in
 StarzKidsFamily.us
 SteelbirdMusic.in
-StudioOnePlus.in
 SuperGeroi.ru
 Superhitz.in
 SwadeshNews.in
 SwarajExpressSMBC.in
-TNews.in
 TOIGlobal.in
 TRTDiyanetCocuk.tr
 TV9Bharatvarsh.in
-TV9Telugu.in
 TVBahoriston.tj
 TVCARiBKidsTeens.sx
 TVPABC.pl
@@ -161,7 +163,6 @@ ToonGoggles.us
 ToonamiAftermath.us
 TotalTVHaryana.in
 VIPNews.in
-VanithaTV.in
 VeronicaDisneyJr.nl
 Vgostyakhuskazki.ru
 VyasChannel.in
@@ -172,7 +173,6 @@ ZeeBusiness.in
 ZeeNews.in
 ZeeRajasthan.in
 ZeeTV.in
-ZeeTeluguNews.in
 ZeeUttarPradeshUttarakhand.in
 ZooMoo.sg
 

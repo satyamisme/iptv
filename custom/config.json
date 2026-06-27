@@ -4,5 +4,9 @@
   "categoryOrder": [],
   "excludeLanguages": [],
   "excludeCountries": [],
-  "excludeChannels": []
+  "excludeChannels": [],
+  "excludeDead": true,
+  "excludeNoUrl": true,
+  "excludeClosed": true,
+  "sortBy": "custom"
 }

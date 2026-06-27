@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Main Style Sheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ cache_buster }}">
     <!-- HLS.js for Live Stream Preview -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
@@ -60,6 +60,12 @@
                         <a href="#playlists" class="nav-item" onclick="switchView('playlists')">
                             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                             <span>Playlists</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#custom-editor" class="nav-item" onclick="switchView('custom-editor')">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            <span>Custom Editor</span>
                         </a>
                     </li>
                     <li>
@@ -1143,6 +1149,123 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- VIEW 7: CUSTOM PLAYLIST EDITOR -->
+                <div id="view-custom-editor" class="content-view">
+                    <div class="custom-editor-container" style="display: flex; flex-direction: column; gap: 20px; padding: 24px; max-height: calc(100vh - 100px); overflow-y: auto;">
+                        <div class="dashboard-header" style="margin-bottom: 0; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h2>Modify Custom Playlist</h2>
+                                <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Rearrange, remove, or update the channels in your custom generated playlist.</p>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="saveCustomEditorList()">Save Changes</button>
+                                <button class="btn btn-secondary-outline" onclick="loadCustomEditorList()">Discard / Reload</button>
+                            </div>
+                        </div>
+                        
+                        <!-- IMPORT & MERGE OPTIONS -->
+                        <div class="card" style="padding: 16px 20px; background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg);">
+                            <h4 style="margin-top: 0; margin-bottom: 12px; font-size: 13px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                📥 Import & Merge Options
+                            </h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                                <button class="btn btn-secondary-outline" onclick="document.getElementById('custom-editor-file-import').click()" style="display: flex; align-items: center; gap: 6px;">
+                                    📂 Import M3U File
+                                </button>
+                                <input type="file" id="custom-editor-file-import" accept=".m3u,.m3u8" style="display: none;" onchange="importM3UFile(event)">
+                                
+                                <button class="btn btn-secondary-outline" onclick="document.getElementById('custom-editor-txt-import').click()" style="display: flex; align-items: center; gap: 6px;">
+                                    📝 Import selected-channels.txt
+                                </button>
+                                <input type="file" id="custom-editor-txt-import" accept=".txt" style="display: none;" onchange="importSelectedChannelsTxt(event)">
+                                
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary-outline" onclick="importFromSelectionBin('append')" title="Append Selection Bin channels to the end of this list" style="display: flex; align-items: center; gap: 6px;">
+                                        ➕ Merge Selection Bin
+                                    </button>
+                                    <button class="btn btn-secondary-outline" onclick="importFromSelectionBin('replace')" title="Replace this list entirely with Selection Bin channels" style="display: flex; align-items: center; gap: 6px;">
+                                        🔄 Replace with Selection Bin
+                                    </button>
+                                </div>
+                                
+                                <div style="margin-left: auto;">
+                                    <button class="btn btn-secondary-outline" onclick="clearCustomEditorList()" style="color: var(--color-danger); border-color: rgba(220, 53, 69, 0.35); display: flex; align-items: center; gap: 6px;" title="Remove all channels from this list">
+                                        🗑️ Clear Entire List
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="padding: 20px; background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                                    Channels in Custom Playlist (<span id="custom-editor-count">0</span>)
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-muted);">
+                                    💡 Drag items using the handle or click the arrow buttons to rearrange.
+                                </div>
+                            </div>
+                            
+                            <!-- Search, Dropdown Filters & Sorting -->
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; align-items: center;">
+                                <div style="position: relative; flex-grow: 1; min-width: 250px;">
+                                    <input type="text" id="custom-editor-search" class="form-control" placeholder="🔍 Search channels by name/ID..." oninput="filterCustomEditorList()" style="padding-left: 12px; width: 100%;">
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; flex-shrink: 0;">
+                                    <select id="custom-editor-filter-category" class="form-control" onchange="filterCustomEditorList()" style="background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 12px; cursor: pointer; width: auto; height: 38px; min-width: 130px;">
+                                        <option value="">All Categories</option>
+                                    </select>
+                                    <select id="custom-editor-filter-language" class="form-control" onchange="filterCustomEditorList()" style="background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 12px; cursor: pointer; width: auto; height: 38px; min-width: 130px;">
+                                        <option value="">All Languages</option>
+                                    </select>
+                                    <select id="custom-editor-filter-country" class="form-control" onchange="filterCustomEditorList()" style="background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 12px; cursor: pointer; width: auto; height: 38px; min-width: 130px;">
+                                        <option value="">All Countries</option>
+                                    </select>
+                                    
+                                    <span style="font-size: 12px; color: var(--text-muted); white-space: nowrap; margin-left: 8px;">Sort:</span>
+                                    <select id="custom-editor-sort-select" class="form-control" onchange="sortCustomEditor(this.value)" style="background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 4px 10px; font-size: 12px; cursor: pointer; width: auto; height: 38px; min-width: 120px;">
+                                        <option value="">-- Manual Order --</option>
+                                        <option value="name_asc">Channel Name (A-Z)</option>
+                                        <option value="name_desc">Channel Name (Z-A)</option>
+                                        <option value="genre">Genre / Category</option>
+                                        <option value="language">Language</option>
+                                        <option value="country">Country</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Selection Actions Toolbar -->
+                            <div id="custom-editor-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 12px; display: none;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12.5px; user-select: none; color: var(--text-primary);">
+                                        <input type="checkbox" id="custom-editor-select-all" style="cursor: pointer; accent-color: var(--color-accent); transform: scale(1.15);" onchange="toggleSelectAllCustomEditor(this.checked)">
+                                        <span>Select All / Visible</span>
+                                    </label>
+                                    <span style="font-size: 12px; color: var(--text-muted); border-left: 1px solid var(--border-color); padding-left: 12px;" id="custom-editor-selected-count">0 selected</span>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary-outline btn-sm" onclick="moveSelectedCustomEditor('top')" style="height: 32px; font-size: 11.5px; padding: 0 12px; display: flex; align-items: center; gap: 4px;" title="Move selected channels to the very top of the list">
+                                        ⬆️ Move to Top
+                                    </button>
+                                    <button class="btn btn-secondary-outline btn-sm" onclick="moveSelectedCustomEditor('bottom')" style="height: 32px; font-size: 11.5px; padding: 0 12px; display: flex; align-items: center; gap: 4px;" title="Move selected channels to the very bottom of the list">
+                                        ⬇️ Move to Bottom
+                                    </button>
+                                    <button class="btn btn-danger-outline btn-sm" onclick="removeSelectedCustomEditor()" style="height: 32px; font-size: 11.5px; padding: 0 12px; display: flex; align-items: center; gap: 4px; border-color: rgba(220, 53, 69, 0.35); color: var(--color-danger);" title="Remove selected channels from the list">
+                                        🗑️ Remove Selected
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="custom-editor-search-warning" style="display: none; padding: 10px 14px; background: rgba(255, 193, 7, 0.15); color: #ffc107; border-radius: var(--radius-sm); font-size: 11px; margin-bottom: 12px; border: 1px solid rgba(255, 193, 7, 0.25);">
+                                ⚠️ Drag-and-drop and arrow reordering are disabled while search filter is active. Clear search to reorder.
+                            </div>
+                            
+                            <div id="custom-editor-list-container" style="display: flex; flex-direction: column; gap: 8px; min-height: 200px;">
+                                <span style="color: var(--text-muted); text-align: center; display: block; padding: 20px 0;">Loading custom playlist...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -1243,7 +1366,24 @@
         </div>
     </div>
 
+    <!-- Floating Stream Preview Modal -->
+    <div class="modal-overlay" id="preview-player-modal" style="display: none; z-index: 10000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+        <div class="modal-content" style="max-width: 640px; background: #000; padding: 0; border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; width: 90%;">
+            <div class="modal-header" style="padding: 12px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="preview-player-title" style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-primary);">Stream Preview</h3>
+                <button class="close-modal-btn" onclick="closePreviewPlayerModal()" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 0; line-height: 1;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 0; background: #000; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; position: relative; width: 100%;">
+                <video id="preview-live-player" controls autoplay muted playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>
+                <div class="player-overlay" id="preview-player-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #fff;">
+                    <div class="spinner"></div>
+                    <span id="preview-player-status-text">Loading stream...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Script Entry Point -->
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v={{ cache_buster }}"></script>
 </body>
 </html>
